@@ -1,4 +1,5 @@
 console.log('Design Patterns Boilerplate'); console.log('');
+
 console.log('Module Pattern');
 /**
  * Module Pattern
@@ -31,11 +32,11 @@ var module = (function () {
 
   };
 })();
-
 //module.myPublicFunction('hej');
 console.log(module.myPublicFunction('hej'));
 console.log(module.myPublicVar);
 console.log('');
+
 
 console.log('Revealing Module Pattern');
 /**
@@ -69,7 +70,36 @@ var myRevealingModule = (function () {
     };
  
 })();
- 
 myRevealingModule.setName( 'Attila' );
 myRevealingModule.getName();
 console.log(myRevealingModule.greeting); console.log('');
+
+console.log('Revealing Prototype Pattern');
+/**
+ * Revealing Prototype Pattern
+ * 
+ */ 
+var TeslaModelS = function() {
+  this.numWheels    = 4;
+  this.manufacturer = 'Tesla';
+  this.make         = 'Model S';
+};
+
+TeslaModelS.prototype = function() {
+  var go = function() {
+    // Rotate wheels
+  };
+
+  var stop = function() {
+    // Apply brake pads
+  };
+
+  return {
+    pressBrakePedal: stop,
+    pressGasPedal: go
+  };
+
+}();
+
+var tesla = new TeslaModelS();
+console.log(tesla);

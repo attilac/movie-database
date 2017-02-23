@@ -1,2 +1,2 @@
-console.log('Movie Database');
+console.log('Main');
 

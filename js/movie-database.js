@@ -186,8 +186,7 @@ var movieDatabase = (function(movies) {
         getTopRatedMovie: getTopRatedMovie,
         getWorstRatedMovie: getWorstRatedMovie,
         getMoviesByYear: getMoviesByYear,
-        getMoviesByGenres: getMoviesByGenres,
-        getMoviesByGenre2: getMoviesByGenre2
+        getMoviesByGenres: getMoviesByGenres
     };
  
 })(movies=[]);

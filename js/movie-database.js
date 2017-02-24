@@ -1,43 +1,41 @@
 console.log('Movie Database - Revealing Module Pattern');
-//var movies = [];
-//movies.push(rougeOne);
-//console.log(movies);
 
 /**
  * Revealing Module Pattern
  * 
  */
 var movieDatabase = (function(movies) {
- 	
+ 	// our array of movies - private variable	
     var _movies = movies;
 
-    // private functions
-
-	// public functions
-
 	/**
-	 * 
+	 * Gets the _movie array
+	 * @return {Array} _movies - an array of movie objects
 	 */	
     var getMovies = function() {
     	return _movies;
     };
 
 	/**
-	 * 
+	 * Sets the entire _movies array
+	 * @param {Array} movies - an array of movie objects
 	 */	
     var setMovies = function(movies) {
         _movies = movies;
     };
 
 	/**
-	 * 
+	 * Pushes a new movie to the _movies array
+	 * @param {Object} movie - a movie object
 	 */	
     var addMovie = function(movie) {
     	_movies.push(movie);
     };
 
 	/**
-	 * 
+	 * Returns an array of movies filtered by genre
+	 * @param {Array} genres - the genres to filter by
+	 * @return {Array} _movies - an array of movie objects 
 	 */
 	var getMoviesByGenres = function(genres) {
 	    return _movies
@@ -57,8 +55,16 @@ var movieDatabase = (function(movies) {
 	    });     
 	};
 
+	/*-------------------------------------------------------------------------
+							Variants on genre filter. 
+							these are just here to explore the 
+							for, forEach and map scope differences
+	--------------------------------------------------------------------------*/
+
 	/**
-	 * 
+	 * Returns an array of movies filtered by genre (forEach version)
+	 * @param {Array} genres - the genres to filter by
+	 * @return {Array} _movies - an array of movie objects 
 	 */
 	var getMoviesByGenresForEach = function(genres) {
 	    return _movies
@@ -80,7 +86,9 @@ var movieDatabase = (function(movies) {
 	};
 
 	/**
-	 * 
+	 * Returns an array of movies filtered by genre (for version)
+	 * @param {Array} genres - the genres to filter by
+	 * @return {Array} _movies - an array of movie objects 
 	 */
 	var getMoviesByGenresFor = function(genres) {
 	    return _movies
@@ -99,9 +107,12 @@ var movieDatabase = (function(movies) {
 	        return false;
 	    });     
 	};
+	/*-------------------------------------------------------------------------*/
 
 	/**
-	 * 
+	 * Returns an array with unique values
+	 * @param {Array} array - the array to process
+	 * @return {Array} array - 
 	 */	
 	var _getUniqueArray = function(array){
 		return array
@@ -113,17 +124,19 @@ var movieDatabase = (function(movies) {
 	};
 
 	/**
-	 * 
+	 * Returns an array of movies filtered by a key
+	 * @param {String} key - the key to filter by
+	 * @return {Array} _movies - an array of movie objects
 	 */	
-    var getMoviesByYear = function(year) {
+    var getMoviesByKey = function(key) {
     	return _movies
     	.filter(function(movie) {
-    		return movie.year === year;
+    		return movie[key] === key;
     	});
     };
 
 	/**
-	 * 
+	 * Adds rating to a moviesratings array. Wrapper for movie.setRating
 	 */	
     var rateMovie = function(movie, rating) {
     	movie.setRating(rating);
@@ -143,6 +156,26 @@ var movieDatabase = (function(movies) {
 
     };
 
+	/**
+	 * 
+	 */	
+    _getObjectByPropertyMin = function(key, movies = _movies) {
+		return movies
+		.reduce(function(prevItem, currentItem) {
+			return prevItem[key] < currentItem[key] ? prevItem : currentItem;
+		});
+	};
+
+	/**
+	 * 
+	 */	
+    _getObjectByPropertyMax = function(key, movies = _movies) {
+		return movies
+		.reduce(function(prevItem, currentItem) {
+			return prevItem[key] > currentItem[key] ? prevItem : currentItem;
+		});
+	};
+
     // Reveal public pointers to
     // private functions and properties
     return {
@@ -153,12 +186,15 @@ var movieDatabase = (function(movies) {
         getTopRatedMovie: getTopRatedMovie,
         getWorstRatedMovie: getWorstRatedMovie,
         getMoviesByYear: getMoviesByYear,
-        getMoviesByGenres: getMoviesByGenres
+        getMoviesByGenres: getMoviesByGenres,
+        getMoviesByGenre2: getMoviesByGenre2
     };
  
 })(movies=[]);
 
-// Test
+/*-------------------------------------------------------------------------
+							Usage examples
+--------------------------------------------------------------------------*/
 movieDatabase.addMovie(rougeOne);
 movieDatabase.addMovie(trainspotting2);
 movieDatabase.addMovie(theShack);
@@ -173,6 +209,6 @@ console.log('Movies in genre Drama');
 moviesByGenres = movieDatabase.getMoviesByGenres(['Drama']);
 console.log(moviesByGenres);
 console.log('Movies in genre Science Fiction');
-moviesByGenres = movieDatabase.getMoviesByGenres(['Science Fiction']);
+moviesByGenres = movieDatabase.getMoviesByGenre(['Science Fiction']);
 console.log(moviesByGenres);
 //console.log(movieDatabase.getMoviesByYear(2017));

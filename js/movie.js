@@ -25,22 +25,46 @@ var Movie = function (title, year, genres, ratings, poster, contentRating, durat
  * 
  */
 Movie.prototype = function(){
+
+	/**
+	 * 
+	 */	
 	var toString = function(){
 		return `Movie: ${this.title}, Year: ${this.year}, Genres: ${this.genres}`;
 	};
+
+	/**
+	 * 
+	 */		
 	var setRating = function(rating){
 		this.ratings.push(rating);
 	};
+
+	/**
+	 * 
+	 */		
 	var getRating = function(){
 		return _getAverageRating(this.ratings);	
 	};
+
+	/**
+	 * 
+	 */		
 	var _getAverageRating = function(ratings){
 		//console.log(_getAverage(_getArraySum(ratings), ratings.length));
 		return Math.round(_getAverage(_getArraySum(ratings), ratings.length)*10)/10;
 	};
+
+	/**
+	 * 
+	 */		
 	var _getAverage = function(x, y){
 		return x/y;
 	};
+
+	/**
+	 * 
+	 */		
 	var _getArraySum = function(array){
 		return array
 		.reduce(function(previous, current) {

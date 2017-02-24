@@ -45,7 +45,7 @@ Movie.prototype = function(){
 	 * Init function
 	 */	
 	var init = function(){
-		//console.log(this.ratings.length);
+		console.log(this.ratings.length);
 		if(this.ratings.length) {
 			this.averageRating = _calcAverageRating(this.ratings);
 		}

@@ -129,10 +129,10 @@ var movieDatabase = (function(movies) {
 	 * @param {String} key - the key to filter by
 	 * @return {Array} _movies - an array of movie objects
 	 */	
-    var getMoviesByKey = function(key) {
+    var getMoviesByKey = function(key, value) {
     	return _movies
     	.filter(function(movie) {
-    		return movie[key] === key;
+    		return movie[key] === value;
     	});
     };
 
@@ -212,6 +212,7 @@ console.log(moviesByGenres);
 console.log('Movies in genre Science Fiction');
 moviesByGenres = movieDatabase.getMoviesByGenres(['Science Fiction']);
 console.log(moviesByGenres);
-//console.log(movieDatabase.getMoviesByYear(2017));
+console.log('Movies from year 2017');
+console.log(movieDatabase.getMoviesByKey('year', 2017));
 console.log('Least rated Movie: ' + movieDatabase.getLeastRatedMovie().title + ' Rating: ' + movieDatabase.getLeastRatedMovie().averageRating);
 console.log('Top rated Movie: ' + movieDatabase.getTopRatedMovie().title + ' Rating: ' + movieDatabase.getTopRatedMovie().averageRating);

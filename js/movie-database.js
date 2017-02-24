@@ -1,4 +1,5 @@
-console.log('Movie Database - Revealing Module Pattern');
+console.log('---Movie Database');
+console.log( '-----Revealing Module Pattern-----');
 
 /**
  * Revealing Module Pattern
@@ -146,14 +147,14 @@ var movieDatabase = (function(movies) {
 	 * 
 	 */	
     var getTopRatedMovie = function() {
-
+    	return _getObjectByPropertyMax('averageRating');
     };
 
 	/**
 	 * 
 	 */	
-    var getWorstRatedMovie = function() {
-
+    var getLeastRatedMovie = function() {
+    	return _getObjectByPropertyMin('averageRating', _movies);
     };
 
 	/**
@@ -184,8 +185,8 @@ var movieDatabase = (function(movies) {
         addMovie: addMovie,
         rateMovie: rateMovie,
         getTopRatedMovie: getTopRatedMovie,
-        getWorstRatedMovie: getWorstRatedMovie,
-        getMoviesByYear: getMoviesByYear,
+        getLeastRatedMovie: getLeastRatedMovie,
+        getMoviesByKey: getMoviesByKey,
         getMoviesByGenres: getMoviesByGenres
     };
  
@@ -194,6 +195,7 @@ var movieDatabase = (function(movies) {
 /*-------------------------------------------------------------------------
 							Usage examples
 --------------------------------------------------------------------------*/
+console.log('-----Usage examples-----');
 movieDatabase.addMovie(rougeOne);
 movieDatabase.addMovie(trainspotting2);
 movieDatabase.addMovie(theShack);
@@ -208,6 +210,8 @@ console.log('Movies in genre Drama');
 moviesByGenres = movieDatabase.getMoviesByGenres(['Drama']);
 console.log(moviesByGenres);
 console.log('Movies in genre Science Fiction');
-moviesByGenres = movieDatabase.getMoviesByGenre(['Science Fiction']);
+moviesByGenres = movieDatabase.getMoviesByGenres(['Science Fiction']);
 console.log(moviesByGenres);
 //console.log(movieDatabase.getMoviesByYear(2017));
+console.log('Least rated Movie: ' + movieDatabase.getLeastRatedMovie().title + ' Rating: ' + movieDatabase.getLeastRatedMovie().averageRating);
+console.log('Top rated Movie: ' + movieDatabase.getTopRatedMovie().title + ' Rating: ' + movieDatabase.getTopRatedMovie().averageRating);

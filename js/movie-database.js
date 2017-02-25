@@ -30,6 +30,7 @@ var movieDatabase = (function(movies) {
 	 * @param {Object} movie - a movie object
 	 */	
     var addMovie = function(movie) {
+    	//console.log(movie);
     	_movies.push(movie);
     };
 
@@ -196,6 +197,7 @@ var movieDatabase = (function(movies) {
 							Usage examples
 --------------------------------------------------------------------------*/
 console.log('-----Usage examples-----');
+/*
 movieDatabase.addMovie(rougeOne);
 movieDatabase.addMovie(trainspotting2);
 movieDatabase.addMovie(theShack);
@@ -216,3 +218,4 @@ console.log('Movies from year 2017');
 console.log(movieDatabase.getMoviesByKey('year', 2017));
 console.log('Least rated Movie: ' + movieDatabase.getLeastRatedMovie().title + ' Rating: ' + movieDatabase.getLeastRatedMovie().averageRating);
 console.log('Top rated Movie: ' + movieDatabase.getTopRatedMovie().title + ' Rating: ' + movieDatabase.getTopRatedMovie().averageRating);
+*/

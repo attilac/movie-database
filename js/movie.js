@@ -21,7 +21,12 @@ var Movie = function (title,
 						contentRating, 
 						duration, 
 						releaseDate,
-						averageRating=0) {
+						averageRating,
+						originalTitle,
+						storyline,
+						actors,
+						imdbRating,
+						posterurl) {
 	this.title = title;
 	this.year = year;
 	this.contentRating = contentRating;
@@ -31,6 +36,11 @@ var Movie = function (title,
 	this.ratings = ratings;
 	this.poster = poster;
 	this.averageRating = averageRating;
+	this.originalTitle = originalTitle;
+	this.storyline = storyline;
+	this.actors = actors;
+	this.imdbRating = imdbRating;
+	this.posterurl = posterurl;
 	this.init();
 };
 
@@ -45,7 +55,8 @@ Movie.prototype = function(){
 	 * Init function
 	 */	
 	var init = function(){
-		console.log(this.ratings.length);
+		//console.log(this.ratings.length);
+		//console.log(this);
 		if(this.ratings.length) {
 			this.averageRating = _calcAverageRating(this.ratings);
 		}

@@ -399,7 +399,7 @@ var testFunctions = function(movieDatabase){
  * ------------------------------------------------------------------------
 */
 
-getMoviesFromJSON('/js/json/top-rated-movies-01.json');
+getMoviesFromJSON('https://attilac.github.io/movie-database//js/json/top-rated-movies-01.json');
 //getMoviesFromJSON('/js/json/top-rated-movies-02.json');
 //getMoviesFromJSON('/js/json/top-rated-indian-movies-01.json');
 //getMoviesFromJSON('/js/json/top-rated-indian-movies-02.json');

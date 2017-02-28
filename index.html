@@ -8,20 +8,92 @@
     <link rel="stylesheet" href="css/main.css">
   </head>
   <body>
+
+  <!-- Modal -->
+  <div id="movieFormModal" class="modal fade">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Add new Movie</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+        <div class="container-fluid">
+          <div id="movieForm">
+            <form>
+              <div class="form-group">
+                <label for="movieTitle">Title</label>
+                <input type="text" class="form-control" id="movieTitle" required="">
+              </div>
+              <div class="row">
+                <div class="form-group col-sm-6">
+                  <label for="titleYear">Tiltle Year</label>
+                  <input type="text" class="form-control" id="titleYear" required="">
+                </div>
+                <div class="form-group col-sm-6">
+                  <label for="releaseDate">Release Date</label>
+                  <input type="date" class="form-control" id="releaseDate">
+                </div>
+               </div>
+              <div class="form-group">
+                <label>Genres</label>
+                <div id="genreCheckboxes"></div>
+              </div>
+              <div class="form-group">
+                <label for="moviePoster">Poster</label>
+                <input type="url" class="form-control" id="moviePoster" aria-describedby="moviePosterHelp">
+                <small id="moviePosterHelp" class="form-text text-muted">Add filename to an image file.</small>
+              </div>
+              <div class="form-group">
+                <label for="movieStoryline">Storyline</label>
+                <textarea class="form-control" id="movieStoryline" rows="5"></textarea>
+              </div>
+              <button id="movieFormSubmit" type="submit" class="btn btn-primary">Add Movie</button>
+            </form>
+          </div>
+        </div>
+      </div>
+      </div>
+    </div>
+  </div>
+  <!-- / Modal -->
+
   <header class="page-header my-5">
     <div class="container-fluid">
       <h1 class="display-5">Movie Database</h1>
     </div>
-    <div class="content">
-    </div>
   </header>
+  <div class="container-fluid">
+  <a id="addMovie" class="btn btn-success mb-3" href="#">Add new Movie</a>
+    <div class="card mb-3">
+      <div class="card-block">
+      <h5 class="card-title mb-3 text-muted">Filter by</h5>
+        <h6 class="card-title mb-3">Genre</h6>
+        <div class="genre-buttons">
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <section>
+    <div class="container-fluid">
+      <div class="card mb-3 py-3">
+        <div class="card-block">
+      <div id="movieContainer" class="content">
+      </div>
+      </div>
+      </div>
+    </div>
+  </section>
 
     <!-- jQuery first, then Tether, then Bootstrap JS. -->
     <script src="https://code.jquery.com/jquery-3.1.1.slim.min.js" integrity="sha384-A7FZj7v+d/sdmMqp/nOQwliLvUsJfDHW+k9Omg/a/EheAdgtzNs3hpfag6Ed950n" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js" integrity="sha384-DztdAPBWPRXSA/3eYEEUWrWCy7G5KFbe8fFjk5JAIxUYHKkDx6Qin1DkWx51bBrb" crossorigin="anonymous"></script>
     <script src="js/vendor/bootstrap.js"></script>
     <!-- <script src="js/design-patterns-boilerplate.js"></script> -->
-    <script src="js/movies.json"></script>
+    <script src="js/utilities.js"></script>
     <script src="js/movie.js"></script>
     <script src="js/movie-database.js"></script>
     <script src="js/main.js"></script>

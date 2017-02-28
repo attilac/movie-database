@@ -4,7 +4,7 @@ console.log('-----Revealing Prototype Pattern-----');
 
 /**
  * Movie constructor - Revealing Prototype Pattern
- * @param {String} title - the tiltle of the movie
+ * @param {String} title - the title of the movie
  * @param {Number} year - the release year
  * @param {Array} genres - an array(strings) of genre names
  * @param {Array} ratings - an array(wholenumbers 1-10) of ratings for the movie
@@ -126,18 +126,26 @@ Movie.prototype = function(){
 								Usage examples
 /*-----------------------------------------------------------------------*/
 console.log('-----Usage Examples-----');
-// We can create new instances of the movie
-// new Movie(title, year, genres, ratings, poster, contentRating, duration, releaseDate)
-var rougeOne = new Movie('Star Wars - Rouge One', 2016, ['Action', 'Adventure', 'Science Fiction'], [1, 3], '',  '11', 'PT133M');
-var trainspotting2 = new Movie('T2 Trainspotting', 2017, ['Drama'], [1, 3, 7, 10], '',  'R', 'PT117M');
-var theShack = new Movie('The Shack', 2017, ['Drama', 'Fantasy'], [1, 3, 7, 10, 9], '',  'PG-13', 'PT132M');
-//console.log(trainspotting2.getAverageRating());
-// and then open our browser console to view the
-// output of the methods being called on the movie
-//console.log(`Average rating for ${rougeOne.title}: ${rougeOne.getAverageRating()}`);
-rougeOne.setRating(7);
-rougeOne.setRating(5);
-rougeOne.setRating(8);
-console.log(rougeOne.toString());
-//console.log(rougeOne);
-console.log(`Average rating for ${rougeOne.title}: ${rougeOne.getAverageRating()}`);
+
+/**
+ *
+ */
+var testMovieFunctions = function(){
+
+	// We can create new instances of the movie
+	// new Movie(title, year, genres, ratings, poster, contentRating, duration, releaseDate)
+	var rougeOne = new Movie('Star Wars - Rouge One', 2016, ['Action', 'Adventure', 'Science Fiction'], [1, 3], '',  '11', 'PT133M');
+	var trainspotting2 = new Movie('T2 Trainspotting', 2017, ['Drama'], [1, 3, 7, 10], '',  'R', 'PT117M');
+	var theShack = new Movie('The Shack', 2017, ['Drama', 'Fantasy'], [1, 3, 7, 10, 9], '',  'PG-13', 'PT132M');
+
+	// and then open our browser console to view the
+	// output of the methods being called on the movie
+
+	rougeOne.setRating(7);
+	rougeOne.setRating(5);
+	rougeOne.setRating(8);
+	console.log(rougeOne.toString());
+	//console.log(rougeOne);
+	console.log(`Average rating for ${rougeOne.title}: ${rougeOne.getAverageRating()}`);
+};
+

@@ -112,28 +112,27 @@ var movieDatabase = (function(movies) {
 	/*-------------------------------------------------------------------------*/
 
 	/**
-	 * Returns an array with unique values
-	 * @param {Array} array - the array to process
-	 * @return {Array} array - 
-	 */	
-	var _getUniqueArray = function(array){
-		return array
-		.reduce(function(previousItem, currentItem){
-			//console.log(currentItem);
-			if (previousItem.indexOf(currentItem) < 0) previousItem.push(currentItem);
-			return previousItem;
-		}, []);
-	};
-
-	/**
 	 * Returns an array of movies filtered by a key
-	 * @param {String} key - the key to filter by
+	 * @param {String} key - the name of the key to filter by
+	 * @param {String} value - the value of the key
 	 * @return {Array} _movies - an array of movie objects
 	 */	
     var getMoviesByKey = function(key, value) {
     	return _movies
     	.filter(function(movie) {
     		return movie[key] === value;
+    	});
+    };
+
+	/**
+	 * Returns an array of movie property list
+	 * @param {String} key - the property to list
+	 * @return {Array} _movies - an array of movie objects
+	 */	
+    var getMoviesPropertyList = function(key) {
+    	return _movies
+    	.map(function(movie) {
+    		return movie[key];
     	});
     };
 
@@ -188,7 +187,8 @@ var movieDatabase = (function(movies) {
         getTopRatedMovie: getTopRatedMovie,
         getLeastRatedMovie: getLeastRatedMovie,
         getMoviesByKey: getMoviesByKey,
-        getMoviesByGenres: getMoviesByGenres
+        getMoviesByGenres: getMoviesByGenres,
+        getMoviesPropertyList: getMoviesPropertyList
     };
  
 })(movies=[]);
@@ -197,25 +197,29 @@ var movieDatabase = (function(movies) {
 							Usage examples
 --------------------------------------------------------------------------*/
 console.log('-----Usage examples-----');
-/*
-movieDatabase.addMovie(rougeOne);
-movieDatabase.addMovie(trainspotting2);
-movieDatabase.addMovie(theShack);
-//console.log(movieDatabase);
-var movieToEdit = movieDatabase.getMovies()[0];
-movieDatabase.rateMovie(movieToEdit, 10);
-//console.log(movieDatabase.getMovies());
-console.log('Movies in genre Adventure, Drama and Science Fiction');
-var moviesByGenres = movieDatabase.getMoviesByGenres(['Adventure', 'Drama', 'Science Fiction']);
-console.log(moviesByGenres);
-console.log('Movies in genre Drama');
-moviesByGenres = movieDatabase.getMoviesByGenres(['Drama']);
-console.log(moviesByGenres);
-console.log('Movies in genre Science Fiction');
-moviesByGenres = movieDatabase.getMoviesByGenres(['Science Fiction']);
-console.log(moviesByGenres);
-console.log('Movies from year 2017');
-console.log(movieDatabase.getMoviesByKey('year', 2017));
-console.log('Least rated Movie: ' + movieDatabase.getLeastRatedMovie().title + ' Rating: ' + movieDatabase.getLeastRatedMovie().averageRating);
-console.log('Top rated Movie: ' + movieDatabase.getTopRatedMovie().title + ' Rating: ' + movieDatabase.getTopRatedMovie().averageRating);
-*/
+
+/**
+ *
+ */
+var testDatabaseFunctions = function(movieDatabase){
+	movieDatabase.addMovie(rougeOne);
+	movieDatabase.addMovie(trainspotting2);
+	movieDatabase.addMovie(theShack);
+	//console.log(movieDatabase);
+	var movieToEdit = movieDatabase.getMovies()[0];
+	movieDatabase.rateMovie(movieToEdit, 10);
+	//console.log(movieDatabase.getMovies());
+	console.log('Movies in genre Adventure, Drama and Science Fiction');
+	var moviesByGenres = movieDatabase.getMoviesByGenres(['Adventure', 'Drama', 'Science Fiction']);
+	console.log(moviesByGenres);
+	console.log('Movies in genre Drama');
+	moviesByGenres = movieDatabase.getMoviesByGenres(['Drama']);
+	console.log(moviesByGenres);
+	console.log('Movies in genre Science Fiction');
+	moviesByGenres = movieDatabase.getMoviesByGenres(['Science Fiction']);
+	console.log(moviesByGenres);
+	console.log('Movies from year 2017');
+	console.log(movieDatabase.getMoviesByKey('year', 2017));
+	console.log('Least rated Movie: ' + movieDatabase.getLeastRatedMovie().title + ' Rating: ' + movieDatabase.getLeastRatedMovie().averageRating);
+	console.log('Top rated Movie: ' + movieDatabase.getTopRatedMovie().title + ' Rating: ' + movieDatabase.getTopRatedMovie().averageRating);
+};

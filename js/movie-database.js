@@ -1,8 +1,14 @@
 console.log('---Movie Database');
 console.log( '-----Revealing Module Pattern-----');
+/**
+ * ------------------------------------------------------------------------
+ *  	Revealing Module Pattern
+ *      functions and variables that begins with _ are private    
+ * ------------------------------------------------------------------------
+*/
 
 /**
- * Revealing Module Pattern
+ * Holds all data and has functions for filtering, adding and updating
  * 
  */
 var movieDatabase = (function(movies) {

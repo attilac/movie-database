@@ -1,5 +1,13 @@
 console.log('---Main---');
 
+/**
+ * ------------------------------------------------------------------------
+ *  	Functions dealing with to process data and appending to the DOM
+ *      Maybe these could be separated as Controller and View modules,
+ *      and the database can serve as Model. 
+ * ------------------------------------------------------------------------
+*/
+
 /*-------------------------------------------------------------------------
 					Data fetching and JSON parsing		
 --------------------------------------------------------------------------*/
@@ -110,6 +118,12 @@ var appendMovies = function(movies, target){
 	targetDiv.innerHTML = movieList;
 	addMovieBtnHandlers();
 	utils.columnConform('.movie-item h6');
+
+	// Some test junk. Remove Me
+	console.log('Least rated Movie: ' + movieDatabase.getLeastRatedMovie().title + ' Rating: ' + movieDatabase.getLeastRatedMovie().averageRating);
+	console.log('Top rated Movie: ' + movieDatabase.getTopRatedMovie().title + ' Rating: ' + movieDatabase.getTopRatedMovie().averageRating);
+	console.log('Movies from year 2017');
+	console.log(movieDatabase.getMoviesByKey('year', 2016));
 };
 
 /**
@@ -399,15 +413,16 @@ var testFunctions = function(movieDatabase){
  * ------------------------------------------------------------------------
 */
 
-getMoviesFromJSON('https://attilac.github.io/movie-database/js/json/top-rated-movies-01.json');
-//getMoviesFromJSON('/js/json/top-rated-movies-02.json');
-//getMoviesFromJSON('/js/json/top-rated-indian-movies-01.json');
-//getMoviesFromJSON('/js/json/top-rated-indian-movies-02.json');
-//getMoviesFromJSON('/js/json/movies-coming-soon.json');
-//getMoviesFromJSON('/js/json/movies-in-theaters.json');
+//getMoviesFromJSON('https://attilac.github.io/movie-database/js/json/top-rated-movies-01.json');
+getMoviesFromJSON('https://attilac.github.io/movie-database/js/json/top-rated-movies-02.json');
+//getMoviesFromJSON('https://attilac.github.io/movie-database/js/json/top-rated-indian-movies-01.json');
+//getMoviesFromJSON('https://attilac.github.io/movie-database/js/json/top-rated-indian-movies-02.json');
+//getMoviesFromJSON('https://attilac.github.io/movie-database/js/json/movies-coming-soon.json');
+//getMoviesFromJSON('https://attilac.github.io/movie-database/js/json/movies-in-theaters.json');
 
 var addMovieBtn = document.getElementById('addMovie');
 addMovieBtn.addEventListener('click', launchCreateMovieModal, false);
+
 
 
 

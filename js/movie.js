@@ -3,6 +3,13 @@ console.log('---Movie----');
 console.log('-----Revealing Prototype Pattern-----');
 
 /**
+ * ------------------------------------------------------------------------
+ *  	Revealing Prototype Pattern
+ *      functions and variables that begins with _ are private       
+ * ------------------------------------------------------------------------
+*/
+
+/**
  * Movie constructor - Revealing Prototype Pattern
  * @param {String} title - the title of the movie
  * @param {Number} year - the release year

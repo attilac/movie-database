@@ -8,7 +8,12 @@
     <link rel="stylesheet" href="css/main.css">
   </head>
   <body>
-
+  <nav class="navbar navbar-toggleable-sm navbar-inverse bg-inverse mb-3">
+    <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <a class="navbar-brand" href="index.html">Movie Database</a>
+  </nav>
   <!-- Modal -->
   <div id="movieFormModal" class="modal fade">
     <div class="modal-dialog" role="document">
@@ -29,7 +34,7 @@
               </div>
               <div class="row">
                 <div class="form-group col-sm-6">
-                  <label for="titleYear">Tiltle Year</label>
+                  <label for="titleYear">Titlle Year</label>
                   <input type="text" class="form-control" id="titleYear" required="">
                 </div>
                 <div class="form-group col-sm-6">
@@ -44,7 +49,7 @@
               <div class="form-group">
                 <label for="moviePoster">Poster</label>
                 <input type="url" class="form-control" id="moviePoster" aria-describedby="moviePosterHelp">
-                <small id="moviePosterHelp" class="form-text text-muted">Add filename to an image file.</small>
+                <small id="moviePosterHelp" class="form-text text-muted">Please add an url to a image file.</small>
               </div>
               <div class="form-group">
                 <label for="movieStoryline">Storyline</label>
@@ -59,17 +64,18 @@
     </div>
   </div>
   <!-- / Modal -->
-
+   <!--
   <header class="page-header my-5">
     <div class="container-fluid">
-      <h1 class="display-5">Movie Database</h1>
+      <h1 class="display-6">Movie Database</h1>
     </div>
   </header>
+  -->
   <div class="container-fluid">
   <a id="addMovie" class="btn btn-success mb-3" href="#">Add new Movie</a>
     <div class="card mb-3">
       <div class="card-block">
-      <h5 class="card-title mb-3 text-muted">Filter by</h5>
+      <!-- <h5 class="card-title mb-3 text-muted">Filter by</h5> -->
         <h6 class="card-title mb-3">Genre</h6>
         <div class="genre-buttons">
         </div>

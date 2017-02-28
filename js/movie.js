@@ -8,10 +8,16 @@ console.log('-----Revealing Prototype Pattern-----');
  * @param {Number} year - the release year
  * @param {Array} genres - an array(strings) of genre names
  * @param {Array} ratings - an array(wholenumbers 1-10) of ratings for the movie
- * @param {String} poster - url to the movie poster
+ * @param {String} poster - filename to poster image
  * @param {String} contentRating
  * @oaram {String} duration
  * @param {String} releaseDate
+ * @param {Number} averageRating
+ * @param {String} originalTitle
+ * @param {String} storyline
+ * @param {Array} actors
+ * @param {Number} imdbRating - rating from imdb 
+ * @param {String} posterurl - url to poster
  */
 var Movie = function (title, 
 						year, 

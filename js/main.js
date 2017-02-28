@@ -1,19 +1,8 @@
 console.log('---Main---');
 
-/**
- *
- */
-var formatDate = function(date) {
-    var d = new Date(date),
-        month = '' + (d.getMonth() + 1),
-        day = '' + d.getDate(),
-        year = d.getFullYear();
-
-    if (month.length < 2) month = '0' + month;
-    if (day.length < 2) day = '0' + day;
-
-    return [year, month, day].join('-');
-};
+/*-------------------------------------------------------------------------
+					Data fetching and JSON parsing		
+--------------------------------------------------------------------------*/
 
 /**
  * Fetch all movies from JSON file
@@ -37,8 +26,9 @@ var getMoviesFromJSON = function(dataUrl){
 };
 
 /**
- * Skapa en array med Movie objekt från en JSON-array och lägg till i movieDatabase
- * @param {array} arr - arrayen att parsa 
+ * Creates Movie objects from an array of JSON-data and adds to movieDatabase
+ * This is main 'database' that we manipulate and add new movies to
+ * @param {array} arr - the array to parse
  */
 var parseJSON = function(arr){
     for(var i = 0; i < arr.length; i++) {
@@ -63,6 +53,7 @@ var parseJSON = function(arr){
 
 /**
  * Callback for parseJSON
+ * Call the append function and get populate genre filters with values from database
  */
 var onJSONCallback = function(movieDatabase){
 	//testFunctions(movieDatabase);
@@ -70,6 +61,10 @@ var onJSONCallback = function(movieDatabase){
 	getGenreFilters(movieDatabase.getMovies());
 };
 
+
+/*-------------------------------------------------------------------------
+					DOM appending funcions	
+--------------------------------------------------------------------------*/
 /**
  * Append movies to DOM
  * @param {Array} movies
@@ -80,31 +75,90 @@ var appendMovies = function(movies, target){
 	//console.log(typeof(targetDiv));
 	var movieList = '<div class="row">';
 	movies.forEach(function(movie) {
+		var poster = movie.poster || '' ? 'img/' + movie.poster : 'http://placehold.it/340x500/95a5a6/95a5a6';
 		//console.log('titel: ' + movie.title + ' år: ' + movie.year);
-
-	  	movieList += 	`<div class="col-lg-2 col-sm-3" data-title="${movie.title}">
-	  						<div class="mb-3">
-			  					<div class="responsive-poster mb-2">
+	  	movieList += 	`<div class="col-lg-2 col-sm-3 col-6 movie-item" data-title="${movie.title}">
+	  						<div class="mb-5">
+			  					<div class="responsive-poster mb-3">
 									<div class="responsive-poster-item">
-										<img src="img/${movie.poster}" class="figure-img img-fluid" alt="">
+										<img src="${poster}" class="figure-img img-fluid" alt="">
 									</div>
+									<div class="btn-group movie-update"> 
+										<!-- <a href="#" class="btn btn-success btn-sm btn-rate-movie" data-title="${movie.title}">Rate</a> -->
+										<a href="#" class="btn btn-success btn-sm btn-edit-genres" data-title="${movie.title}">Edit Genres</a>
+									</div>										
 								</div>
 								<h6>${movie.title} <small>(${movie.year})</small></h6>
-								<p><small>${movie.averageRating} / 10</small></p>
-								<!--
-								<div class=""> 
-									<a href="#" class="btn btn-danger btn-sm btn-update mb-3" data-title="${movie.title}">Uppdatera</a>
-									<a href="#" class="btn btn-warning btn-sm btn-delete mb-3" data-title="${movie.title}">Ta bort</a>
+					                <div class="rating">
+					                  <div class="d-flex justify-content-end">
+					                    <div class="mr-auto">
+					                      <small>Rating</small>
+					                    </div
+				                      	<div>
+					                        <small><span class="text-yellow">${movie.averageRating}</span><span class="text-faded">/10</span>
+					                        </small>
+				                      	</div>
+	                                 <div class="progress">
+	  									<div class="progress-bar bg-yellow" style="width: ${movie.averageRating * 10}%" role="progressbar" aria-valuenow="${movie.averageRating * 10}" aria-valuemin="0" aria-valuemax="100"></div>
+									</div>
 								</div>
-								-->
 							</div>
 						</div>`;
 						
 	});
 	movieList += '</div>';
 	targetDiv.innerHTML = movieList;
-	//addMovieBtnHandlers();
+	addMovieBtnHandlers();
+	utils.columnConform('.movie-item h6');
 };
+
+/**
+ * ------------------------------------------------------------------------
+ * Event handling for movie editing buttons
+ * ------------------------------------------------------------------------
+*/
+
+/**
+ * Add eventhandlers for single edit movie buttons
+ */
+var addMovieBtnHandlers = function(){
+	//event.preventDefault();
+    Array.prototype.slice.call(document.getElementsByClassName('btn-rate-movie'))
+    .forEach(function(item) {
+		//console.log(item.dataset.title);
+		item.addEventListener('click', rateBtnClickHandler, false);
+    }); 	
+
+    Array.prototype.slice.call(document.getElementsByClassName('btn-edit-genres'))
+    .forEach(function(item) {
+		//console.log(item.dataset.title);
+		item.addEventListener('click', editGenreBtnClickHandler, false);
+    }); 
+};
+
+/**
+ * Event handler for rate buttons
+ */
+var rateBtnClickHandler = function(event){
+	event.preventDefault();
+	console.log(this.dataset.title);
+	console.log('function for add rating');
+};
+
+/**
+ * Event handler for edit genre buttons
+ */
+var editGenreBtnClickHandler = function(event){
+	event.preventDefault();	
+	console.log(this.dataset.title);
+	console.log('function for edit genres');
+};
+
+/**
+ * ------------------------------------------------------------------------
+ * Genre filter buttons
+ * ------------------------------------------------------------------------
+*/
 
 /**
  * Gets genres from database and populates buttons and checkboxes
@@ -134,13 +188,19 @@ var appendGenreFilterButtons = function(array, target, key){
     var buttonGroup = `<div class="filter-button-group" role="group" aria-label="filter-by-genre">`;
     array
     .forEach(function(item) {
-        buttonGroup += `<button type="button" value="${item}" class="btn btn-outline-primary mb-3 mr-3 ${key}-filter">${item}</button>`;
+        buttonGroup += `<button type="button" value="${item}" class="btn btn-outline-success mb-3 mr-3 ${key}-filter">${item}</button>`;
     });
     buttonGroup += `</div>`;
     //console.log(buttonGroup);
     document.getElementsByClassName(target)[0].innerHTML = buttonGroup;
     addFilterButtonEventListeners(`${key}-filter`, filterBtnOnClick);
 };
+
+/**
+ * ------------------------------------------------------------------------
+ * Event handlers for genre filter buttons
+ * ------------------------------------------------------------------------
+*/
 
 /**
  * Adds eventlisteners to buttons
@@ -180,6 +240,13 @@ var filterBtnOnClick = function(event){
  		appendMovies(utils.sortObjectsByKey(movieDatabase.getMovies(), 'title'), 'movieContainer');   	
     }
 };
+
+
+/**
+ * ------------------------------------------------------------------------
+ * Form handling
+ * ------------------------------------------------------------------------
+*/
 
 /**
  * Get input fields values
@@ -262,6 +329,13 @@ var submitMovieValues = function(event) {
 	hideModal();
 };
 
+
+/**
+ * ------------------------------------------------------------------------
+ *  Modal functions
+ * ------------------------------------------------------------------------
+*/
+
 /**
  * Event handler for #addMovieBtn
  *
@@ -290,6 +364,12 @@ $('#movieFormModal').on('hidden.bs.modal', function (e) {
 });
 
 /**
+ * ------------------------------------------------------------------------
+ * Some junk test functions
+ * ------------------------------------------------------------------------
+*/
+
+/**
  *
  */
 var testFunctions = function(movieDatabase){
@@ -299,7 +379,7 @@ var testFunctions = function(movieDatabase){
   	
   	// date functions	
 	var releaseDate = movieDatabase.getMovies()[0].releaseDate;
-	console.log(formatDate(new Date(releaseDate)));
+	console.log(utils.formatDate(new Date(releaseDate)));
 	//console.log(new Date(releaseDate).getFullYear());
 	var titleYearDate = new Date(movieDatabase.getMovies()[0].year);
 	var titleYear = titleYearDate.getFullYear();
@@ -312,6 +392,12 @@ var testFunctions = function(movieDatabase){
 	console.log(utils.sortArray(movieDatabase.getMoviesPropertyList('title')));
 
 };
+
+/**
+ * ------------------------------------------------------------------------
+ * Init
+ * ------------------------------------------------------------------------
+*/
 
 getMoviesFromJSON('/js/json/top-rated-movies-01.json');
 //getMoviesFromJSON('/js/json/top-rated-movies-02.json');

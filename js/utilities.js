@@ -1,6 +1,10 @@
 console.log('---Utilities');
 console.log( '-----Revealing Module Pattern-----');
 
+/*-------------------------------------------------------------------------
+			Helper functions					
+--------------------------------------------------------------------------*/
+
 /**
  * Revealing Module Pattern
  * 
@@ -95,13 +99,76 @@ var utils = (function(movies) {
 			return previous.concat(current);
 		}, []);		
 	};
+
+	/**
+	 *
+	 */
+	var formatDate = function(date) {
+	    var d = new Date(date),
+	        month = '' + (d.getMonth() + 1),
+	        day = '' + d.getDate(),
+	        year = d.getFullYear();
+
+	    if (month.length < 2) month = '0' + month;
+	    if (day.length < 2) day = '0' + day;
+
+	    return [year, month, day].join('-');
+	};
+
+	/**
+	* @description Sets divs on the same row to be the same height
+	* 
+	*/	
+	var columnConform = function(target){
+		var $elements = $(target); 
+		 // first remove originalHeight data and reset height 
+		$elements.removeData('originalHeight').height('auto'); 
+		var currentTallest = 0;
+		var currentRowStart = 0;
+		var row = [];
+		var col;
+		var topPosition = 0;	
+	
+	 	// find the tallest DIV in the row, and set the heights of all of the DIVs to match it.
+ 		$(target).each(function(index) {
+			col = $(this);
+			topPosition = Math.round(col.offset().top);
+			//col.append(topPosition);		
+			if(currentRowStart != topPosition) {	
+				// we just came to a new row.  Set all the heights on the completed row
+				for (var i = 0; i < row.length; i++) {
+   					row[i].height(currentTallest);
+ 				}
+				// set the variables for the new row
+				row = []; // empty the array
+				currentRowStart = topPosition;
+				currentTallest = col.height();
+ 				row.push(col);
+			} else {
+				//col.append(topPosition);
+				// another div on the current row.  Add it to the list and check if it's taller
+				row.push(col);
+				//currentTallest = (currentTallest < col.height()) ? (col.height()) : (currentTallest);
+				currentTallest = Math.max(currentTallest, col.height());
+			}			
+			// do the last row
+			for (var j = 0; j < row.length; j++) {
+				row[j].height(currentTallest);
+				//col.append(currentTallest);
+			}	
+			//col.append(currentTallest);			
+		});
+	};
+
     // Reveal public pointers to
     // private functions and properties
     return {
         sortObjectsByKey: sortObjectsByKey,
         sortArray: sortArray,
         getUniqueArray: getUniqueArray,
-        getConcatArray: getConcatArray
+        getConcatArray: getConcatArray,
+        columnConform: columnConform,
+        formatDate: formatDate
     };
  
 })();

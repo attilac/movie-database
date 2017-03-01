@@ -25,41 +25,42 @@
           </button>
         </div>
         <div class="modal-body">
-        <div class="container-fluid">
-          <div id="movieForm">
-            <form>
-              <div class="form-group">
-                <label for="movieTitle">Title</label>
-                <input type="text" class="form-control" id="movieTitle" required="">
-              </div>
-              <div class="row">
-                <div class="form-group col-sm-6">
-                  <label for="titleYear">Titlle Year</label>
-                  <input type="text" class="form-control" id="titleYear" required="">
+          <div class="container-fluid">
+            <div id="movieForm">
+              <form>
+              <div class="form-group group-movie-add">
+                  <label for="movieTitle">Title</label>
+                  <input type="text" class="form-control" id="movieTitle" required="">
                 </div>
-                <div class="form-group col-sm-6">
-                  <label for="releaseDate">Release Date</label>
-                  <input type="date" class="form-control" id="releaseDate">
+                <div class="row group-movie-add">
+                  <div class="form-group col-sm-6">
+                    <label for="titleYear">Title Year</label>
+                    <input type="text" class="form-control" id="titleYear" required="">
+                  </div>
+                  <div class="form-group col-sm-6 group-movie-add">
+                    <label for="releaseDate">Release Date</label>
+                    <input type="date" class="form-control" id="releaseDate">
+                  </div>
                 </div>
-               </div>
-              <div class="form-group">
-                <label>Genres</label>
-                <div id="genreCheckboxes"></div>
-              </div>
-              <div class="form-group">
-                <label for="moviePoster">Poster</label>
-                <input type="url" class="form-control" id="moviePoster" aria-describedby="moviePosterHelp">
-                <small id="moviePosterHelp" class="form-text text-muted">Please add an url to a image file.</small>
-              </div>
-              <div class="form-group">
-                <label for="movieStoryline">Storyline</label>
-                <textarea class="form-control" id="movieStoryline" rows="5"></textarea>
-              </div>
-              <button id="movieFormSubmit" type="submit" class="btn btn-primary">Add Movie</button>
-            </form>
+                <div class="form-group">
+                  <label>Genres</label>
+                  <div id="genreCheckboxes"></div>
+                </div>
+                <div class="form-group group-movie-add">
+                  <label for="moviePoster">Poster</label>
+                  <input type="url" class="form-control" id="moviePoster" aria-describedby="moviePosterHelp">
+                  <small id="moviePosterHelp" class="form-text text-muted">Please add an url to a image file.</small>
+                </div>
+                <div class="form-group group-movie-add">
+                  <label for="movieStoryline">Storyline</label>
+                  <textarea class="form-control" id="movieStoryline" rows="5"></textarea>
+                </div>
+                <input id="currentMovieTitle" type="hidden" value="">
+                <button id="movieFormSubmit" type="submit" class="btn btn-primary">Add Movie</button>
+              </form>
+            </div>
           </div>
         </div>
-      </div>
       </div>
     </div>
   </div>
@@ -83,13 +84,13 @@
     </div>
   </div>
 
-  <section>
+  <section class="app">
     <div class="container-fluid">
-      <div class="card mb-3 py-3">
+      <div class="card mb-3 pb-3">
         <div class="card-block">
-      <div id="movieContainer" class="content">
-      </div>
-      </div>
+          <div id="movieContainer" class="content">
+          </div>
+        </div>
       </div>
     </div>
   </section>

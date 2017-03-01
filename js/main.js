@@ -80,8 +80,13 @@ var onJSONCallback = function(movieDatabase){
  */
 var appendMovies = function(movies, target){
 	var targetDiv = document.getElementById(target);	
+	let total = movieDatabase.getMovies().length;
+	let currentTotal = movies.length;
 	//console.log(typeof(targetDiv));
-	var movieList = '<div class="row">';
+	var movieList = `<div class="info-strip mb-3">
+						<small class="text-muted">Displaying ${currentTotal} of ${total} movies</small>
+						</div>
+						<div class="row">`;
 	movies.forEach(function(movie) {
 		var poster = movie.poster || '' ? 'img/' + movie.poster : 'http://placehold.it/340x500/95a5a6/95a5a6';
 		//console.log('titel: ' + movie.title + ' år: ' + movie.year);
@@ -120,10 +125,12 @@ var appendMovies = function(movies, target){
 	utils.columnConform('.movie-item h6');
 
 	// Some test junk. Remove Me
+	/*
 	console.log('Least rated Movie: ' + movieDatabase.getLeastRatedMovie().title + ' Rating: ' + movieDatabase.getLeastRatedMovie().averageRating);
 	console.log('Top rated Movie: ' + movieDatabase.getTopRatedMovie().title + ' Rating: ' + movieDatabase.getTopRatedMovie().averageRating);
 	console.log('Movies from year 2017');
 	console.log(movieDatabase.getMoviesByKey('year', 2016));
+	*/
 };
 
 /**
@@ -156,7 +163,7 @@ var addMovieBtnHandlers = function(){
 var rateBtnClickHandler = function(event){
 	event.preventDefault();
 	console.log(this.dataset.title);
-	console.log('function for add rating');
+	console.log('function for adding rating');
 };
 
 /**
@@ -164,8 +171,9 @@ var rateBtnClickHandler = function(event){
  */
 var editGenreBtnClickHandler = function(event){
 	event.preventDefault();	
-	console.log(this.dataset.title);
-	console.log('function for edit genres');
+	launchUpdateMovieModal(movieDatabase.getMoviesByKey('title', this.dataset.title)[0]);
+	//console.log(this.dataset.title);
+	console.log(`function for editing the genres of ${this.dataset.title}`);
 };
 
 /**
@@ -181,11 +189,6 @@ var getGenreFilters = function() {
 	// Get genres from database 
 	var moviePropertyGenres = movieDatabase.getMoviesPropertyList('genres');
 	var genres = utils.sortArray(utils.getUniqueArray(utils.getConcatArray(moviePropertyGenres)));
-
-	// Populate checkboxes with genres
-	var genreCheckboxes = document.getElementById('genreCheckboxes');
-	genreCheckboxes.innerHTML = populateGenreCheckboxes(genres);
-	//console.log(utils.sortArray(utils.getUniqueArray(utils.getConcatArray(genres))));
 
 	// Populate buttons with genres
 	appendGenreFilterButtons(genres, 'genre-buttons', 'genre');
@@ -266,8 +269,7 @@ var filterBtnOnClick = function(event){
  * Get input fields values
  * @return {Object} movie - a Movie object
  */
-var getFormInputValues = function(){
-
+var getAddFormVals = function(){
 	// get input values from form
 	var title = ($('#movieTitle').val() || '' ? $('#movieTitle').val() : 'Titel');
 	var year = ($('#titleYear').val() || '' ? $('#titleYear').val() : '');
@@ -282,6 +284,17 @@ var getFormInputValues = function(){
 	var movie = new Movie(title, year, selectedGenres, [], poster,  '', '', '', 0, '', storyline, [], 0, '');
 	//console.log(movie);	
 	return movie;			
+};	
+
+/**
+ *
+ * 
+ */
+var getUpdateFormVals = function(){
+	// get array of checked checkboxes
+	var selectedGenres = getCheckedInputValues();
+	console.log(selectedGenres);
+				
 };						
 
 /**
@@ -306,7 +319,7 @@ var getCheckedInputValues = function(){
  * @param {Array} genres - an array with values for the checkboxes
  * @return {String} checkboxes - a HTML string with checkboxes
  */
-var populateGenreCheckboxes = function(genres){
+var populateGenreCheckboxes = function(genres, selectedGenres){
 	//console.log(genres);
 	var checkboxes = '';
 	genres
@@ -321,26 +334,108 @@ var populateGenreCheckboxes = function(genres){
 };
 
 /**
+ * Get the genres for the current movie
+ *
+ */
+var getGenresForCurrentMovie = function(genres){
+	// Populate checkboxes with genres
+	document.getElementById('genreCheckboxes').innerHTML = populateGenreCheckboxes(genres);
+};
+
+/**
+ * Get the genres for all movies
+ *
+ */
+var getGenresForMovies = function(){
+	// Get genres from database 
+	var moviePropertyGenres = movieDatabase.getMoviesPropertyList('genres');
+	var genres = utils.sortArray(utils.getUniqueArray(utils.getConcatArray(moviePropertyGenres)));
+
+	// Populate checkboxes with genres
+	var genreCheckboxes = document.getElementById('genreCheckboxes');
+	genreCheckboxes.innerHTML = populateGenreCheckboxes(genres);
+};
+
+/**
+ * Checkes selected checkboxes
+ * @param {Array} genres - the values to check
+ */
+var checkSelectedGenres = function(genres){
+	var checkboxes = Array.prototype.slice.call(document.getElementsByTagName('input'));
+	// iterate over checkboxes
+	checkboxes.filter(function(checkbox) { 
+	    	// iterate over genres array
+	    	genres.map(function(genre) {
+	            if (checkbox.value.indexOf(genre) >= 0) {
+	            	console.log(genre);
+	                checkbox.checked = true; // if match check checkbox
+	            }
+	    	});
+	    });   
+};
+
+/**
  * Clears form input values
  */
 var clearFormInputs = function() {
 	$('#movieFormModal').find('input, textarea').val('');
 	var submitBtn = document.getElementById('movieFormSubmit');
-	submitBtn.removeEventListener('click', submitMovieValues, false);
+	submitBtn.removeEventListener('click', submitAddNewForm, false);
+	submitBtn.removeEventListener('click', submitUpdateForm, false);
 };
 
 /**
  * Event handler for submitbutton in add new movie-form
  * 
  */
-var submitMovieValues = function(event) {
+var submitAddNewForm = function(event) {
 	event.preventDefault();
-	var postData = getFormInputValues();
-	console.log('Posting album to API..');
+	var postData = getAddFormVals();
+	console.log('Posting movie to MovieDatabase');
 	console.log(postData);
 	movieDatabase.addMovie(postData);
 	appendMovies(utils.sortObjectsByKey(movieDatabase.getMovies(), 'title'), 'movieContainer');
 	hideModal();
+};
+
+/**
+ * Event handler for submitbutton in update movie-form
+ * 
+ */
+var submitUpdateForm = function(event) {
+	event.preventDefault();
+	//console.log(this.dataset.title);
+	var postData = getUpdateFormVals();
+	console.log('Updating movie in MovieDatabase');
+	console.log(postData);
+	//movieDatabase.addMovie(postData);
+	hideModal();
+};
+
+/**
+ * 
+ */
+var initUpdateForm = function(movie){
+ 	$('.group-movie-add').hide();
+ 	$('.modal-title').html('Update Genres for ' + movie.title);
+ 	getGenresForMovies();
+ 	checkSelectedGenres(movie.getGenres());
+	//getGenresForCurrentMovie(movie.getGenres());
+	var submitBtn = document.getElementById('movieFormSubmit');
+	submitBtn.innerHTML = submitBtn.value = 'Update Movie Genres';
+	submitBtn.addEventListener('click', submitUpdateForm, false);
+};
+
+/**
+ * 
+ */
+var initAddNewForm = function(){
+	$('.modal-title').html('Add new Movie');
+	$('.group-movie-add').show();
+	getGenresForMovies();
+	var submitBtn = document.getElementById('movieFormSubmit');
+	submitBtn.innerHTML = submitBtn.value = 'Add new Movie';
+	submitBtn.addEventListener('click', submitAddNewForm, false);
 };
 
 
@@ -352,14 +447,22 @@ var submitMovieValues = function(event) {
 
 /**
  * Event handler for #addMovieBtn
- *
+ * Launch and init modal with 'add new' form
  */
 var launchCreateMovieModal = function(event){
 	event.preventDefault();
-	var submitBtn = document.getElementById('movieFormSubmit');
-	submitBtn.addEventListener('click', submitMovieValues, false);
+	initAddNewForm();
 	$('#movieFormModal').modal();
 
+};
+
+/**
+ * Launch and init modal with 'update' form
+ *
+ */
+var launchUpdateMovieModal = function(movie){
+	initUpdateForm(movie);
+	$('#movieFormModal').modal();
 };
 
 /**

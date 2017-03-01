@@ -92,6 +92,13 @@ Movie.prototype = function(){
 	};
 
 	/**
+	 * Returns the movies genres
+	 */		
+	var getGenres = function(){
+		return this.genres;	
+	};
+
+	/**
 	 * Returns the computed average rating
 	 */		
 	var getAverageRating = function(){
@@ -130,6 +137,7 @@ Movie.prototype = function(){
 	return {
 		toString: toString,
 		setRating: setRating,
+		getGenres: getGenres,
 		getAverageRating: getAverageRating,
 		init: init
     };
@@ -161,4 +169,4 @@ var testMovieFunctions = function(){
 	//console.log(rougeOne);
 	console.log(`Average rating for ${rougeOne.title}: ${rougeOne.getAverageRating()}`);
 };
-
+//testMovieFunctions();

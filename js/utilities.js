@@ -1,3 +1,4 @@
+/*jshint esversion: 6 */
 console.log('---Utilities');
 console.log( '-----Revealing Module Pattern-----');
 
@@ -26,12 +27,12 @@ var utils = (function(movies) {
 	 * @param {String} key - the property to sort by
 	 * @return {Array} array - the sorted array
 	 */
-	var sortObjectsByKey = function(array, key, sortOrder='asc'){
+	var sortObjectsByKey = function(array, key, sortOrder='ASC'){
 		return array
 		.sort(function (a, b) {
 			//console.log(isNaN(a[key]));
 			if(_isNumber(a[key])){
-				if(sortOrder && sortOrder === 'desc'){
+				if(sortOrder && sortOrder === 'DESC'){
 					return b[key] - a[key];
 				}else{
 					return a[key] - b[key];

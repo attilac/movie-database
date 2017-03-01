@@ -1,3 +1,4 @@
+/*jshint esversion: 6 */
 console.log('---Main---');
 
 /**
@@ -14,7 +15,7 @@ console.log('---Main---');
 
 /**
  * Fetch all movies from JSON file
- * 
+ * @param {String} dataurl - the url to the JSON file
  */
 var getMoviesFromJSON = function(dataUrl){
 	fetch(dataUrl)
@@ -53,7 +54,8 @@ var parseJSON = function(arr){
 				arr[i].storyline,
 				arr[i].actors,
 				arr[i].imdbRating,
-				arr[i].posterurl);
+				arr[i].posterurl,
+				'mov-' + [i]);
 		movieDatabase.addMovie(movie);
     }
  	onJSONCallback(movieDatabase);
@@ -65,7 +67,9 @@ var parseJSON = function(arr){
  */
 var onJSONCallback = function(movieDatabase){
 	//testFunctions(movieDatabase);
-	appendMovies(utils.sortObjectsByKey(movieDatabase.getMovies(), 'averageRating', 'desc'), 'movieContainer');
+	movieDatabase.setSortOrder('DESC');
+	movieDatabase.setSortBy('averageRating');
+	appendMovies(utils.sortObjectsByKey(movieDatabase.getMovies(), movieDatabase.sortBy, movieDatabase.sortOrder), 'movieContainer');
 	getGenreFilters(movieDatabase.getMovies());
 };
 
@@ -90,15 +94,15 @@ var appendMovies = function(movies, target){
 	movies.forEach(function(movie) {
 		var poster = movie.poster || '' ? 'img/' + movie.poster : 'http://placehold.it/340x500/95a5a6/95a5a6';
 		//console.log('titel: ' + movie.title + ' år: ' + movie.year);
-	  	movieList += 	`<div class="col-lg-2 col-sm-3 col-6 movie-item" data-title="${movie.title}">
+	  	movieList += 	`<div class="col-lg-2 col-sm-3 col-6 movie-item" data-id="${movie.id}">
 	  						<div class="mb-5">
 			  					<div class="responsive-poster mb-3">
 									<div class="responsive-poster-item">
 										<img src="${poster}" class="figure-img img-fluid" alt="">
 									</div>
 									<div class="btn-group movie-update"> 
-										<!-- <a href="#" class="btn btn-success btn-sm btn-rate-movie" data-title="${movie.title}">Rate</a> -->
-										<a href="#" class="btn btn-success btn-sm btn-edit-genres" data-title="${movie.title}">Edit Genres</a>
+										<!-- <a href="#" class="btn btn-success btn-sm btn-rate-movie" data-id="${movie.id}">Rate</a> -->
+										<a href="#" class="btn btn-success btn-sm btn-edit-genres" data-id="${movie.id}">Edit Genres</a>
 									</div>										
 								</div>
 								<h6>${movie.title} <small>(${movie.year})</small></h6>
@@ -162,7 +166,7 @@ var addMovieBtnHandlers = function(){
  */
 var rateBtnClickHandler = function(event){
 	event.preventDefault();
-	console.log(this.dataset.title);
+	console.log(this.dataset.id);
 	console.log('function for adding rating');
 };
 
@@ -171,9 +175,9 @@ var rateBtnClickHandler = function(event){
  */
 var editGenreBtnClickHandler = function(event){
 	event.preventDefault();	
-	launchUpdateMovieModal(movieDatabase.getMoviesByKey('title', this.dataset.title)[0]);
-	//console.log(this.dataset.title);
-	//console.log(`function for editing the genres of ${this.dataset.title}`);
+	launchUpdateMovieModal(movieDatabase.getMoviesByKey('id', this.dataset.id)[0]);
+	//console.log(this.dataset.id);
+	//console.log(`function for editing the genres of ${this.dataset.id}`);
 };
 
 /**
@@ -252,9 +256,9 @@ var filterBtnOnClick = function(event){
     }); 
     //console.log(activeList);
     if(activeList.length > 0){
-    	appendMovies(utils.sortObjectsByKey(movieDatabase.getMoviesByGenres(activeList), 'averageRating', 'desc'), 'movieContainer');
+    	appendMovies(utils.sortObjectsByKey(movieDatabase.getMoviesByGenres(activeList), movieDatabase.sortBy, movieDatabase.sortOrder), 'movieContainer');
     } else {
- 		appendMovies(utils.sortObjectsByKey(movieDatabase.getMovies(), 'averageRating', 'desc'), 'movieContainer');   	
+ 		appendMovies(utils.sortObjectsByKey(movieDatabase.getMovies(), movieDatabase.sortBy, movieDatabase.sortOrder), 'movieContainer');   	
     }
 };
 
@@ -291,7 +295,7 @@ var getAddFormVals = function(){
  * 
  */
 var getUpdateFormVals = function(){
-	return {'selectedGenres': getCheckedInputValues(), 'movieTitle': $('#currentMovieTitle').val() };		
+	return {'selectedGenres': getCheckedInputValues(), 'movieID': $('#currentMovieID').val() };		
 };						
 
 /**
@@ -391,7 +395,7 @@ var submitAddNewForm = function(event) {
 	console.log('Posting movie to MovieDatabase');
 	console.log(postData);
 	movieDatabase.addMovie(postData);
-	appendMovies(utils.sortObjectsByKey(movieDatabase.getMovies(), 'averageRating', 'desc'), 'movieContainer');
+	appendMovies(utils.sortObjectsByKey(movieDatabase.getMovies(), movieDatabase.sortBy, movieDatabase.sortOrder), 'movieContainer');
 	hideModal();
 };
 
@@ -401,11 +405,11 @@ var submitAddNewForm = function(event) {
  */
 var submitUpdateForm = function(event) {
 	event.preventDefault();
-	//console.log(this.dataset.title);
+	//console.log(this.dataset.id);
 	var postData = getUpdateFormVals();
 	console.log('Updating movie in MovieDatabase');
-	//console.log(postData.movieTitle);
-	movieDatabase.getMoviesByKey('title', postData.movieTitle)[0].genres = postData.selectedGenres;
+	//console.log(postData.movieID);
+	movieDatabase.getMoviesByKey('id', postData.movieID)[0].genres = postData.selectedGenres;
 	hideModal();
 };
 
@@ -419,8 +423,8 @@ var initUpdateForm = function(movie){
  	checkSelectedGenres(movie.getGenres());
 	//getGenresForCurrentMovie(movie.getGenres());
 	//console.log(movie.title);
-	$('#currentMovieTitle').val(movie.title);
-	//console.log($('#currentMovieTitle').val());
+	$('#currentMovieID').val(movie.id);
+	//console.log($('#currentMovieID').val());
 	var submitBtn = document.getElementById('movieFormSubmit');
 	submitBtn.innerHTML = submitBtn.value = 'Update Movie Genres';
 	submitBtn.addEventListener('click', submitUpdateForm, false);

@@ -1,3 +1,4 @@
+/*jshint esversion: 6 */
 console.log('---Movie Database');
 console.log( '-----Revealing Module Pattern-----');
 /**
@@ -14,6 +15,9 @@ console.log( '-----Revealing Module Pattern-----');
 var movieDatabase = (function(movies) {
  	// our array of movies - private variable	
     var _movies = movies;
+    var currentMovie = 0;
+    var sortOrder = 'DESC';
+    var sortBy = 'averageRating';
 
 	/**
 	 * Gets the _movie array
@@ -38,6 +42,22 @@ var movieDatabase = (function(movies) {
     var addMovie = function(movie) {
     	//console.log(movie);
     	_movies.push(movie);
+    };
+
+	/**
+	 * 
+	 * @param {String}
+	 */
+    var setSortOrder = function(value) {
+    	this.sortOrder = value;
+    };
+
+	/**
+	 * 
+	 * @param {String}
+	 */
+    var setSortBy = function(property) {
+    	this.sortBy = property;
     };
 
 	/**
@@ -150,14 +170,16 @@ var movieDatabase = (function(movies) {
     };
 
 	/**
-	 * 
+	 * Gets the highest rated movie
+	 * @return {Object} - a Movie object
 	 */	
     var getTopRatedMovie = function() {
     	return _getObjectByPropertyMax('averageRating');
     };
 
 	/**
-	 * 
+	 * Gets the least rated movie
+	 * @return {Object} - a Movie object
 	 */	
     var getLeastRatedMovie = function() {
     	return _getObjectByPropertyMin('averageRating', _movies);
@@ -194,7 +216,12 @@ var movieDatabase = (function(movies) {
         getLeastRatedMovie: getLeastRatedMovie,
         getMoviesByKey: getMoviesByKey,
         getMoviesByGenres: getMoviesByGenres,
-        getMoviesPropertyList: getMoviesPropertyList
+        getMoviesPropertyList: getMoviesPropertyList,
+        currentMovie: currentMovie,
+        sortOrder: sortOrder,
+        sortBy: sortBy,
+        setSortOrder: setSortOrder,
+        setSortBy: setSortBy
     };
  
 })(movies=[]);

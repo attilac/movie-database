@@ -39,7 +39,8 @@ var Movie = function (title,
 						storyline,
 						actors,
 						imdbRating,
-						posterurl) {
+						posterurl,
+						id) {
 	this.title = title;
 	this.year = year;
 	this.contentRating = contentRating;
@@ -54,6 +55,7 @@ var Movie = function (title,
 	this.actors = actors;
 	this.imdbRating = imdbRating;
 	this.posterurl = posterurl;
+	this.id = id;
 	this.init();
 };
 
@@ -76,7 +78,7 @@ Movie.prototype = function(){
 	};
 
 	/**
-	 * 
+	 * Prints a string with movie details
 	 */	
 	var toString = function(){
 		return `Movie: ${this.title}, Year: ${this.year}, Genres: ${this.genres}`;
@@ -84,6 +86,13 @@ Movie.prototype = function(){
 
 	/**
 	 * 
+	 */
+	var getTheID = function(){
+		return this.id;
+	};
+
+	/**
+	 * Adds rating to to the ratings array and calculates the average rating
 	 */		
 	var setRating = function(rating){
 		this.ratings.push(rating);
@@ -93,6 +102,7 @@ Movie.prototype = function(){
 
 	/**
 	 * Returns the movies genres
+	 * @return {Array} genres - the genres attached to the movie
 	 */		
 	var getGenres = function(){
 		return this.genres;	
@@ -100,6 +110,7 @@ Movie.prototype = function(){
 
 	/**
 	 * Returns the computed average rating
+	 * @return {Number} averageRating - the computed average rating
 	 */		
 	var getAverageRating = function(){
 		return this.averageRating;	
@@ -116,7 +127,7 @@ Movie.prototype = function(){
 	};
 
 	/**
-	 * 
+	 * Divides  x with y
 	 */		
 	var _getAverage = function(x, y){
 		return x/y;
@@ -125,6 +136,7 @@ Movie.prototype = function(){
 	/**
 	 * Returns the sum of an array
 	 * @param {Array} array - the array to process
+	 * @return {Array} the processed array
 	 */		
 	var _getArraySum = function(array){
 		return array
@@ -136,6 +148,7 @@ Movie.prototype = function(){
 	// Public pointers to functions
 	return {
 		toString: toString,
+		getTheID: getTheID,
 		setRating: setRating,
 		getGenres: getGenres,
 		getAverageRating: getAverageRating,

@@ -17,7 +17,7 @@ console.log('-----Revealing Prototype Pattern-----');
  * @param {Array} ratings - an array(wholenumbers 1-10) of ratings for the movie
  * @param {String} poster - filename to poster image
  * @param {String} contentRating
- * @oaram {String} duration
+ * @param {String} duration
  * @param {String} releaseDate
  * @param {Number} averageRating
  * @param {String} originalTitle

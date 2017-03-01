@@ -65,7 +65,7 @@ var parseJSON = function(arr){
  */
 var onJSONCallback = function(movieDatabase){
 	//testFunctions(movieDatabase);
-	appendMovies(utils.sortObjectsByKey(movieDatabase.getMovies(), 'title'), 'movieContainer');
+	appendMovies(utils.sortObjectsByKey(movieDatabase.getMovies(), 'averageRating', 'desc'), 'movieContainer');
 	getGenreFilters(movieDatabase.getMovies());
 };
 
@@ -173,7 +173,7 @@ var editGenreBtnClickHandler = function(event){
 	event.preventDefault();	
 	launchUpdateMovieModal(movieDatabase.getMoviesByKey('title', this.dataset.title)[0]);
 	//console.log(this.dataset.title);
-	console.log(`function for editing the genres of ${this.dataset.title}`);
+	//console.log(`function for editing the genres of ${this.dataset.title}`);
 };
 
 /**
@@ -252,9 +252,9 @@ var filterBtnOnClick = function(event){
     }); 
     //console.log(activeList);
     if(activeList.length > 0){
-    	appendMovies(utils.sortObjectsByKey(movieDatabase.getMoviesByGenres(activeList), 'title'), 'movieContainer');
+    	appendMovies(utils.sortObjectsByKey(movieDatabase.getMoviesByGenres(activeList), 'averageRating', 'desc'), 'movieContainer');
     } else {
- 		appendMovies(utils.sortObjectsByKey(movieDatabase.getMovies(), 'title'), 'movieContainer');   	
+ 		appendMovies(utils.sortObjectsByKey(movieDatabase.getMovies(), 'averageRating', 'desc'), 'movieContainer');   	
     }
 };
 
@@ -291,10 +291,7 @@ var getAddFormVals = function(){
  * 
  */
 var getUpdateFormVals = function(){
-	// get array of checked checkboxes
-	var selectedGenres = getCheckedInputValues();
-	console.log(selectedGenres);
-				
+	return {'selectedGenres': getCheckedInputValues(), 'movieTitle': $('#currentMovieTitle').val() };		
 };						
 
 /**
@@ -367,7 +364,7 @@ var checkSelectedGenres = function(genres){
 	    	// iterate over genres array
 	    	genres.map(function(genre) {
 	            if (checkbox.value.indexOf(genre) >= 0) {
-	            	console.log(genre);
+	            	//console.log(genre);
 	                checkbox.checked = true; // if match check checkbox
 	            }
 	    	});
@@ -394,7 +391,7 @@ var submitAddNewForm = function(event) {
 	console.log('Posting movie to MovieDatabase');
 	console.log(postData);
 	movieDatabase.addMovie(postData);
-	appendMovies(utils.sortObjectsByKey(movieDatabase.getMovies(), 'title'), 'movieContainer');
+	appendMovies(utils.sortObjectsByKey(movieDatabase.getMovies(), 'averageRating', 'desc'), 'movieContainer');
 	hideModal();
 };
 
@@ -407,8 +404,8 @@ var submitUpdateForm = function(event) {
 	//console.log(this.dataset.title);
 	var postData = getUpdateFormVals();
 	console.log('Updating movie in MovieDatabase');
-	console.log(postData);
-	//movieDatabase.addMovie(postData);
+	//console.log(postData.movieTitle);
+	movieDatabase.getMoviesByKey('title', postData.movieTitle)[0].genres = postData.selectedGenres;
 	hideModal();
 };
 
@@ -421,6 +418,9 @@ var initUpdateForm = function(movie){
  	getGenresForMovies();
  	checkSelectedGenres(movie.getGenres());
 	//getGenresForCurrentMovie(movie.getGenres());
+	//console.log(movie.title);
+	$('#currentMovieTitle').val(movie.title);
+	//console.log($('#currentMovieTitle').val());
 	var submitBtn = document.getElementById('movieFormSubmit');
 	submitBtn.innerHTML = submitBtn.value = 'Update Movie Genres';
 	submitBtn.addEventListener('click', submitUpdateForm, false);

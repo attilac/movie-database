@@ -26,12 +26,16 @@ var utils = (function(movies) {
 	 * @param {String} key - the property to sort by
 	 * @return {Array} array - the sorted array
 	 */
-	var sortObjectsByKey = function(array, key){
+	var sortObjectsByKey = function(array, key, sortOrder='asc'){
 		return array
 		.sort(function (a, b) {
 			//console.log(isNaN(a[key]));
 			if(_isNumber(a[key])){
-				return a[key] - b[key];
+				if(sortOrder && sortOrder === 'desc'){
+					return b[key] - a[key];
+				}else{
+					return a[key] - b[key];
+				}
 			}else{
 				var keyA = a[key].toUpperCase(); // ignore upper and lowercase
 				var keyB = b[key].toUpperCase(); // ignore upper and lowercase

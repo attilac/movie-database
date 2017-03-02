@@ -15,9 +15,14 @@ console.log( '-----Revealing Module Pattern-----');
 var movieDatabase = (function(movies) {
  	// our array of movies - private variable	
     var _movies = movies;
+    // track selected movie
     var currentMovie = 0;
-    var sortOrder = 'DESC';
-    var sortBy = 'averageRating';
+    // track selected genres
+    var currentGenres = [];
+    var _sortOrder = 'DESC';
+    var _sortBy = 'averageRating';
+    const sortByList = ['title', 'averageRating', 'id'];
+    const sortOrderList  = ['ASC', 'DESC'];
 
 	/**
 	 * Gets the _movie array
@@ -49,7 +54,14 @@ var movieDatabase = (function(movies) {
 	 * @param {String}
 	 */
     var setSortOrder = function(value) {
-    	this.sortOrder = value;
+    	this._sortOrder = value;
+    };
+
+	/**
+	 * 
+	 */
+    var getSortOrder = function() {
+    	return this._sortOrder;
     };
 
 	/**
@@ -57,7 +69,37 @@ var movieDatabase = (function(movies) {
 	 * @param {String}
 	 */
     var setSortBy = function(property) {
-    	this.sortBy = property;
+    	this._sortBy = property;
+    };
+
+	/**
+	 * 
+	 */
+    var getSortBy = function() {
+    	return this._sortBy;
+    }; 
+
+	/**
+	 * 
+	 */
+    var getSortByList = function() {
+    	return sortByList;
+    }; 
+
+	/**
+	 * 
+	 */
+    var getSortOrderList = function() {
+    	return sortOrderList;
+    }; 
+
+	/**
+	 * 
+	 * 
+	 */
+    var getCurrentMovie = function() {
+    	//console.log(this.currentMovie);
+    	return getMoviesByKey('id', Number(this.currentMovie))[0];
     };
 
 	/**
@@ -212,16 +254,20 @@ var movieDatabase = (function(movies) {
         setMovies: setMovies,      
         addMovie: addMovie,
         rateMovie: rateMovie,
+        getCurrentMovie: getCurrentMovie,
         getTopRatedMovie: getTopRatedMovie,
         getLeastRatedMovie: getLeastRatedMovie,
         getMoviesByKey: getMoviesByKey,
         getMoviesByGenres: getMoviesByGenres,
         getMoviesPropertyList: getMoviesPropertyList,
         currentMovie: currentMovie,
-        sortOrder: sortOrder,
-        sortBy: sortBy,
+        currentGenres: currentGenres,
         setSortOrder: setSortOrder,
-        setSortBy: setSortBy
+        setSortBy: setSortBy,
+        getSortOrder: getSortOrder,
+        getSortBy: getSortBy,
+        getSortByList: getSortByList,
+        getSortOrderList: getSortOrderList
     };
  
 })(movies=[]);

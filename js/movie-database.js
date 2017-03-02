@@ -21,8 +21,29 @@ var movieDatabase = (function(movies) {
     var currentGenres = [];
     var _sortOrder = 'DESC';
     var _sortBy = 'averageRating';
-    const sortByList = ['title', 'averageRating', 'id'];
-    const sortOrderList  = ['ASC', 'DESC'];
+
+    const _sortByList = [
+	    					{
+	    						'key': 'title', 'displayName': 'title'
+	    					},
+	    					{
+	    				 		'key': 'averageRating', 'displayName': 'rating'
+	    				 	},
+	    					{	
+	    						'key': 'year', 'displayName': 'year'	
+	    					},	    				 	
+						 	{	
+						 		'key': 'id', 'displayName': 'added'
+						 	}		
+    					];
+    const _sortOrderList  = [
+	    					{
+	    						'key': 'ASC', 'displayName': 'low > high'
+	    					},
+	    					{
+	    						'key': 'DESC', 'displayName': 'high > low'
+	    					}
+							];
 
 	/**
 	 * Gets the _movie array
@@ -54,14 +75,14 @@ var movieDatabase = (function(movies) {
 	 * @param {String}
 	 */
     var setSortOrder = function(value) {
-    	this._sortOrder = value;
+    	_sortOrder = value;
     };
 
 	/**
 	 * 
 	 */
     var getSortOrder = function() {
-    	return this._sortOrder;
+    	return _sortOrder;
     };
 
 	/**
@@ -69,28 +90,28 @@ var movieDatabase = (function(movies) {
 	 * @param {String}
 	 */
     var setSortBy = function(property) {
-    	this._sortBy = property;
+    	_sortBy = property;
     };
 
 	/**
 	 * 
 	 */
     var getSortBy = function() {
-    	return this._sortBy;
+    	return _sortBy;
     }; 
 
 	/**
 	 * 
 	 */
     var getSortByList = function() {
-    	return sortByList;
+    	return _sortByList;
     }; 
 
 	/**
 	 * 
 	 */
     var getSortOrderList = function() {
-    	return sortOrderList;
+    	return _sortOrderList;
     }; 
 
 	/**
@@ -99,7 +120,7 @@ var movieDatabase = (function(movies) {
 	 */
     var getCurrentMovie = function() {
     	//console.log(this.currentMovie);
-    	return getMoviesByKey('id', Number(this.currentMovie))[0];
+    	return getMoviesByKey('id', Number(currentMovie))[0];
     };
 
 	/**

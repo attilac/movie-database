@@ -40,11 +40,20 @@ var utils = (function(movies) {
 			}else{
 				var keyA = a[key].toUpperCase(); // ignore upper and lowercase
 				var keyB = b[key].toUpperCase(); // ignore upper and lowercase
-				if (keyA < keyB) {
-					return -1;
-				}
-				if (keyA > keyB) {
-					return 1;
+				if(sortOrder && sortOrder === 'DESC'){
+					if (keyA < keyB) {
+						return 1;
+					}
+					if (keyA > keyB) {
+						return -1;
+					}
+				}else{
+					if (keyA < keyB) {
+						return -1;
+					}
+					if (keyA > keyB) {
+						return 1;
+					}					
 				}
 		  		// names must be equal
 		  		return 0;		

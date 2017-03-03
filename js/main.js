@@ -276,30 +276,26 @@ var filterBtnOnClick = function(event){
 var appendSortControllers = function(target){
 	var targetDiv = document.getElementsByClassName(target)[0];	
 	// Sort by 
-	sortControllers = `<div class="btn-group mr-2 sort-key-group">
-						<button type="button" class="btn btn-secondary btn-sm dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-							Sort by
-						</button>
-						<div class="dropdown-menu">`;
-	movieDatabase.getSortByList()
-	.forEach(function(sortBy) {
-		let activeClass = movieDatabase.getSortBy() === sortBy.key ? 'active': '';
-    	sortControllers +=	`<a class="dropdown-item sort-key-item sort-item ${activeClass}" href="#" data-sortby="${sortBy.key}">${sortBy.displayName}</a>`;
+	sortControllers = `<label class="mr-2 text-muted" for="sortBySelect">Sort By</label>
+						<select id="sortBySelect" class="custom-select mr-3 sort-key-group sort-select">
+							<option disabled>Sort By</option>`;
+
+	movieDatabase.getSortByList().forEach(function(sortBy) {
+		let selected = movieDatabase.getSortBy() === sortBy.key ? 'selected': '';
+    	sortControllers += `<option ${selected} class="sort-key-item sort-item" value="${sortBy.key}">${sortBy.displayName}</option>`;
     });	
-    sortControllers +=	'</div></div>'; // end sort by
+    sortControllers +=	'</select>'; // end sort by
 
     // Sort order 
-	sortControllers += `<div class="btn-group sort-order-group">
-						<button type="button" class="btn btn-secondary btn-sm dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-							Sort Order
-						</button>
-						<div class="dropdown-menu">`;
+	sortControllers += `<label class="mr-2 text-muted" for="sortOrderSelect">Order</label>
+						<select id="sortOrderSelect" class="custom-select sort-order-group sort-select">
+							<option disabled>Sort Order</option>`;
 	movieDatabase.getSortOrderList()
 	.forEach(function(sortOrder) {
-		let activeClass = movieDatabase.getSortOrder() === sortOrder.key ? 'active': '';
-    	sortControllers +=	`<a class="dropdown-item sort-order-item sort-item ${activeClass}" href="#" data-sortorder="${sortOrder.key}">${sortOrder.displayName}</a>`;
+		let selected = movieDatabase.getSortOrder() === sortOrder.key ? 'selected': '';
+    	sortControllers += `<option ${selected} class="sort-key-item sort-item" value="${sortOrder.key}">${sortOrder.displayName}</option>`;
 	});
-	sortControllers +=	'</div></div>'; // end sort order
+	sortControllers +=	'</select>'; // end sort order
 	//console.log(sortControllers);
 	targetDiv.innerHTML = sortControllers;
 	addSortDropdownHandlers();
@@ -309,9 +305,9 @@ var appendSortControllers = function(target){
  * Add eventhandlers for sort dropdowns
  */
 var addSortDropdownHandlers = function(){
-    Array.prototype.slice.call(document.getElementsByClassName('sort-item'))
+    Array.prototype.slice.call(document.getElementsByClassName('sort-select'))
     .forEach(function(item) {
-		item.addEventListener('click', sortDropdownOnClick, false);
+		item.addEventListener('change', sortDropdownOnClick, false);
     }); 	
 };
 
@@ -326,42 +322,22 @@ var addSortDropdownHandlers = function(){
  * @param {Event} event - the event that was triggered
  */
 var sortDropdownOnClick = function(event){
-    event.preventDefault();
 
-	console.log(movieDatabase.getSortBy());
-	console.log(movieDatabase.getSortOrder());
+    if($(this).hasClass('sort-key-group')){ 	
+    	//console.log(this.options[this.selectedIndex].value);
+    	movieDatabase.setSortBy(this.options[this.selectedIndex].value);		
+    } 
+    if($(this).hasClass('sort-order-group')){	
+    	//console.log(this.options[this.selectedIndex].value); 
+		movieDatabase.setSortOrder(this.options[this.selectedIndex].value);
+    }
 
-    // check if is this link is active
- 	if($(this).hasClass('active')){
-	    this.classList.toggle('active');    
-	} else {	
-	    this.classList.toggle('active'); 
-
-	    if($(this).hasClass('sort-key-item')){
-			// deselect previous links
-		    Array.prototype.slice.call(document.getElementsByClassName('sort-key-group')[0].getElementsByClassName('active'))
-			    .forEach(function(item) {
-			    	item.classList.toggle('active'); 
-		    }); 	    	
-	    	movieDatabase.setSortBy(this.dataset.sortby);	    	
-	    } 
-	    if($(this).hasClass('sort-order-item')){
-		    Array.prototype.slice.call(document.getElementsByClassName('sort-order-group')[0].getElementsByClassName('active'))
-			    .forEach(function(item) {
-			    	item.classList.toggle('active'); 
-		    }); 	    	
-	    	movieDatabase.setSortOrder(this.dataset.sortorder);
-	    	console.log('order');
-	    }
-	    this.classList.toggle('active'); 
-	}  
-	console.log(movieDatabase.getSortBy());
-	console.log(movieDatabase.getSortOrder());
     if(movieDatabase.currentGenres.length > 0){
     	appendMovies(utils.sortObjectsByKey(movieDatabase.getMoviesByGenres(movieDatabase.currentGenres), movieDatabase.getSortBy(), movieDatabase.getSortOrder()), 'movieContainer');
     } else {
  		appendMovies(utils.sortObjectsByKey(movieDatabase.getMovies(), movieDatabase.getSortBy(), movieDatabase.getSortOrder()), 'movieContainer');   	
     }
+
 };
 
 

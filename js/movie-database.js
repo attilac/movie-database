@@ -24,24 +24,24 @@ var movieDatabase = (function(movies) {
 
     const _sortByList = [
 	    					{
-	    						'key': 'title', 'displayName': 'title'
+	    						'key': 'title', 'displayName': 'Movie Title'
 	    					},
 	    					{
-	    				 		'key': 'averageRating', 'displayName': 'rating'
+	    				 		'key': 'averageRating', 'displayName': 'Rating'
 	    				 	},
 	    					{	
-	    						'key': 'year', 'displayName': 'year'	
+	    						'key': 'year', 'displayName': 'Title Year'	
 	    					},	    				 	
 						 	{	
-						 		'key': 'id', 'displayName': 'added'
+						 		'key': 'id', 'displayName': 'Date Added'
 						 	}		
     					];
     const _sortOrderList  = [
 	    					{
-	    						'key': 'ASC', 'displayName': 'low > high'
+	    						'key': 'ASC', 'displayName': 'Low to High'
 	    					},
 	    					{
-	    						'key': 'DESC', 'displayName': 'high > low'
+	    						'key': 'DESC', 'displayName': 'High to Low'
 	    					}
 							];
 

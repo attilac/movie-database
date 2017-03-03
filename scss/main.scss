@@ -18,8 +18,10 @@
 	color: $gray-lighter;
 }
 
-.sort-controllers{
+.sort-controllers .form-control,
+.sort-controllers label {
 	font-size: 85%;
+	width: auto;
 }
 
 .responsive-poster {
@@ -29,7 +31,7 @@
 	height: 0;
 	//padding-bottom: 147.1%;
 	padding-bottom: 153.3742%;
-	overflow: hidden;
+	//overflow: hidden;
 	&:hover {
 		.btn-group.movie-update	{
 			opacity: 1;
@@ -56,11 +58,16 @@
 }
 .movie-update {
 	position: absolute;
-	left: 10px;
-	bottom: 10px;
+	left: 50%;
+	top: 50%;
+	margin-left: -19px;
+	margin-top: -19px;
 	margin-bottom: 0;
 	opacity: 0;
 	transition: all 0.35s ease;
+	.dropdown-toggle::after {
+		display: none;
+	}
 }
 .movie-item {
 	h6 {

@@ -120,7 +120,7 @@ var movieDatabase = (function(movies) {
 	 */
     var getCurrentMovie = function() {
     	//console.log(this.currentMovie);
-    	return getMoviesByKey('id', Number(currentMovie))[0];
+    	return getMoviesByKey('id', Number(this.currentMovie))[0];
     };
 
 	/**

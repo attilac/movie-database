@@ -101,10 +101,15 @@ var appendMovies = function(movies, target){
 									<div class="responsive-poster-item">
 										<img src="${poster}" class="figure-img img-fluid" alt="">
 									</div>
-									<div class="btn-group movie-update"> 
-										<!-- <a href="#" class="btn btn-success btn-sm btn-rate-movie" data-id="${movie.id}">Rate</a> -->
-										<a href="#" class="btn btn-success btn-sm btn-edit-genres" data-id="${movie.id}">Edit Genres</a>
-									</div>										
+
+									<div class="btn-group movie-update">
+									  <button type="button" class="btn btn-success dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+									    <i class="fa fa-ellipsis-v" aria-hidden="true"></i>
+									  </button>
+									  <div class="dropdown-menu">
+										<a href="#" class="dropdown-item btn-edit-genres" data-id="${movie.id}">Edit Genres</a>										    
+									  </div>
+								 	</div>
 								</div>
 								<h6>${movie.title} <small>(${movie.year})</small></h6>
 					                <div class="rating">
@@ -175,6 +180,7 @@ var rateBtnClickHandler = function(event){
 var editGenreBtnClickHandler = function(event){
 	event.preventDefault();	
 	movieDatabase.currentMovie = Number(this.dataset.id);
+	//console.log(this.dataset.id);
 	//console.log(movieDatabase.getCurrentMovie());
 	launchUpdateMovieModal();
 	//console.log(movieDatabase.getCurrentMovie());
@@ -265,19 +271,19 @@ var filterBtnOnClick = function(event){
 
 /**
  * ------------------------------------------------------------------------
- *  Sort dropdown links
+ *  Sort dropdown selects
  * ------------------------------------------------------------------------
 */
 
 /**
- * 
- * 
+ * Appends selects for sorting
+ * @param {String} target - the element to append to 
  */
 var appendSortControllers = function(target){
 	var targetDiv = document.getElementsByClassName(target)[0];	
 	// Sort by 
 	sortControllers = `<label class="mr-2 text-muted" for="sortBySelect">Sort By</label>
-						<select id="sortBySelect" class="custom-select mr-3 sort-key-group sort-select">
+						<select id="sortBySelect" class="form-control d-inline mr-3 sort-key-group sort-select">
 							<option disabled>Sort By</option>`;
 
 	movieDatabase.getSortByList().forEach(function(sortBy) {
@@ -288,7 +294,7 @@ var appendSortControllers = function(target){
 
     // Sort order 
 	sortControllers += `<label class="mr-2 text-muted" for="sortOrderSelect">Order</label>
-						<select id="sortOrderSelect" class="custom-select sort-order-group sort-select">
+						<select id="sortOrderSelect" class="form-control d-inline sort-order-group sort-select">
 							<option disabled>Sort Order</option>`;
 	movieDatabase.getSortOrderList()
 	.forEach(function(sortOrder) {
@@ -302,12 +308,12 @@ var appendSortControllers = function(target){
 };
 
 /**
- * Add eventhandlers for sort dropdowns
+ * Add eventhandlers for sort dropdown selects
  */
 var addSortDropdownHandlers = function(){
     Array.prototype.slice.call(document.getElementsByClassName('sort-select'))
     .forEach(function(item) {
-		item.addEventListener('change', sortDropdownOnClick, false);
+		item.addEventListener('change', sortDropdownOnChange, false);
     }); 	
 };
 
@@ -318,20 +324,23 @@ var addSortDropdownHandlers = function(){
 */
 
 /**
- * Click handler for sort dropdowns
- * @param {Event} event - the event that was triggered
+ * Change handler for sort dropdown selects
  */
-var sortDropdownOnClick = function(event){
+var sortDropdownOnChange = function(){
 
+	// Set sort by value in movieDatabase 
     if($(this).hasClass('sort-key-group')){ 	
     	//console.log(this.options[this.selectedIndex].value);
     	movieDatabase.setSortBy(this.options[this.selectedIndex].value);		
     } 
+
+    // Set sort order value in movieDatabase 
     if($(this).hasClass('sort-order-group')){	
     	//console.log(this.options[this.selectedIndex].value); 
 		movieDatabase.setSortOrder(this.options[this.selectedIndex].value);
     }
 
+    // Call appendMovies
     if(movieDatabase.currentGenres.length > 0){
     	appendMovies(utils.sortObjectsByKey(movieDatabase.getMoviesByGenres(movieDatabase.currentGenres), movieDatabase.getSortBy(), movieDatabase.getSortOrder()), 'movieContainer');
     } else {

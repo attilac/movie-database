@@ -42,7 +42,7 @@ var getMoviesFromJSON = function(dataUrl){
 var parseJSON = function(arr){
     for(let i = 0; i < arr.length; i++) {
 		var movie = new Movie(arr[i].title,
-				Number(arr[i].year),
+				arr[i].year,
 				arr[i].genres,
 				arr[i].ratings,
 				arr[i].poster,
@@ -55,7 +55,7 @@ var parseJSON = function(arr){
 				arr[i].actors,
 				arr[i].imdbRating,
 				arr[i].posterurl,
-				Number([i]));
+				[i]);
 		movieDatabase.addMovie(movie);
     }
  	onJSONCallback(movieDatabase);
@@ -99,12 +99,12 @@ var appendMovies = function(movies, target){
 	  						<div class="mb-5">
 			  					<div class="responsive-poster mb-3">
 									<div class="responsive-poster-item">
-										<img src="${poster}" class="figure-img img-fluid" alt="">
+										<img src="${poster}" class="img-fluid" alt="">
 									</div>
 
-									<div class="btn-group movie-update">
-									  <button type="button" class="btn btn-success dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-									    <i class="fa fa-ellipsis-v" aria-hidden="true"></i>
+									<div class="movie-update">
+									  <button type="button" class="btn btn-options" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+									    <i class="fa fa-ellipsis-h" aria-hidden="true"></i>
 									  </button>
 									  <div class="dropdown-menu">
 										<a href="#" class="dropdown-item btn-edit-genres" data-id="${movie.id}">Edit Genres</a>										    
@@ -170,7 +170,7 @@ var addMovieBtnHandlers = function(){
 var rateBtnClickHandler = function(event){
 	event.preventDefault();
 	console.log(this.dataset.id);
-	movieDatabase.currentMovie = Number(this.dataset.id);
+	movieDatabase.setCurrentMovie(Number(this.dataset.id));
 	console.log('function for adding rating');
 };
 
@@ -179,7 +179,7 @@ var rateBtnClickHandler = function(event){
  */
 var editGenreBtnClickHandler = function(event){
 	event.preventDefault();	
-	movieDatabase.currentMovie = Number(this.dataset.id);
+	movieDatabase.setCurrentMovie(Number(this.dataset.id));
 	//console.log(this.dataset.id);
 	//console.log(movieDatabase.getCurrentMovie());
 	launchUpdateMovieModal();
@@ -267,6 +267,22 @@ var filterBtnOnClick = function(event){
     } else {
  		appendMovies(utils.sortObjectsByKey(movieDatabase.getMovies(), movieDatabase.getSortBy(), movieDatabase.getSortOrder()), 'movieContainer');   	
     }
+
+	document.getElementsByClassName('current-genres')[0].innerHTML =  movieDatabase.currentGenres.length > 0 ?  ' in ' + movieDatabase.currentGenres: '' ;   
+	    
+};
+
+/**
+ * 
+ * 
+ */
+var updateFilterBtns = function(){
+	Array.prototype.slice.call(document.getElementsByClassName('genre-filter'))
+	.forEach(function(btn){
+		btn.classList.remove('active');
+		//console.log(btn.classList);
+	});
+	document.getElementsByClassName('current-genres')[0].innerHTML = '';
 };
 
 /**
@@ -349,6 +365,29 @@ var sortDropdownOnChange = function(){
 
 };
 
+/**
+ * Update sort dropdown selects
+ */
+var updateSortSelects = function(){
+    Array.prototype.slice.call(document.getElementsByClassName('sort-key-group'))
+    .forEach(function(item) {
+    	Array.prototype.slice.call(item.options)
+    	.forEach(function(option) {
+    		//console.log(option.value);
+    		option.selected = option.value === movieDatabase.getSortBy() ? true : false;
+    	});	    		
+    });
+
+    Array.prototype.slice.call(document.getElementsByClassName('sort-order-group'))
+    .forEach(function(item) {
+    	Array.prototype.slice.call(item.options)
+    	.forEach(function(option) {
+    		//console.log(option.selected);
+    		option.selected = option.value === movieDatabase.getSortOrder() ? true : false;
+    	});	    		
+    });
+};
+
 
 /**
  * ------------------------------------------------------------------------
@@ -371,6 +410,7 @@ var getAddFormVals = function(){
 	var selectedGenres = getCheckedInputValues();
 	//console.log(selectedGenres);
 	var movieID = movieDatabase.getMovies().length-1 + 1;
+	//console.log(typeof(movieID));
 
 	// Create Movie object
 	var movie = new Movie(title, year, selectedGenres, [], poster,  '', '', '', 0, '', storyline, [], 0, '', movieID);
@@ -482,8 +522,13 @@ var submitAddNewForm = function(event) {
 	var postData = getAddFormVals();
 	console.log('Posting movie to MovieDatabase');
 	console.log(postData);
+
 	movieDatabase.setSortBy('id');
 	movieDatabase.setSortOrder('DESC');
+	movieDatabase.currentGenres = [];
+ 	updateSortSelects();
+ 	updateFilterBtns();
+
 	movieDatabase.addMovie(postData);
 	appendMovies(utils.sortObjectsByKey(movieDatabase.getMovies(), movieDatabase.getSortBy(), movieDatabase.getSortOrder()), 'movieContainer');
 	hideModal();
@@ -498,7 +543,7 @@ var submitUpdateForm = function(event) {
 	var postData = getUpdateFormVals();
 	//console.log('Updating movie in MovieDatabase');
 	movieDatabase.getCurrentMovie().genres = postData;
-	movieDatabase.currentMovie = 0;
+	movieDatabase.setCurrentMovie(0);
 	hideModal();
 };
 
@@ -605,8 +650,8 @@ var testFunctions = function(movieDatabase){
  * ------------------------------------------------------------------------
 */
 
-//getMoviesFromJSON('https://attilac.github.io/movie-database/js/json/top-rated-movies-01.json');
-getMoviesFromJSON('https://attilac.github.io/movie-database/js/json/top-rated-movies-02.json');
+getMoviesFromJSON('https://attilac.github.io/movie-database/js/json/top-rated-movies-01.json');
+//getMoviesFromJSON('https://attilac.github.io/movie-database/js/json/top-rated-movies-02.json');
 //getMoviesFromJSON('https://attilac.github.io/movie-database/js/json/top-rated-indian-movies-01.json');
 //getMoviesFromJSON('https://attilac.github.io/movie-database/js/json/top-rated-indian-movies-02.json');
 //getMoviesFromJSON('https://attilac.github.io/movie-database/js/json/movies-coming-soon.json');

@@ -42,7 +42,7 @@ var Movie = function (title,
 						posterurl,
 						id) {
 	this.title = title;
-	this.year = year;
+	this.year = Number(year);
 	this.contentRating = contentRating;
 	this.duration = duration;
 	this.genres = genres;
@@ -55,7 +55,7 @@ var Movie = function (title,
 	this.actors = actors;
 	this.imdbRating = imdbRating;
 	this.posterurl = posterurl;
-	this.id = id;
+	this.id = Number(id);
 	this.init();
 };
 

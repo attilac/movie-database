@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="css/main.css">
     <link rel="stylesheet" href="fonts/font-awesome/css/font-awesome.min.css">
   </head>
-  <body>
+  <body class="app">
   <nav class="navbar navbar-toggleable-sm navbar-inverse bg-inverse mb-3">
     <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
@@ -65,42 +65,45 @@
     </div>
   </div>
   <!-- / Modal -->
-   <!--
-  <header class="page-header my-5">
-    <div class="container-fluid">
-      <h1 class="display-6">Movie Database</h1>
-    </div>
-  </header>
-  -->
+
   <div class="container-fluid">
     <a id="addMovie" class="btn btn-success mb-3" href="#">Add new Movie</a>
-    <div class="card mb-3">
-      <div class="card-block">
-        <!-- <h5 class="card-title mb-3 text-muted">Filter by</h5> -->
-        <div class="row">
-          <div class="col-4">
-            <label class="mr-2 text-muted" >Filter By</label>
-            <a class="btn btn-secondary" data-toggle="collapse" href="#collapseGenres" aria-expanded="false" aria-controls="collapseGenres">
-              Genres
-            </a>
+  </div>
+
+    <section class="app-filter-bar">
+      <div class="container-fluid">
+        <div class="card mb-3">
+          <div class="card-header bg-white">
+            <div class="row">
+              <div class="col-4">
+                <label class="mr-2 text-muted" >Filter By</label>
+                <a class="btn btn-secondary dropdown-toggle collapsed" data-toggle="collapse" href="#collapseGenres" aria-expanded="false" aria-controls="collapseGenres">
+                  Genres
+                </a>
+              </div>
+              <div class="col-8">
+                <div class="sort-controllers text-right">
+                </div>
+              </div>
+            </div>
           </div>
-          <div class="col-8">
-            <div class="sort-controllers text-right">
+          <div class="card-block">
+            <div class="collapse" id="collapseGenres">
+              <div class="genre-buttons p-3"></div>
             </div>
           </div>
         </div>
-            <div class="collapse" id="collapseGenres">
-              <div class="genre-buttons pt-3">
-              </div>
-            </div>
       </div>
-    </div>
-  </div>
+    </section>
 
-  <section class="app">
+  <section class="app-content">
     <div class="container-fluid">
       <div class="card mb-3 pb-3">
-        <div class="card-block">
+        <div class="card-block"> 
+          <header class="page-header">
+            <h1 class="display-6 text-uppercase d-inline mr-2">Movies</h1>
+            <p class="d-inline lead current-genres"></p>
+          </header>
           <div id="movieContainer" class="content">
           </div>
         </div>

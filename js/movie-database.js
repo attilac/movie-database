@@ -16,7 +16,7 @@ var movieDatabase = (function(movies) {
  	// our array of movies - private variable	
     var _movies = movies;
     // track selected movie
-    var currentMovie = 0;
+    var _currentMovie = 0;
     // track selected genres
     var currentGenres = [];
     var _sortOrder = 'DESC';
@@ -72,14 +72,6 @@ var movieDatabase = (function(movies) {
 
 	/**
 	 * 
-	 * @param {String}
-	 */
-    var setSortOrder = function(value) {
-    	_sortOrder = value;
-    };
-
-	/**
-	 * 
 	 */
     var getSortOrder = function() {
     	return _sortOrder;
@@ -89,8 +81,8 @@ var movieDatabase = (function(movies) {
 	 * 
 	 * @param {String}
 	 */
-    var setSortBy = function(property) {
-    	_sortBy = property;
+    var setSortOrder = function(value) {
+    	_sortOrder = value;
     };
 
 	/**
@@ -99,6 +91,14 @@ var movieDatabase = (function(movies) {
     var getSortBy = function() {
     	return _sortBy;
     }; 
+
+	/**
+	 * 
+	 * @param {String}
+	 */
+    var setSortBy = function(property) {
+    	_sortBy = property;
+    };
 
 	/**
 	 * 
@@ -119,9 +119,17 @@ var movieDatabase = (function(movies) {
 	 * 
 	 */
     var getCurrentMovie = function() {
-    	//console.log(this.currentMovie);
-    	return getMoviesByKey('id', Number(this.currentMovie))[0];
+    	//console.log(_currentMovie);
+    	return getMoviesByKey('id', Number(_currentMovie))[0];
     };
+
+	/**
+	 * 
+	 * 
+	 */
+    var setCurrentMovie = function(id) {
+    	_currentMovie = id;
+    };    
 
 	/**
 	 * Returns an array of movies filtered by genre
@@ -276,12 +284,12 @@ var movieDatabase = (function(movies) {
         addMovie: addMovie,
         rateMovie: rateMovie,
         getCurrentMovie: getCurrentMovie,
+        setCurrentMovie: setCurrentMovie,
         getTopRatedMovie: getTopRatedMovie,
         getLeastRatedMovie: getLeastRatedMovie,
         getMoviesByKey: getMoviesByKey,
         getMoviesByGenres: getMoviesByGenres,
         getMoviesPropertyList: getMoviesPropertyList,
-        currentMovie: currentMovie,
         currentGenres: currentGenres,
         setSortOrder: setSortOrder,
         setSortBy: setSortBy,

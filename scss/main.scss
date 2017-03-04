@@ -1,7 +1,7 @@
 @import url('https://fonts.googleapis.com/css?family=Open+Sans:300,400,700');
 @import 'variables';
-@import "../../node_modules/compass-mixins/lib/compass";
-@import 'circle';
+//@import "../../node_modules/compass-mixins/lib/compass";
+//@import 'circle';
 @import '../../node_modules/bootstrap/scss/bootstrap';
 
 .bg-white {
@@ -16,6 +16,34 @@
 }
 .text-faded {
 	color: $gray-lighter;
+}
+
+small {
+	font-weight: 300;
+}
+
+.display-6{
+	font-weight: 300;
+	font-size: 2.5rem;
+}
+
+.app-filter-bar {
+	.card-block {
+		padding: 0;
+	}
+	.dropdown-toggle{
+	    color: #292b2c;
+	    background-color: #e6e6e6;
+	    border-color: #c9c9c9;
+		&.collapsed{
+			color: $btn-secondary-color;          
+			background-color: $btn-secondary-bg;            
+			border-color: $btn-secondary-border;         
+		}
+	}
+	label{
+		font-weight: 300;
+	}
 }
 
 .sort-controllers .form-control,
@@ -33,10 +61,29 @@
 	padding-bottom: 153.3742%;
 	//overflow: hidden;
 	&:hover {
-		.btn-group.movie-update	{
+		.movie-update	{
+			z-index: 22	;
 			opacity: 1;
 		}	
+		.responsive-poster-item:after {
+			opacity: 1;	
+		}
 	}
+}
+
+.responsive-poster-item:after {
+	position: absolute;
+	left: 0;
+	top: 0;
+	right: 0;
+	bottom: 0;
+	height: 100%;
+	width: 100%;		
+	background: rgba(0, 0, 0, 0.6);
+	z-index: 20;
+    content: '\A';
+    opacity: 0;
+    transition: all 0.35s;
 }
 
 .responsive-poster-item {
@@ -65,13 +112,32 @@
 	margin-bottom: 0;
 	opacity: 0;
 	transition: all 0.35s ease;
+
 	.dropdown-toggle::after {
 		display: none;
 	}
-}
-.movie-item {
-	h6 {
-		//min-height: 3rem;
-		//line-height: 1.5;
+
+	.btn-options {
+	    color: #fff;
+	    background-image: none;
+	    background-color: rgba(0, 0, 0, 0.6);
+	    border-color: #999;
+	    padding: 0.5rem 0.5rem;
+	    font-size: 1.25rem;
+	    line-height: 1;
+		border-radius: 50rem;   
+		&:hover{
+		    color: #fff;
+		    //background-color: transparent;
+		    border-color: #fff;
+		    transform: scale(1.1);
+		}
+
+		i {
+			width: 20px;
+			height: 20px;
+			font-size: 1.25rem;
+			line-height: 1;
+		}
 	}
 }

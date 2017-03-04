@@ -273,10 +273,11 @@ var filterBtnOnClick = function(event){
 };
 
 /**
- * 
+ * Reset selected genre buttons and the .current-genres text
  * 
  */
-var updateFilterBtns = function(){
+var resetFilterBtns = function(){
+	movieDatabase.currentGenres = [];
 	Array.prototype.slice.call(document.getElementsByClassName('genre-filter'))
 	.forEach(function(btn){
 		btn.classList.remove('active');
@@ -366,9 +367,23 @@ var sortDropdownOnChange = function(){
 };
 
 /**
+ * ------------------------------------------------------------------------
+ * Init app genre filters and sort selects
+ * ------------------------------------------------------------------------
+*/
+
+/**
+ * Init app genre filters and sort selects
+ */
+var updateAppControllers = function(){
+	movieDatabase.currentGenres = [];
+ 	sortSelectOnAppChange();
+};
+
+/**
  * Update sort dropdown selects
  */
-var updateSortSelects = function(){
+var sortSelectOnAppChange = function(){
     Array.prototype.slice.call(document.getElementsByClassName('sort-key-group'))
     .forEach(function(item) {
     	Array.prototype.slice.call(item.options)
@@ -525,11 +540,10 @@ var submitAddNewForm = function(event) {
 
 	movieDatabase.setSortBy('id');
 	movieDatabase.setSortOrder('DESC');
-	movieDatabase.currentGenres = [];
- 	updateSortSelects();
- 	updateFilterBtns();
-
 	movieDatabase.addMovie(postData);
+	updateAppControllers();
+	resetFilterBtns();
+
 	appendMovies(utils.sortObjectsByKey(movieDatabase.getMovies(), movieDatabase.getSortBy(), movieDatabase.getSortOrder()), 'movieContainer');
 	hideModal();
 };

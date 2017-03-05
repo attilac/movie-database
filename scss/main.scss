@@ -142,7 +142,7 @@ small {
 	}
 }
 
-.handle {
+.rating-slider .handle {
 	background-color: darken($yellow, 5%);
   	width: 10px; 
   	height: 100%; 
@@ -150,12 +150,12 @@ small {
   	border-radius: 0.25rem;
 }
 
-.dragdealer.progress {
+.rating-slider.progress {
 	height:1.25rem; 
 	overflow:hidden;
 }
 
-.progress-bar {
+.rating-slider .progress-bar {
 	position:absolute; 
 	width: 100%; 
 	height: 100%; 

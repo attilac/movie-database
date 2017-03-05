@@ -101,7 +101,6 @@ var appendMovies = function(movies, target){
 									<div class="responsive-poster-item">
 										<img src="${poster}" class="img-fluid" alt="">
 									</div>
-
 									<div class="movie-update">
 									  <button type="button" class="btn btn-options" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
 									    <i class="fa fa-ellipsis-h" aria-hidden="true"></i>
@@ -111,20 +110,29 @@ var appendMovies = function(movies, target){
 									  </div>
 								 	</div>
 								</div>
-								<h6>${movie.title} <small>(${movie.year})</small></h6>
-					                <div class="rating">
-					                  <div class="d-flex justify-content-end">
-					                    <div class="mr-auto">
-					                      <small>Rating</small>
-					                    </div
-				                      	<div>
-					                        <small>
-					                        	<span class="text-yellow">${movie.averageRating}</span>
-					                        	<span class="text-faded">/10</span>
-					                        </small>
-				                      	</div>
-	
-									<div id="simple-slider-${movie.id}" class="dragdealer progress">
+
+								<div class="movie-item-header mb-3">
+									<h6 class="movie-title mb-1">${movie.title} <small>(${movie.year})</small></h6>
+									<!-- <small class="genres text-muted">${movie.genres}</small> -->
+									${getGenreLinksFromList(movie.genres)}
+								</div>
+
+				                <div class="rating-container">
+				                  	<div class="rating-label d-flex justify-content-end">
+				                    	<div class="mr-auto">
+				                      		<small>Rate</small>
+				                    	</div
+		                      		<div class="rating-text">
+				                        <small>		
+				                        	<i class="fa fa-star text-yellow"></i>			                        	
+				                        	<span class="text-yellow rating-value">${movie.averageRating}</span>
+				                        	<span class="text-faded">/10</span>
+				                        </small>
+		                      		</div>
+		                      		<div class="progress average-slider">
+		                      			<div class="progress-bar bg-yellow" role="progressbar" aria-valuenow="${movie.averageRating * 10}" aria-valuemin="0" aria-valuemax="100" style="width: ${movie.averageRating * 10}%"></div>
+		                      		</div>
+									<div id="ratingSlider-${movie.id}" class="dragdealer progress rating-slider" style="display:none;">
 										<div class="handle">											
 										</div>
 										<div class="progress-bar bg-yellow" role="progressbar" aria-valuenow="${movie.averageRating * 10}" aria-valuemin="0" aria-valuemax="100">
@@ -140,16 +148,17 @@ var appendMovies = function(movies, target){
 	movieList += '</div>';
 	targetDiv.innerHTML = movieList;
 	addMovieBtnHandlers();
-	utils.columnConform('.movie-item h6');
+	utils.columnConform('.movie-item-header');
+	utils.columnConform('.movie-title');
 
-	Array.prototype.slice.call(document.getElementsByClassName('dragdealer'))
+	Array.prototype.slice.call(document.getElementsByClassName('rating-slider'))
 	.forEach(function(slider){
 		//console.log(slider.id);
-		//new Dragdealer(slider.id);
 		new Dragdealer(slider.id, {
 		  animationCallback: function(x, y) {
-		  	console.log(Math.round(x * 100));	 
+		  	//console.log(Math.round(x * 100));	 
 		  	$('#' + slider.id + ' .progress-bar').css('left', Math.round(x * 100)+'%');
+		  	//$('#' + slider.id).parent('.rating-container').find('.rating-value').text(Math.round(x * 10));
 		  } 
 		});
 	});
@@ -182,6 +191,11 @@ var addMovieBtnHandlers = function(){
     .forEach(function(item) {
 		item.addEventListener('click', editGenreBtnClickHandler, false);
     }); 
+
+    Array.prototype.slice.call(document.getElementsByClassName('genre-link'))
+    .forEach(function(item){
+    	item.addEventListener('click', genreBtnClickHandler, false);
+    });
 };
 
 /**
@@ -205,6 +219,17 @@ var editGenreBtnClickHandler = function(event){
 	launchUpdateMovieModal();
 	//console.log(movieDatabase.getCurrentMovie());
 	//console.log(`function for editing the genres of ${movieDatabase.getCurrentMovie().title}`);
+};
+
+/**
+ * Event handler for genre filter button on single movies
+ */
+var genreBtnClickHandler = function(event){
+	event.preventDefault();
+	console.log($(this).children('small')[0].textContent);
+	movieDatabase.currentGenres = [$(this).children('small')[0].textContent];
+	console.log(movieDatabase.currentGenres);
+	appendMovies(utils.sortObjectsByKey(movieDatabase.getMoviesByGenres(movieDatabase.currentGenres), movieDatabase.getSortBy(), movieDatabase.getSortOrder()), 'movieContainer');
 };
 
 /**
@@ -242,6 +267,19 @@ var appendGenreFilterButtons = function(array, target, key){
     //console.log(buttonGroup);
     document.getElementsByClassName(target)[0].innerHTML = buttonGroup;
     addFilterButtonEventListeners(`${key}-filter`, filterBtnOnClick);
+};
+
+/**
+ * 
+ * @param {Array} genres - array of genres
+ */
+var getGenreLinksFromList = function(genres){
+	genreList = '<ul class="list-inline movie-genre-list">';
+	genres
+	.forEach(function(genre){
+		genreList += `<li class="list-inline-item movie-genre-item"><a class="genre-link" href="#"><small>${genre}</small></a></li>`;
+	});
+	return genreList + '</ul>';
 };
 
 /**

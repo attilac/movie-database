@@ -118,17 +118,16 @@ var appendMovies = function(movies, target){
 					                      <small>Rating</small>
 					                    </div
 				                      	<div>
-					                        <small><span class="text-yellow">${movie.averageRating}</span><span class="text-faded">/10</span>
+					                        <small>
+					                        	<span class="text-yellow">${movie.averageRating}</span>
+					                        	<span class="text-faded">/10</span>
 					                        </small>
 				                      	</div>
-				                     <!-- 	
-	                                 <div class="progress">
-	  									<div class="progress-bar bg-yellow" style="width: ${movie.averageRating * 10}%;" role="progressbar" aria-valuenow="${movie.averageRating * 10}" aria-valuemin="0" aria-valuemax="100"></div>
-									</div>
-									-->
-									<div id="simple-slider-${movie.id}" class="dragdealer bg-faded" style="height:1.25rem; overflow:hidden;">
-										<div class="handle" style="width:200%; height: 100%;">
-											<div class="bg-yellow" style="width: 50%; height: 100%;" role="progressbar" aria-valuenow="${movie.averageRating * 10}"></div>
+	
+									<div id="simple-slider-${movie.id}" class="dragdealer progress">
+										<div class="handle">											
+										</div>
+										<div class="progress-bar bg-yellow" role="progressbar" aria-valuenow="${movie.averageRating * 10}" aria-valuemin="0" aria-valuemax="100">
 										</div>
 									</div>
 								</div>
@@ -149,7 +148,8 @@ var appendMovies = function(movies, target){
 		//new Dragdealer(slider.id);
 		new Dragdealer(slider.id, {
 		  animationCallback: function(x, y) {
-		  	console.log(Math.abs(Math.round(x * 100)));	  	
+		  	console.log(Math.round(x * 100));	 
+		  	$('#' + slider.id + ' .progress-bar').css('left', Math.round(x * 100)+'%');
 		  } 
 		});
 	});

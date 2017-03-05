@@ -6097,3 +6097,21 @@ small {
       height: 20px;
       font-size: 1.25rem;
       line-height: 1; }
+
+.handle {
+  background-color: #eea236;
+  width: 10px;
+  height: 100%;
+  z-index: 21;
+  border-radius: 0.25rem; }
+
+.dragdealer.progress {
+  height: 1.25rem;
+  overflow: hidden; }
+
+.progress-bar {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  z-index: 20;
+  margin-left: -100%; }

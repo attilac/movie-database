@@ -148,6 +148,7 @@ var appendMovies = function(movies, target){
 	movieList += '</div>';
 	targetDiv.innerHTML = movieList;
 	addMovieBtnHandlers();
+	addGenreListHandlers();
 	utils.columnConform('.movie-item-header');
 	utils.columnConform('.movie-title');
 
@@ -173,6 +174,27 @@ var appendMovies = function(movies, target){
 };
 
 /**
+ * Update the DOM on editing movie
+ */
+var updateMovieListView = function(){
+	//console.log(movieDatabase.getCurrentMovie());
+
+	$(getMovieInstance(movieDatabase.getCurrentMovie().id))
+	.find('.movie-genre-list')
+	.replaceWith(getGenreLinksFromList(movieDatabase.getCurrentMovie().genres));
+	addGenreListHandlers();
+};
+
+/**
+ * 
+ */
+var getMovieInstance = function(id){
+	//console.log(document.querySelectorAll(`[data-id="${id}"]`));
+	return document.querySelectorAll(`[data-id="${id}"]`);
+};
+
+
+/**
  * ------------------------------------------------------------------------
  * Event handling for movie editing buttons
  * ------------------------------------------------------------------------
@@ -192,6 +214,12 @@ var addMovieBtnHandlers = function(){
 		item.addEventListener('click', editGenreBtnClickHandler, false);
     }); 
 
+};
+
+/**
+ * Add eventhandlers for genrelist buttons
+ */
+var addGenreListHandlers = function(){
     Array.prototype.slice.call(document.getElementsByClassName('genre-link'))
     .forEach(function(item){
     	item.addEventListener('click', genreBtnClickHandler, false);
@@ -635,7 +663,8 @@ var submitUpdateForm = function(event) {
 	var postData = getUpdateFormVals();
 	//console.log('Updating movie in MovieDatabase');
 	movieDatabase.getCurrentMovie().genres = postData;
-	movieDatabase.setCurrentMovie(0);
+	updateMovieListView();
+	//movieDatabase.setCurrentMovie(0);
 	hideModal();
 };
 

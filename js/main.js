@@ -226,9 +226,10 @@ var editGenreBtnClickHandler = function(event){
  */
 var genreBtnClickHandler = function(event){
 	event.preventDefault();
-	console.log($(this).children('small')[0].textContent);
+	//console.log($(this).children('small')[0].textContent);
 	movieDatabase.currentGenres = [$(this).children('small')[0].textContent];
-	console.log(movieDatabase.currentGenres);
+	//console.log(movieDatabase.currentGenres);
+	genreBtnsOnAppChange();
 	appendMovies(utils.sortObjectsByKey(movieDatabase.getMoviesByGenres(movieDatabase.currentGenres), movieDatabase.getSortBy(), movieDatabase.getSortOrder()), 'movieContainer');
 };
 
@@ -345,6 +346,23 @@ var resetFilterBtns = function(){
 };
 
 /**
+ * Update filter buttons
+ */
+var genreBtnsOnAppChange = function(){
+    Array.prototype.slice.call(document.getElementsByClassName('genre-filter'))
+    .forEach(function(item) {
+    	item.classList.remove('active');
+    	if(movieDatabase.currentGenres[0] === item.value){
+    		//console.log(item.value);
+		    if(! item.classList.contains('active')){
+		        item.classList.toggle('active');
+		    }
+    	}
+    }); 
+    document.getElementsByClassName('current-genres')[0].innerHTML = movieDatabase.currentGenres.length > 0 ? ' in ' + movieDatabase.currentGenres : '';	
+};
+
+/**
  * ------------------------------------------------------------------------
  *  Sort dropdown selects
  * ------------------------------------------------------------------------
@@ -434,7 +452,6 @@ var sortDropdownOnChange = function(){
  * Init app genre filters and sort selects
  */
 var updateAppControllers = function(){
-	movieDatabase.currentGenres = [];
  	sortSelectOnAppChange();
 };
 
@@ -599,8 +616,11 @@ var submitAddNewForm = function(event) {
 	movieDatabase.setSortBy('id');
 	movieDatabase.setSortOrder('DESC');
 	movieDatabase.addMovie(postData);
+
+	movieDatabase.currentGenres = [];
 	updateAppControllers();
-	resetFilterBtns();
+	//resetFilterBtns();
+	genreBtnsOnAppChange();
 
 	appendMovies(utils.sortObjectsByKey(movieDatabase.getMovies(), movieDatabase.getSortBy(), movieDatabase.getSortOrder()), 'movieContainer');
 	hideModal();

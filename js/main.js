@@ -178,19 +178,60 @@ var appendMovies = function(movies, target){
  */
 var updateMovieListView = function(){
 	//console.log(movieDatabase.getCurrentMovie());
+	//console.log(isInCurrentGenre().length > 0);
+	//console.log(movieDatabase.getCurrentMovie().genres);
+	console.log(isInCurrentGenre());
+	console.log(movieDatabase.currentGenres.length);
+	if(isInCurrentGenre() || movieDatabase.currentGenres.length === 0){
+		//find the movie in DOM 
+		console.log('Movie in current genre or no genre selected. Update the DOM');
+		// replace movie genre-list with updated for movieDatabase
+		$(getMovieInstance(movieDatabase.getCurrentMovie().id))
+		.find('.movie-genre-list')
+		.replaceWith(getGenreLinksFromList(movieDatabase.getCurrentMovie().genres));
+		// add eventhandlers for genre-links
+		addGenreListHandlers();
+	}else{
+		console.log('Movie not in current genre. Remove from DOM');
+		console.log(getMovieInstance(movieDatabase.getCurrentMovie().id));
 
-	$(getMovieInstance(movieDatabase.getCurrentMovie().id))
-	.find('.movie-genre-list')
-	.replaceWith(getGenreLinksFromList(movieDatabase.getCurrentMovie().genres));
-	addGenreListHandlers();
+		var currentMovie = getMovieInstance(movieDatabase.getCurrentMovie().id)[0];
+		//console.log(typeof(currentMovie));
+		currentMovie.parentNode.removeChild(currentMovie);
+	}
+
 };
 
 /**
- * 
+ * Gets an movie instance in the DOM-tree by data-attribute
+ * @param {String} id - the data-attribute to filter by
  */
 var getMovieInstance = function(id){
 	//console.log(document.querySelectorAll(`[data-id="${id}"]`));
 	return document.querySelectorAll(`[data-id="${id}"]`);
+};
+
+/**
+ * Check if movie instance is in one of the current genres
+ */
+var isInCurrentGenre = function(){
+	var hasGenre = false;
+    movieDatabase.currentGenres
+    // executed for each movie
+    .forEach(function(currentGenre) { 
+    	// iterate over genre
+    	//console.log(currentGenre);
+    	movieDatabase.getCurrentMovie().genres
+    	.forEach(function(movieGenre) {
+    		//console.log(currentGenre.indexOf(movieGenre) >= 0);	
+            if (currentGenre.indexOf(movieGenre) >= 0) {
+                //console.log('in genre list'); // if this movie has this genre
+                hasGenre = true;
+            }
+    	});
+    }); 
+	return hasGenre;
+
 };
 
 

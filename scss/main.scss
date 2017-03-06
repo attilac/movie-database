@@ -143,7 +143,7 @@ small {
 }
 
 .rating-slider .handle {
-	background-color: darken($yellow, 5%);
+	background-color: darken($blue, 5%);
   	width: 10px; 
   	height: 100%; 
   	z-index:21;
@@ -151,7 +151,7 @@ small {
 }
 
 .rating-slider.progress {
-	height:1.25rem; 
+	height:1rem; 
 	overflow:hidden;
 }
 

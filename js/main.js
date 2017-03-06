@@ -63,7 +63,7 @@ var parseJSON = function(arr){
 
 /**
  * Callback for parseJSON
- * Call the append function and get populate genre filters with values from database
+ * Call the append function and populate genre filters with values from database
  */
 var onJSONCallback = function(movieDatabase){
 	//testFunctions(movieDatabase);
@@ -125,7 +125,7 @@ var appendMovies = function(movies, target){
 		                      		<div class="rating-text">
 				                        <small>		
 				                        	<i class="fa fa-star text-yellow"></i>			                        	
-				                        	<span class="text-yellow rating-value">${movie.averageRating}</span>
+				                        	<span class="text-yellow average-rating">${movie.averageRating}</span>
 				                        	<span class="text-faded">/10</span>
 				                        </small>
 		                      		</div>
@@ -135,7 +135,7 @@ var appendMovies = function(movies, target){
 									<div id="ratingSlider-${movie.id}" class="dragdealer progress rating-slider" style="display:none;">
 										<div class="handle">											
 										</div>
-										<div class="progress-bar bg-yellow" role="progressbar" aria-valuenow="${movie.averageRating * 10}" aria-valuemin="0" aria-valuemax="100">
+										<div class="progress-bar bg-primary" role="progressbar" aria-valuenow="${movie.averageRating * 10}" aria-valuemin="0" aria-valuemax="100">
 										</div>
 									</div>
 								</div>
@@ -148,9 +148,8 @@ var appendMovies = function(movies, target){
 	movieList += '</div>';
 	targetDiv.innerHTML = movieList;
 	addMovieBtnHandlers();
-	addGenreListHandlers();
-
-	//appendRatingSlider();
+	addMovieGenreLinkHandlers();
+	addRatingSliderHandlers();
 
 	utils.columnConform('.movie-item-header');
 	utils.columnConform('.movie-title');
@@ -167,66 +166,120 @@ var appendMovies = function(movies, target){
 /**
  * 
  */
-var appendRatingSlider = function(){
-	Array.prototype.slice.call(document.getElementsByClassName('rating-slider'))
+var addRatingSliderHandlers = function(){
+	Array.prototype.slice.call(document.getElementsByClassName('rating-container'))
 	.forEach(function(slider){
-		//console.log(slider.id);
-		$(slider).show();
-		new Dragdealer(slider.id, {
-		  animationCallback: function(x, y) {
-		  	//console.log(Math.round(x * 100));	 
-		  	$('#' + slider.id + ' .progress-bar').css('left', Math.round(x * 100)+'%');
-		  	$('#' + slider.id).parent('.rating-container').find('.rating-value').text(Math.round(x * 10));
-		  } 
-		});
+		slider.addEventListener('mouseenter', sliderWrapperOnMouseEnter, false);
+		slider.addEventListener('mouseleave', sliderWrapperOnMouseLeave, false);
 	});
 };
 
 /**
- * Update the DOM on editing movie
+ * 
  */
-var updateMovieListView = function(){
-	//console.log(movieDatabase.getCurrentMovie());
-	//console.log(isInCurrentGenre());
-	//console.log(movieDatabase.currentGenres.length);
-	if(isInCurrentGenre() || movieDatabase.currentGenres.length === 0){
-		//find the movie in DOM 
+var sliderWrapperOnMouseEnter = function(){
+	//console.log(this.querySelectorAll('.rating-slider')[0] instanceof Dragdealer);
+	appendRatingSlider(this);
+};
+
+/**
+ * 
+ */
+var sliderWrapperOnMouseLeave = function(){
+	//console.log(this.querySelectorAll('.rating-slider')[0]);
+	//$(this).find('.average-rating').removeClass('user-rating');
+	//$(this).find('.rating-slider').hide();
+	//$(this).find('.average-slider').show();
+
+	/*
+	this.querySelectorAll('.average-rating')[0].classList.remove('user-rating');
+	this.querySelectorAll('.rating-slider')[0].style.display = 'none';
+	this.querySelectorAll('.average-slider')[0].style.display = 'block';
+	*/
+};
+
+/**
+ * 
+ */
+var appendRatingSlider = function(sliderWrapper){
+	//$(sliderWrapper).find('.average-rating').addClass('user-rating');
+	//$(sliderWrapper).find('.average-slider').hide();
+	//$(sliderWrapper).find('.rating-slider').show();
+
+	sliderWrapper.querySelectorAll('.average-rating')[0].classList.add('user-rating');
+	sliderWrapper.querySelectorAll('.average-slider')[0].style.display = 'none';
+	sliderWrapper.querySelectorAll('.rating-slider')[0].style.display = 'block';
+
+    [].map.call(sliderWrapper.querySelectorAll('.text-yellow'), function(el) {       
+        el.classList.toggle('text-yellow');
+        el.classList.toggle('text-primary');
+    });
+
+	if(!sliderWrapper.classList.contains('active')){
+		sliderWrapper.classList.add('active');
+		var rateSlider = new Dragdealer(sliderWrapper.querySelectorAll('.rating-slider')[0].id, {
+			animationCallback: function(x, y) {
+				sliderWrapper.querySelectorAll('.rating-slider .progress-bar')[0].style.left = Math.round(x * 100)+'%';
+				sliderWrapper.parentNode.querySelectorAll('.rating-container .user-rating')[0].textContent = Math.round(x * 10);
+				//console.log(this);
+				//$('#' + sliderWrapper.id + ' .progress-bar').css('left', Math.round(x * 100)+'%');
+				//$('#' + sliderWrapper.id).parent('.rating-container').find('.user-rating').text(Math.round(x * 10));
+			} 
+		});
+		console.log(rateSlider instanceof Dragdealer);
+	}
+};
+
+/**
+ * Updates the view on movie after editing
+ */
+var updateMovieInstanceView = function(){
+	//console.log(isMovieInActiveGenre());
+	if(isMovieInActiveGenre() || movieDatabase.currentGenres.length === 0){
 		//console.log('Movie in current genre or no genre selected. Update the DOM');
-		// replace movie genre-list with updated for movieDatabase
-		$(getMovieInstance(movieDatabase.getCurrentMovie().id))
-		.find('.movie-genre-list')
-		.replaceWith(getGenreLinksFromList(movieDatabase.getCurrentMovie().genres));
+		
+		//find the movie in DOM - jQuery version
+		//$(getMovieInstance(movieDatabase.getCurrentMovie().id))
+		//.find('.movie-genre-list')
+		//.replaceWith(getGenreLinksFromList(movieDatabase.getCurrentMovie().genres));
+
+		//find the movie in DOM  - vanilla JS
+		getMovieInstance(movieDatabase.getCurrentMovie().id)
+		.querySelectorAll('.movie-genre-list')[0]
+		.outerHTML = getGenreLinksFromList(movieDatabase.getCurrentMovie().genres); // replace movie genre-list with updated for movieDatabase
+
 		// add eventhandlers for genre-links
-		addGenreListHandlers();
+		addMovieGenreLinkHandlers();
 	}else{
 		//console.log('Movie not in current genre. Remove from DOM');
 		//console.log(getMovieInstance(movieDatabase.getCurrentMovie().id));
-		var currentMovie = getMovieInstance(movieDatabase.getCurrentMovie().id)[0];
-		console.log(typeof(currentMovie));
+		var currentMovie = getMovieInstance(movieDatabase.getCurrentMovie().id);
+		//console.log(typeof(currentMovie));
 		currentMovie.parentNode.removeChild(currentMovie);
 	}
-
 };
 
 /**
- * Gets an movie instance in the DOM-tree by data-attribute
+ * Gets a movie instance in the DOM-tree by data-attribute
  * @param {String} id - the data-attribute to filter by
+ * @return {Object} Nodelist
  */
 var getMovieInstance = function(id){
-	//console.log(document.querySelectorAll(`[data-id="${id}"]`));
-	return document.querySelectorAll(`[data-id="${id}"]`);
+	//console.log(typeof(document.querySelectorAll(`[data-id="${id}"]`)));
+	return document.querySelectorAll(`[data-id="${id}"]`)[0];
 };
 
 /**
- * Check if movie instance is in one of the current genres
+ * Check if movie instance is in one of the active genres
+ * @return {Boolean} hasGenre
  */
-var isInCurrentGenre = function(){
+var isMovieInActiveGenre = function(){
 	var hasGenre = false;
+	// executed for each active genre
     movieDatabase.currentGenres
-    // executed for each movie
     .forEach(function(currentGenre) { 
-    	// iterate over genre
     	//console.log(currentGenre);
+    	// iterate over the current movies genres
     	movieDatabase.getCurrentMovie().genres
     	.forEach(function(movieGenre) {
     		//console.log(currentGenre.indexOf(movieGenre) >= 0);	
@@ -235,9 +288,9 @@ var isInCurrentGenre = function(){
                 hasGenre = true;
             }
     	});
+    	//console.log(hasGenre);
     }); 
 	return hasGenre;
-
 };
 
 
@@ -266,7 +319,7 @@ var addMovieBtnHandlers = function(){
 /**
  * Add eventhandlers for genrelist buttons
  */
-var addGenreListHandlers = function(){
+var addMovieGenreLinkHandlers = function(){
     Array.prototype.slice.call(document.getElementsByClassName('genre-link'))
     .forEach(function(item){
     	item.addEventListener('click', genreBtnClickHandler, false);
@@ -710,7 +763,7 @@ var submitUpdateForm = function(event) {
 	var postData = getUpdateFormVals();
 	//console.log('Updating movie in MovieDatabase');
 	movieDatabase.getCurrentMovie().genres = postData;
-	updateMovieListView();
+	updateMovieInstanceView();
 	utils.columnConform('.movie-item-header');
 	utils.columnConform('.movie-title');
 	//movieDatabase.setCurrentMovie(0);

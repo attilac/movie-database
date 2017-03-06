@@ -6099,14 +6099,14 @@ small {
       line-height: 1; }
 
 .rating-slider .handle {
-  background-color: #eea236;
+  background-color: #2472a4;
   width: 10px;
   height: 100%;
   z-index: 21;
   border-radius: 0.25rem; }
 
 .rating-slider.progress {
-  height: 1.25rem;
+  height: 1rem;
   overflow: hidden; }
 
 .rating-slider .progress-bar {

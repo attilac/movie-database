@@ -178,13 +178,11 @@ var appendMovies = function(movies, target){
  */
 var updateMovieListView = function(){
 	//console.log(movieDatabase.getCurrentMovie());
-	//console.log(isInCurrentGenre().length > 0);
-	//console.log(movieDatabase.getCurrentMovie().genres);
-	console.log(isInCurrentGenre());
-	console.log(movieDatabase.currentGenres.length);
+	//console.log(isInCurrentGenre());
+	//console.log(movieDatabase.currentGenres.length);
 	if(isInCurrentGenre() || movieDatabase.currentGenres.length === 0){
 		//find the movie in DOM 
-		console.log('Movie in current genre or no genre selected. Update the DOM');
+		//console.log('Movie in current genre or no genre selected. Update the DOM');
 		// replace movie genre-list with updated for movieDatabase
 		$(getMovieInstance(movieDatabase.getCurrentMovie().id))
 		.find('.movie-genre-list')
@@ -192,11 +190,10 @@ var updateMovieListView = function(){
 		// add eventhandlers for genre-links
 		addGenreListHandlers();
 	}else{
-		console.log('Movie not in current genre. Remove from DOM');
-		console.log(getMovieInstance(movieDatabase.getCurrentMovie().id));
-
+		//console.log('Movie not in current genre. Remove from DOM');
+		//console.log(getMovieInstance(movieDatabase.getCurrentMovie().id));
 		var currentMovie = getMovieInstance(movieDatabase.getCurrentMovie().id)[0];
-		//console.log(typeof(currentMovie));
+		console.log(typeof(currentMovie));
 		currentMovie.parentNode.removeChild(currentMovie);
 	}
 
@@ -705,6 +702,8 @@ var submitUpdateForm = function(event) {
 	//console.log('Updating movie in MovieDatabase');
 	movieDatabase.getCurrentMovie().genres = postData;
 	updateMovieListView();
+	utils.columnConform('.movie-item-header');
+	utils.columnConform('.movie-title');
 	//movieDatabase.setCurrentMovie(0);
 	hideModal();
 };

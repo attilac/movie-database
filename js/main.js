@@ -149,20 +149,11 @@ var appendMovies = function(movies, target){
 	targetDiv.innerHTML = movieList;
 	addMovieBtnHandlers();
 	addGenreListHandlers();
+
+	//appendRatingSlider();
+
 	utils.columnConform('.movie-item-header');
 	utils.columnConform('.movie-title');
-
-	Array.prototype.slice.call(document.getElementsByClassName('rating-slider'))
-	.forEach(function(slider){
-		//console.log(slider.id);
-		new Dragdealer(slider.id, {
-		  animationCallback: function(x, y) {
-		  	//console.log(Math.round(x * 100));	 
-		  	$('#' + slider.id + ' .progress-bar').css('left', Math.round(x * 100)+'%');
-		  	//$('#' + slider.id).parent('.rating-container').find('.rating-value').text(Math.round(x * 10));
-		  } 
-		});
-	});
 
 	// Some test junk. Remove Me
 	/*
@@ -171,6 +162,24 @@ var appendMovies = function(movies, target){
 	console.log('Movies from year 2017');
 	console.log(movieDatabase.getMoviesByKey('year', 2016));
 	*/
+};
+
+/**
+ * 
+ */
+var appendRatingSlider = function(){
+	Array.prototype.slice.call(document.getElementsByClassName('rating-slider'))
+	.forEach(function(slider){
+		//console.log(slider.id);
+		$(slider).show();
+		new Dragdealer(slider.id, {
+		  animationCallback: function(x, y) {
+		  	//console.log(Math.round(x * 100));	 
+		  	$('#' + slider.id + ' .progress-bar').css('left', Math.round(x * 100)+'%');
+		  	$('#' + slider.id).parent('.rating-container').find('.rating-value').text(Math.round(x * 10));
+		  } 
+		});
+	});
 };
 
 /**

@@ -1,0 +1,42 @@
+.rating-slider .handle {
+	background-color: darken($blue, 5%);
+  	width: 10px; 
+  	height: 100%; 
+  	z-index:21;
+  	border-radius: 0.25rem;
+}
+
+.rating-slider.progress {
+	height:1rem; 
+	overflow:hidden;
+	display: none;
+	//opacity: 0;
+	transition: all 1s ease;
+	box-shadow: $progress-box-shadow;
+}
+
+.active .rating-slider.progress {
+	//opacity: 1;	
+	display: block;
+}
+
+.rating-slider .progress-bar {
+	position:absolute; 
+	width: 100%; 
+	height: 100%; 
+	//opacity:0.6; 
+	z-index:20; 
+	margin-left:-100%;
+}
+
+.average-slider.progress {
+	opacity: 1;
+	display: block;
+	transition: all 0.35s ease;	
+	//box-shadow: $progress-box-shadow;
+}
+
+.active .average-slider.progress {
+	opacity: 0;	
+	display: none;
+}

@@ -132,10 +132,10 @@ var appendMovies = function(movies, target){
 		                      		<div class="progress average-slider">
 		                      			<div class="progress-bar bg-yellow" role="progressbar" aria-valuenow="${movie.averageRating * 10}" aria-valuemin="0" aria-valuemax="100" style="width: ${movie.averageRating * 10}%"></div>
 		                      		</div>
-									<div id="ratingSlider-${movie.id}" class="dragdealer progress rating-slider" style="display:none;">
+									<div id="ratingSlider-${movie.id}" class="dragdealer progress rating-slider">
 										<div class="handle">											
 										</div>
-										<div class="progress-bar bg-primary" role="progressbar" aria-valuenow="${movie.averageRating * 10}" aria-valuemin="0" aria-valuemax="100">
+										<div class="progress-bar bg-primary" role="progressbar" aria-valuenow="" aria-valuemin="0" aria-valuemax="100">
 										</div>
 									</div>
 								</div>
@@ -207,8 +207,8 @@ var appendRatingSlider = function(sliderWrapper){
 	//$(sliderWrapper).find('.rating-slider').show();
 
 	sliderWrapper.querySelectorAll('.average-rating')[0].classList.add('user-rating');
-	sliderWrapper.querySelectorAll('.average-slider')[0].style.display = 'none';
-	sliderWrapper.querySelectorAll('.rating-slider')[0].style.display = 'block';
+	//sliderWrapper.querySelectorAll('.average-slider')[0].style.display = 'none';
+	//sliderWrapper.querySelectorAll('.rating-slider')[0].style.display = 'block';
 
     [].map.call(sliderWrapper.querySelectorAll('.text-yellow'), function(el) {       
         el.classList.toggle('text-yellow');

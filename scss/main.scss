@@ -1,8 +1,7 @@
 @import url('https://fonts.googleapis.com/css?family=Open+Sans:300,400,700');
 @import 'variables';
-//@import "../../node_modules/compass-mixins/lib/compass";
-//@import 'circle';
 @import '../../node_modules/bootstrap/scss/bootstrap';
+@import 'rating-slider';
 
 .bg-white {
 	background-color: #fff;
@@ -11,6 +10,11 @@
 .bg-yellow {
 	background-color: $yellow;
 }
+
+.bg-midnight-blue {
+	background-color: $midnight-blue;
+}
+
 .text-yellow {
 	color: $yellow;
 }
@@ -79,7 +83,7 @@ small {
 	bottom: 0;
 	height: 100%;
 	width: 100%;		
-	background: rgba(0, 0, 0, 0.6);
+	background: rgba(255, 255, 255, 0.7);
 	z-index: 20;
     content: '\A';
     opacity: 0;
@@ -94,6 +98,7 @@ small {
 	bottom: 0;
 	height: 100%;
 	width: 100%;
+	overflow: hidden;
 }
 
 .form-check-inline + .form-check-inline{
@@ -120,8 +125,8 @@ small {
 	.btn-options {
 	    color: #fff;
 	    background-image: none;
-	    background-color: rgba(0, 0, 0, 0.6);
-	    border-color: #999;
+	    background-color: rgba(36, 114, 164, 0.9);
+	    border-color: darken(#fff, 5%);
 	    padding: 0.5rem 0.5rem;
 	    font-size: 1.25rem;
 	    line-height: 1;
@@ -142,24 +147,4 @@ small {
 	}
 }
 
-.rating-slider .handle {
-	background-color: darken($blue, 5%);
-  	width: 10px; 
-  	height: 100%; 
-  	z-index:21;
-  	border-radius: 0.25rem;
-}
 
-.rating-slider.progress {
-	height:1rem; 
-	overflow:hidden;
-}
-
-.rating-slider .progress-bar {
-	position:absolute; 
-	width: 100%; 
-	height: 100%; 
-	//opacity:0.6; 
-	z-index:20; 
-	margin-left:-100%;
-}

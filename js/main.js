@@ -117,7 +117,7 @@ var appendMovies = function(movies, target){
 
 							</div>
 
-			                <div class="user-rating">
+			                <div class="user-rating" Title="Users rated this ${movie.averageRating}/10 (${movie.ratings.length} votes) - click slider to rate">
 			                  	<div class="rating-label d-flex justify-content-end">
 			                    	<div class="mr-auto">
 			                      		<small>Rate</small>
@@ -129,18 +129,20 @@ var appendMovies = function(movies, target){
 			                        	<span class="text-faded">/10</span>
 			                        </small>
 	                      		</div>
-	                      		<div class="progress average-slider">
-	                      			<div class="progress-bar bg-yellow" role="progressbar" aria-valuenow="${movie.averageRating * 10}" aria-valuemin="0" aria-valuemax="100" style="width: ${movie.averageRating * 10}%"></div>
-	                      		</div>
-								<div id="ratingSlider-${movie.id}" class="dragdealer progress rating-slider">
-									<div class="handle">											
+	                      		<div class="rating-container">
+		                      		<div class="progress average-slider">
+		                      			<div class="progress-bar bg-yellow" role="progressbar" aria-valuenow="${movie.averageRating * 10}" aria-valuemin="0" aria-valuemax="100" style="width: ${movie.averageRating * 10}%"></div>
+		                      		</div>
+									<div id="ratingSlider-${movie.id}" class="dragdealer progress rating-slider">
+										<div class="handle">											
+										</div>
+										<div class="progress-bar bg-primary" role="progressbar" aria-valuenow="" aria-valuemin="0" aria-valuemax="100">
+										</div>
 									</div>
-									<div class="progress-bar bg-primary" role="progressbar" aria-valuenow="" aria-valuemin="0" aria-valuemax="100">
-									</div>
-								</div>
-								<div class="rating-toolbar text-right py-2">
-									<a class="btn btn-sm btn-secondary submit-rating" href="#" data-id="${movie.id}">Submit rating</a>
-								</div>								
+									<div class="rating-toolbar text-right py-2">
+										<a class="btn btn-sm btn-secondary submit-rating" href="#" data-id="${movie.id}">Submit rating</a>
+									</div>		
+								</div>							
 							</div>
 						</div>`;
 				
@@ -170,13 +172,13 @@ var appendMovies = function(movies, target){
 ------------------------------------------------*/
 
 /**
- * 
+ * Event handlers for slider container and submit btn
  */
 var addRatingSliderHandlers = function(){
-	Array.prototype.slice.call(document.getElementsByClassName('user-rating'))
-	.forEach(function(slider){
-		slider.addEventListener('mouseenter', sliderWrapperOnMouseEnter, false);
-		slider.addEventListener('mouseleave', sliderWrapperOnMouseLeave, false);
+	Array.prototype.slice.call(document.getElementsByClassName('rating-container'))
+	.forEach(function(sliderWrapper){
+		sliderWrapper.addEventListener('mouseenter', sliderWrapperOnMouseEnter, false);
+		sliderWrapper.addEventListener('mouseleave', sliderWrapperOnMouseLeave, false);
 	});
 
 	Array.prototype.slice.call(document.getElementsByClassName('submit-rating'))
@@ -193,19 +195,22 @@ var submitRatingOnClick = function(event){
 	// Set current movie
 	movieDatabase.setCurrentMovie(this.dataset.id);
 	// Set the user rating in movieDatabase
-	let userRating = Number(this.parentNode.parentNode.querySelector('.user-rating .rating-hover').textContent);
+	let userRating = Number(this.parentNode.parentNode.parentNode.querySelector('.rating-hover').textContent);
 	movieDatabase.rateMovie(movieDatabase.getCurrentMovie(), userRating);
-	console.log(movieDatabase.getCurrentMovie().ratings.length);
+	// Update title text
+	let titleText = `Users rated this ${movieDatabase.getCurrentMovie().averageRating}/10 (${movieDatabase.getCurrentMovie().ratings.length} votes) - click slider to rate`;
+	this.parentNode.parentNode.parentNode.parentNode.querySelector('.user-rating').title = titleText;
 	// Hide rating slider
-	removeRatingSlider(this.parentNode.parentNode);
+	hideRatingSlider(this.parentNode.parentNode.parentNode);
 };
 
 /**
  * Handler on mouseenter for sliderWrapper
  */
 var sliderWrapperOnMouseEnter = function(){
-	appendRatingSlider(this);
-	if(this.parentNode.querySelector('.user-rating .rating-hover').textContent !== '0'){
+	//console.log(this.parentNode);
+	appendRatingSlider(this.parentNode);
+	if(this.parentNode.querySelector('.rating-hover').textContent !== '0'){
 		this.querySelector('.rating-toolbar').classList.add('active');
 	}
 };
@@ -216,13 +221,14 @@ var sliderWrapperOnMouseEnter = function(){
 var sliderWrapperOnMouseLeave = function(){
 	//console.log(this);
 	this.querySelector('.rating-toolbar').classList.remove('active');
-	removeRatingSlider(this);
+	hideRatingSlider(this.parentNode);
 };
 
 /**
- *
+ * Hides the rating slider
+ * @param {String} target - thewrapper element
  */
-var removeRatingSlider = function(target){
+var hideRatingSlider = function(target){
 	target.querySelector('.average-rating').classList.remove('rating-hover');
 	target.querySelector('.rating-slider').classList.add('disabled');
 	target.querySelector('.average-rating').textContent = movieDatabase.getCurrentMovie().averageRating;
@@ -251,18 +257,18 @@ var appendRatingSlider = function(target){
 		target.classList.add('active');
 	}
 
-		var rateSlider = new Dragdealer(target.querySelector('.rating-slider').id, {
-			animationCallback: function(x, y) {
-				target.querySelector('.rating-slider .progress-bar').style.left = Math.round(x * 100)+'%';
-				target.querySelector('.rating-hover').textContent = Math.round(x * 10);
-				//console.log(this);
-			},
-			callback: function(x, y) {
-				//let userRating = Math.round(x * 10);
-				target.querySelector('.rating-toolbar').classList.add('active');
-				//console.log(userRating);
-			}
-		});
+	var rateSlider = new Dragdealer(target.querySelector('.rating-slider').id, {
+		animationCallback: function(x, y) {
+			target.querySelector('.rating-slider .progress-bar').style.left = Math.round(x * 100)+'%';
+			target.querySelector('.rating-hover').textContent = Math.round(x * 10);
+			//console.log(this);
+		},
+		callback: function(x, y) {
+			//let userRating = Math.round(x * 10);
+			target.querySelector('.rating-toolbar').classList.add('active');
+			//console.log(userRating);
+		}
+	});
 };
 
 /**
@@ -658,10 +664,19 @@ var sortSelectOnAppChange = function(){
  */
 var getAddFormVals = function(){
 	// get input values from form
+	/* 
+	jQuery version
 	var title = ($('#movieTitle').val() || '' ? $('#movieTitle').val() : 'Default Title');
 	var year = ($('#titleYear').val() || '' ? $('#titleYear').val() : '2017');
 	var poster = ($('#moviePoster').val() || '' ? $('#moviePoster').val() : '');
 	var storyline = ($('#movieStoryline').val() || '' ? $('#movieStoryline').val() : '');
+	*/
+	
+	// Vanilla
+	var title = document.querySelector('#movieTitle').value || '' ? document.querySelector('#movieTitle').value : 'Default Title';
+	var year = document.querySelector('#titleYear').value || '' ? document.querySelector('#titleYear').value : '2017';
+	var poster = document.querySelector('#moviePoster').value || '' ? document.querySelector('#moviePoster').value : '';
+	var storyline = document.querySelector('#movieStoryline').value || '' ? document.querySelector('#movieStoryline').value : '';
 
 	// get array of checked checkboxes
 	var selectedGenres = getCheckedInputValues();

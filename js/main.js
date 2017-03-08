@@ -117,7 +117,7 @@ var appendMovies = function(movies, target){
 
 							</div>
 
-			                <div class="rating-container">
+			                <div class="user-rating">
 			                  	<div class="rating-label d-flex justify-content-end">
 			                    	<div class="mr-auto">
 			                      		<small>Rate</small>
@@ -173,7 +173,7 @@ var appendMovies = function(movies, target){
  * 
  */
 var addRatingSliderHandlers = function(){
-	Array.prototype.slice.call(document.getElementsByClassName('rating-container'))
+	Array.prototype.slice.call(document.getElementsByClassName('user-rating'))
 	.forEach(function(slider){
 		slider.addEventListener('mouseenter', sliderWrapperOnMouseEnter, false);
 		slider.addEventListener('mouseleave', sliderWrapperOnMouseLeave, false);
@@ -193,9 +193,9 @@ var submitRatingOnClick = function(event){
 	// Set current movie
 	movieDatabase.setCurrentMovie(this.dataset.id);
 	// Set the user rating in movieDatabase
-	let userRating = Number(this.parentNode.parentNode.querySelectorAll('.rating-container .user-rating')[0].textContent);
+	let userRating = Number(this.parentNode.parentNode.querySelector('.user-rating .rating-hover').textContent);
 	movieDatabase.rateMovie(movieDatabase.getCurrentMovie(), userRating);
-	//console.log(movieDatabase.getCurrentMovie().ratings.length);
+	console.log(movieDatabase.getCurrentMovie().ratings.length);
 	// Hide rating slider
 	removeRatingSlider(this.parentNode.parentNode);
 };
@@ -205,7 +205,7 @@ var submitRatingOnClick = function(event){
  */
 var sliderWrapperOnMouseEnter = function(){
 	appendRatingSlider(this);
-	if(this.parentNode.querySelector('.rating-container .user-rating').textContent !== '0'){
+	if(this.parentNode.querySelector('.user-rating .rating-hover').textContent !== '0'){
 		this.querySelector('.rating-toolbar').classList.add('active');
 	}
 };
@@ -223,7 +223,7 @@ var sliderWrapperOnMouseLeave = function(){
  *
  */
 var removeRatingSlider = function(target){
-	target.querySelector('.average-rating').classList.remove('user-rating');
+	target.querySelector('.average-rating').classList.remove('rating-hover');
 	target.querySelector('.rating-slider').classList.add('disabled');
 	target.querySelector('.average-rating').textContent = movieDatabase.getCurrentMovie().averageRating;
     [].map.call(target.querySelectorAll('.text-primary'), function(el) {       
@@ -241,7 +241,7 @@ var removeRatingSlider = function(target){
 var appendRatingSlider = function(target){
 	//console.log(target);
 	// Set class for rating textfield
-	target.querySelector('.average-rating').classList.add('user-rating');
+	target.querySelector('.average-rating').classList.add('rating-hover');
     [].map.call(target.querySelectorAll('.text-yellow'), function(el) {       
         el.classList.toggle('text-yellow');
         el.classList.toggle('text-primary');
@@ -254,7 +254,7 @@ var appendRatingSlider = function(target){
 		var rateSlider = new Dragdealer(target.querySelector('.rating-slider').id, {
 			animationCallback: function(x, y) {
 				target.querySelector('.rating-slider .progress-bar').style.left = Math.round(x * 100)+'%';
-				target.querySelector('.user-rating').textContent = Math.round(x * 10);
+				target.querySelector('.rating-hover').textContent = Math.round(x * 10);
 				//console.log(this);
 			},
 			callback: function(x, y) {

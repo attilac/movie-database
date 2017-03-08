@@ -190,13 +190,14 @@ var addRatingSliderHandlers = function(){
  */
 var submitRatingOnClick = function(event){
 	event.preventDefault();
-	//console.log(this.dataset.id);
+	// Set current movie
 	movieDatabase.setCurrentMovie(this.dataset.id);
-	//console.log(movieDatabase.getCurrentMovie().averageRating);
+	// Set the user rating in movieDatabase
 	let userRating = Number(this.parentNode.parentNode.querySelectorAll('.rating-container .user-rating')[0].textContent);
 	movieDatabase.rateMovie(movieDatabase.getCurrentMovie(), userRating);
-	//console.log(userRating);
-	//console.log(movieDatabase.getCurrentMovie().averageRating);
+	//console.log(movieDatabase.getCurrentMovie().ratings.length);
+	// Hide rating slider
+	removeRatingSlider(this.parentNode.parentNode);
 };
 
 /**
@@ -204,7 +205,7 @@ var submitRatingOnClick = function(event){
  */
 var sliderWrapperOnMouseEnter = function(){
 	appendRatingSlider(this);
-	if(this.parentNode.querySelectorAll('.rating-container .user-rating')[0].textContent !== '0'){
+	if(this.parentNode.querySelector('.rating-container .user-rating').textContent !== '0'){
 		this.querySelector('.rating-toolbar').classList.add('active');
 	}
 };
@@ -213,17 +214,24 @@ var sliderWrapperOnMouseEnter = function(){
  * Handler on mouseleave for sliderWrapper
  */
 var sliderWrapperOnMouseLeave = function(){
-	//console.log(this.querySelectorAll('.rating-slider')[0]);
-	//$(this).find('.average-rating').removeClass('user-rating');
-	//$(this).find('.rating-slider').hide();
-	//$(this).find('.average-slider').show();
-
-	/*
-	this.querySelectorAll('.average-rating')[0].classList.remove('user-rating');
-	this.querySelectorAll('.rating-slider')[0].style.display = 'none';
-	this.querySelectorAll('.average-slider')[0].style.display = 'block';
-	*/
+	//console.log(this);
 	this.querySelector('.rating-toolbar').classList.remove('active');
+	removeRatingSlider(this);
+};
+
+/**
+ *
+ */
+var removeRatingSlider = function(target){
+	target.querySelector('.average-rating').classList.remove('user-rating');
+	target.querySelector('.rating-slider').classList.add('disabled');
+	target.querySelector('.average-rating').textContent = movieDatabase.getCurrentMovie().averageRating;
+    [].map.call(target.querySelectorAll('.text-primary'), function(el) {       
+        el.classList.toggle('text-primary');
+        el.classList.toggle('text-yellow');
+    });
+	target.classList.remove('active');
+	target.querySelector('.rating-toolbar').classList.remove('active');
 };
 
 /**
@@ -233,7 +241,7 @@ var sliderWrapperOnMouseLeave = function(){
 var appendRatingSlider = function(target){
 	//console.log(target);
 	// Set class for rating textfield
-	target.querySelectorAll('.average-rating')[0].classList.add('user-rating');
+	target.querySelector('.average-rating').classList.add('user-rating');
     [].map.call(target.querySelectorAll('.text-yellow'), function(el) {       
         el.classList.toggle('text-yellow');
         el.classList.toggle('text-primary');
@@ -241,24 +249,20 @@ var appendRatingSlider = function(target){
 
 	if(!target.classList.contains('active')){
 		target.classList.add('active');
+	}
 
-		var rateSlider = new Dragdealer(target.querySelectorAll('.rating-slider')[0].id, {
+		var rateSlider = new Dragdealer(target.querySelector('.rating-slider').id, {
 			animationCallback: function(x, y) {
-				target.querySelectorAll('.rating-slider .progress-bar')[0].style.left = Math.round(x * 100)+'%';
-				target.parentNode.querySelectorAll('.rating-container .user-rating')[0].textContent = Math.round(x * 10);
+				target.querySelector('.rating-slider .progress-bar').style.left = Math.round(x * 100)+'%';
+				target.querySelector('.user-rating').textContent = Math.round(x * 10);
 				//console.log(this);
-				//$('#' + target.id + ' .progress-bar').css('left', Math.round(x * 100)+'%');
-				//$('#' + target.id).parent('.rating-container').find('.user-rating').text(Math.round(x * 10));
 			},
 			callback: function(x, y) {
-				let userRating = Math.round(x * 10);
-				//console.log(target.querySelector('.rating-toolbar'));
+				//let userRating = Math.round(x * 10);
 				target.querySelector('.rating-toolbar').classList.add('active');
 				//console.log(userRating);
 			}
 		});
-		//console.log(rateSlider instanceof Dragdealer);
-	}
 };
 
 /**
@@ -267,8 +271,8 @@ var appendRatingSlider = function(target){
 var updateMovieInstanceView = function(){
 	//console.log(isMovieInActiveGenre());
 	if(isMovieInActiveGenre() || movieDatabase.currentGenres.length === 0){
-		//console.log('Movie in current genre or no genre selected. Update the DOM');
-		
+		//console.log('Movie in current genre or no genre selected. Update the DOM');	
+
 		//find the movie in DOM - jQuery version
 		//$(getMovieInstance(movieDatabase.getCurrentMovie().id))
 		//.find('.movie-genre-list')
@@ -276,14 +280,13 @@ var updateMovieInstanceView = function(){
 
 		//find the movie in DOM  - vanilla JS
 		getMovieInstance(movieDatabase.getCurrentMovie().id)
-		.querySelectorAll('.movie-genre-list')[0]
+		.querySelector('.movie-genre-list')
 		.outerHTML = getGenreLinksFromList(movieDatabase.getCurrentMovie().genres); // replace movie genre-list with updated for movieDatabase
 
 		// add eventhandlers for genre-links
 		addMovieGenreLinkHandlers();
 	}else{
 		//console.log('Movie not in current genre. Remove from DOM');
-		//console.log(getMovieInstance(movieDatabase.getCurrentMovie().id));
 		var currentMovie = getMovieInstance(movieDatabase.getCurrentMovie().id);
 		currentMovie.parentNode.removeChild(currentMovie);
 	}
@@ -296,7 +299,7 @@ var updateMovieInstanceView = function(){
  */
 var getMovieInstance = function(id){
 	//console.log(typeof(document.querySelectorAll(`[data-id="${id}"]`)));
-	return document.querySelectorAll(`[data-id="${id}"]`)[0];
+	return document.querySelector(`[data-id="${id}"]`);
 };
 
 /**
@@ -376,7 +379,6 @@ var editGenreBtnClickHandler = function(event){
 	//console.log(movieDatabase.getCurrentMovie());
 	launchUpdateMovieModal();
 	//console.log(movieDatabase.getCurrentMovie());
-	//console.log(`function for editing the genres of ${movieDatabase.getCurrentMovie().title}`);
 };
 
 /**
@@ -384,9 +386,6 @@ var editGenreBtnClickHandler = function(event){
  */
 var genreBtnClickHandler = function(event){
 	event.preventDefault();
-	//console.log($(this).children('small')[0].textContent);
-	//movieDatabase.currentGenres = [$(this).children('small')[0].textContent];
-
 	//console.log(this.children[0].innerHTML);
 	movieDatabase.currentGenres = [this.children[0].innerHTML];
 	//console.log(movieDatabase.currentGenres);

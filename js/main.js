@@ -95,50 +95,52 @@ var appendMovies = function(movies, target){
 	movies.forEach(function(movie) {
 		var poster = movie.poster || '' ? 'img/' + movie.poster : 'http://placehold.it/340x500/95a5a6/95a5a6';
 		//console.log('titel: ' + movie.title + ' år: ' + movie.year);
-	  	movieList += 	`<div class="col-lg-2 col-sm-3 col-6 movie-item" data-id="${movie.id}">
-	  						<div class="mb-5">
-			  					<div class="responsive-poster mb-3">
-									<div class="responsive-poster-item">
-										<img src="${poster}" class="img-fluid" alt="">
-									</div>
-									<div class="movie-update">
-									  <button type="button" class="btn btn-options" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-									    <i class="fa fa-ellipsis-h" aria-hidden="true"></i>
-									  </button>
-									  <div class="dropdown-menu">
-										<a href="#" class="dropdown-item btn-edit-genres" data-id="${movie.id}">Edit Genres</a>										    
-									  </div>
-								 	</div>
+	  	movieList += 	`<div class="movie-item col-lg-2 col-sm-3 col-6 mb-5" data-id="${movie.id}">
+		  					<div class="responsive-poster mb-3">
+								<div class="responsive-poster-item">
+									<img src="${poster}" class="img-fluid" alt="">
 								</div>
+							</div>
 
-								<div class="movie-item-header mb-3">
-									<h6 class="movie-title mb-1">${movie.title} <small>(${movie.year})</small></h6>
-									<!-- <small class="genres text-muted">${movie.genres}</small> -->
-									${getGenreLinksFromList(movie.genres)}
-								</div>
+							<div class="movie-item-header mb-3 mr-3">
+								<h6 class="movie-title mb-1">${movie.title} <small>(${movie.year})</small></h6>
+								${getGenreLinksFromList(movie.genres)}
 
-				                <div class="rating-container">
-				                  	<div class="rating-label d-flex justify-content-end">
-				                    	<div class="mr-auto">
-				                      		<small>Rate</small>
-				                    	</div
-		                      		<div class="rating-text">
-				                        <small>		
-				                        	<i class="fa fa-star text-yellow"></i>			                        	
-				                        	<span class="text-yellow average-rating">${movie.averageRating}</span>
-				                        	<span class="text-faded">/10</span>
-				                        </small>
-		                      		</div>
-		                      		<div class="progress average-slider">
-		                      			<div class="progress-bar bg-yellow" role="progressbar" aria-valuenow="${movie.averageRating * 10}" aria-valuemin="0" aria-valuemax="100" style="width: ${movie.averageRating * 10}%"></div>
-		                      		</div>
-									<div id="ratingSlider-${movie.id}" class="dragdealer progress rating-slider">
-										<div class="handle">											
-										</div>
-										<div class="progress-bar bg-primary" role="progressbar" aria-valuenow="" aria-valuemin="0" aria-valuemax="100">
-										</div>
+								<div class="movie-update btn-group dropup">
+								  <button type="button" class="btn btn-options" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+								    <i class="fa fa-ellipsis-v" aria-hidden="true"></i>
+								  </button>
+								  <div class="dropdown-menu dropdown-menu-right">
+									<a href="#" class="dropdown-item btn-edit-genres" data-id="${movie.id}">Edit Genres</a>										    
+								  </div>
+							 	</div>
+
+							</div>
+
+			                <div class="rating-container">
+			                  	<div class="rating-label d-flex justify-content-end">
+			                    	<div class="mr-auto">
+			                      		<small>Rate</small>
+			                    	</div
+	                      		<div class="rating-text">
+			                        <small>		
+			                        	<i class="fa fa-star text-yellow"></i>			                        	
+			                        	<span class="text-yellow average-rating">${movie.averageRating}</span>
+			                        	<span class="text-faded">/10</span>
+			                        </small>
+	                      		</div>
+	                      		<div class="progress average-slider">
+	                      			<div class="progress-bar bg-yellow" role="progressbar" aria-valuenow="${movie.averageRating * 10}" aria-valuemin="0" aria-valuemax="100" style="width: ${movie.averageRating * 10}%"></div>
+	                      		</div>
+								<div id="ratingSlider-${movie.id}" class="dragdealer progress rating-slider">
+									<div class="handle">											
+									</div>
+									<div class="progress-bar bg-primary" role="progressbar" aria-valuenow="" aria-valuemin="0" aria-valuemax="100">
 									</div>
 								</div>
+								<div class="rating-toolbar text-right py-2">
+									<a class="btn btn-sm btn-secondary submit-rating" href="#" data-id="${movie.id}">Submit rating</a>
+								</div>								
 							</div>
 						</div>`;
 				
@@ -163,6 +165,10 @@ var appendMovies = function(movies, target){
 	*/
 };
 
+/*-----------------------------------------------
+					Rating Slider
+------------------------------------------------*/
+
 /**
  * 
  */
@@ -172,18 +178,39 @@ var addRatingSliderHandlers = function(){
 		slider.addEventListener('mouseenter', sliderWrapperOnMouseEnter, false);
 		slider.addEventListener('mouseleave', sliderWrapperOnMouseLeave, false);
 	});
+
+	Array.prototype.slice.call(document.getElementsByClassName('submit-rating'))
+	.forEach(function(btn){
+		btn.addEventListener('click', submitRatingOnClick, false);
+	});
 };
 
 /**
- * 
+ * Handler on click for submit-rating btn
+ */
+var submitRatingOnClick = function(event){
+	event.preventDefault();
+	//console.log(this.dataset.id);
+	movieDatabase.setCurrentMovie(this.dataset.id);
+	//console.log(movieDatabase.getCurrentMovie().averageRating);
+	let userRating = Number(this.parentNode.parentNode.querySelectorAll('.rating-container .user-rating')[0].textContent);
+	movieDatabase.rateMovie(movieDatabase.getCurrentMovie(), userRating);
+	//console.log(userRating);
+	//console.log(movieDatabase.getCurrentMovie().averageRating);
+};
+
+/**
+ * Handler on mouseenter for sliderWrapper
  */
 var sliderWrapperOnMouseEnter = function(){
-	//console.log(this.querySelectorAll('.rating-slider')[0] instanceof Dragdealer);
 	appendRatingSlider(this);
+	if(this.parentNode.querySelectorAll('.rating-container .user-rating')[0].textContent !== '0'){
+		this.querySelector('.rating-toolbar').classList.add('active');
+	}
 };
 
 /**
- * 
+ * Handler on mouseleave for sliderWrapper
  */
 var sliderWrapperOnMouseLeave = function(){
 	//console.log(this.querySelectorAll('.rating-slider')[0]);
@@ -196,42 +223,46 @@ var sliderWrapperOnMouseLeave = function(){
 	this.querySelectorAll('.rating-slider')[0].style.display = 'none';
 	this.querySelectorAll('.average-slider')[0].style.display = 'block';
 	*/
+	this.querySelector('.rating-toolbar').classList.remove('active');
 };
 
 /**
- * 
+ * Toggle visibilty for average bar and rating slider. Create Dragslider
+ * @param {String} target - the target wrapper element
  */
-var appendRatingSlider = function(sliderWrapper){
-	//$(sliderWrapper).find('.average-rating').addClass('user-rating');
-	//$(sliderWrapper).find('.average-slider').hide();
-	//$(sliderWrapper).find('.rating-slider').show();
-
-	sliderWrapper.querySelectorAll('.average-rating')[0].classList.add('user-rating');
-	//sliderWrapper.querySelectorAll('.average-slider')[0].style.display = 'none';
-	//sliderWrapper.querySelectorAll('.rating-slider')[0].style.display = 'block';
-
-    [].map.call(sliderWrapper.querySelectorAll('.text-yellow'), function(el) {       
+var appendRatingSlider = function(target){
+	//console.log(target);
+	// Set class for rating textfield
+	target.querySelectorAll('.average-rating')[0].classList.add('user-rating');
+    [].map.call(target.querySelectorAll('.text-yellow'), function(el) {       
         el.classList.toggle('text-yellow');
         el.classList.toggle('text-primary');
     });
 
-	if(!sliderWrapper.classList.contains('active')){
-		sliderWrapper.classList.add('active');
-		var rateSlider = new Dragdealer(sliderWrapper.querySelectorAll('.rating-slider')[0].id, {
+	if(!target.classList.contains('active')){
+		target.classList.add('active');
+
+		var rateSlider = new Dragdealer(target.querySelectorAll('.rating-slider')[0].id, {
 			animationCallback: function(x, y) {
-				sliderWrapper.querySelectorAll('.rating-slider .progress-bar')[0].style.left = Math.round(x * 100)+'%';
-				sliderWrapper.parentNode.querySelectorAll('.rating-container .user-rating')[0].textContent = Math.round(x * 10);
+				target.querySelectorAll('.rating-slider .progress-bar')[0].style.left = Math.round(x * 100)+'%';
+				target.parentNode.querySelectorAll('.rating-container .user-rating')[0].textContent = Math.round(x * 10);
 				//console.log(this);
-				//$('#' + sliderWrapper.id + ' .progress-bar').css('left', Math.round(x * 100)+'%');
-				//$('#' + sliderWrapper.id).parent('.rating-container').find('.user-rating').text(Math.round(x * 10));
-			} 
+				//$('#' + target.id + ' .progress-bar').css('left', Math.round(x * 100)+'%');
+				//$('#' + target.id).parent('.rating-container').find('.user-rating').text(Math.round(x * 10));
+			},
+			callback: function(x, y) {
+				let userRating = Math.round(x * 10);
+				//console.log(target.querySelector('.rating-toolbar'));
+				target.querySelector('.rating-toolbar').classList.add('active');
+				//console.log(userRating);
+			}
 		});
-		console.log(rateSlider instanceof Dragdealer);
+		//console.log(rateSlider instanceof Dragdealer);
 	}
 };
 
 /**
- * Updates the view on movie after editing
+ * Updates the view of a Movie instance after editing
  */
 var updateMovieInstanceView = function(){
 	//console.log(isMovieInActiveGenre());
@@ -254,7 +285,6 @@ var updateMovieInstanceView = function(){
 		//console.log('Movie not in current genre. Remove from DOM');
 		//console.log(getMovieInstance(movieDatabase.getCurrentMovie().id));
 		var currentMovie = getMovieInstance(movieDatabase.getCurrentMovie().id);
-		//console.log(typeof(currentMovie));
 		currentMovie.parentNode.removeChild(currentMovie);
 	}
 };
@@ -355,7 +385,10 @@ var editGenreBtnClickHandler = function(event){
 var genreBtnClickHandler = function(event){
 	event.preventDefault();
 	//console.log($(this).children('small')[0].textContent);
-	movieDatabase.currentGenres = [$(this).children('small')[0].textContent];
+	//movieDatabase.currentGenres = [$(this).children('small')[0].textContent];
+
+	//console.log(this.children[0].innerHTML);
+	movieDatabase.currentGenres = [this.children[0].innerHTML];
 	//console.log(movieDatabase.currentGenres);
 	genreBtnsOnAppChange();
 	appendMovies(utils.sortObjectsByKey(movieDatabase.getMoviesByGenres(movieDatabase.currentGenres), movieDatabase.getSortBy(), movieDatabase.getSortOrder()), 'movieContainer');
@@ -438,16 +471,19 @@ var addFilterButtonEventListeners = function(className, functionName){
 var filterBtnOnClick = function(event){
     event.preventDefault();
     movieDatabase.currentGenres = [];
-    if($(this).hasClass('active')){
+    if(this.classList.contains('active')){
         this.classList.toggle('active');
     } else {
         this.classList.toggle('active'); 
     }
-    Array.prototype.slice.call(document.getElementsByClassName('filter-button-group')[0].getElementsByClassName('active'))
+
+    Array.prototype.slice.call(document.getElementsByClassName('filter-button-group')[0]
+    .getElementsByClassName('active'))
     .forEach(function(item) {
     	//console.log(item.value);
     	movieDatabase.currentGenres.push(item.value);
     }); 
+
     //console.log(movieDatabase.currentGenres);
     if(movieDatabase.currentGenres.length > 0){
     	appendMovies(utils.sortObjectsByKey(movieDatabase.getMoviesByGenres(movieDatabase.currentGenres), movieDatabase.getSortBy(), movieDatabase.getSortOrder()), 'movieContainer');
@@ -507,7 +543,9 @@ var appendSortControllers = function(target){
 						<select id="sortBySelect" class="form-control d-inline mr-3 sort-key-group sort-select">
 							<option disabled>Sort By</option>`;
 
-	movieDatabase.getSortByList().forEach(function(sortBy) {
+	movieDatabase
+	.getSortByList()
+	.forEach(function(sortBy) {
 		let selected = movieDatabase.getSortBy() === sortBy.key ? 'selected': '';
     	sortControllers += `<option ${selected} class="sort-key-item sort-item" value="${sortBy.key}">${sortBy.displayName}</option>`;
     });	
@@ -517,7 +555,9 @@ var appendSortControllers = function(target){
 	sortControllers += `<label class="mr-2 text-muted" for="sortOrderSelect">Order</label>
 						<select id="sortOrderSelect" class="form-control d-inline sort-order-group sort-select">
 							<option disabled>Sort Order</option>`;
-	movieDatabase.getSortOrderList()
+							
+	movieDatabase
+	.getSortOrderList()
 	.forEach(function(sortOrder) {
 		let selected = movieDatabase.getSortOrder() === sortOrder.key ? 'selected': '';
     	sortControllers += `<option ${selected} class="sort-key-item sort-item" value="${sortOrder.key}">${sortOrder.displayName}</option>`;
@@ -550,13 +590,13 @@ var addSortDropdownHandlers = function(){
 var sortDropdownOnChange = function(){
 
 	// Set sort by value in movieDatabase 
-    if($(this).hasClass('sort-key-group')){ 	
+	if(this.classList.contains('sort-key-group')){	
     	//console.log(this.options[this.selectedIndex].value);
     	movieDatabase.setSortBy(this.options[this.selectedIndex].value);		
     } 
 
     // Set sort order value in movieDatabase 
-    if($(this).hasClass('sort-order-group')){	
+    if(this.classList.contains('sort-order-group')){	
     	//console.log(this.options[this.selectedIndex].value); 
 		movieDatabase.setSortOrder(this.options[this.selectedIndex].value);
     }
@@ -714,8 +754,10 @@ var checkSelectedGenres = function(genres){
 	    	// iterate over genres array
 	    	genres.map(function(genre) {
 	            if (checkbox.value.indexOf(genre) >= 0) {
-	            	//console.log(genre);
-	                checkbox.checked = true; // if match check checkbox
+	            	//console.log(checkbox.value === genre);
+	            	if(checkbox.value === genre){
+	                	checkbox.checked = true; // if match check checkbox
+	                }
 	            }
 	    	});
 	    });   

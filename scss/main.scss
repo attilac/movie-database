@@ -1,6 +1,8 @@
 @import url('https://fonts.googleapis.com/css?family=Open+Sans:300,400,700');
 @import 'variables';
 @import '../../node_modules/bootstrap/scss/bootstrap';
+@import 'filter-bar';
+@import 'movie';
 @import 'rating-slider';
 
 .bg-white {
@@ -31,76 +33,6 @@ small {
 	font-size: 2.5rem;
 }
 
-.app-filter-bar {
-	.card-block {
-		padding: 0;
-	}
-	.dropdown-toggle{
-	    color: #292b2c;
-	    background-color: #e6e6e6;
-	    border-color: #c9c9c9;
-		&.collapsed{
-			color: $btn-secondary-color;          
-			background-color: $btn-secondary-bg;            
-			border-color: $btn-secondary-border;         
-		}
-	}
-	label{
-		font-weight: 300;
-	}
-}
-
-.sort-controllers .form-control,
-.sort-controllers label {
-	font-size: 85%;
-	width: auto;
-}
-
-.responsive-poster {
-	display: block;
-	width: 100%;
-	position: relative;	
-	height: 0;
-	//padding-bottom: 147.1%;
-	padding-bottom: 153.3742%;
-	//overflow: hidden;
-	&:hover {
-		.movie-update	{
-			z-index: 22	;
-			opacity: 1;
-		}	
-		.responsive-poster-item:after {
-			opacity: 1;	
-		}
-	}
-}
-
-.responsive-poster-item:after {
-	position: absolute;
-	left: 0;
-	top: 0;
-	right: 0;
-	bottom: 0;
-	height: 100%;
-	width: 100%;		
-	background: rgba(255, 255, 255, 0.7);
-	z-index: 20;
-    content: '\A';
-    opacity: 0;
-    transition: all 0.35s;
-}
-
-.responsive-poster-item {
-	position: absolute;
-	left: 0;
-	top: 0;
-	right: 0;
-	bottom: 0;
-	height: 100%;
-	width: 100%;
-	overflow: hidden;
-}
-
 .form-check-inline + .form-check-inline{
 	margin-left: 0; 
 }
@@ -108,43 +40,7 @@ small {
 .form-check-inline {
 	margin-right: 0.75rem;
 }
-.movie-update {
-	position: absolute;
-	left: 50%;
-	top: 50%;
-	margin-left: -19px;
-	margin-top: -19px;
-	margin-bottom: 0;
-	opacity: 0;
-	transition: all 0.35s ease;
 
-	.dropdown-toggle::after {
-		display: none;
-	}
 
-	.btn-options {
-	    color: #fff;
-	    background-image: none;
-	    background-color: rgba(36, 114, 164, 0.9);
-	    border-color: darken(#fff, 5%);
-	    padding: 0.5rem 0.5rem;
-	    font-size: 1.25rem;
-	    line-height: 1;
-		border-radius: 50rem;   
-		&:hover{
-		    color: #fff;
-		    //background-color: transparent;
-		    border-color: #fff;
-		    transform: scale(1.1);
-		}
-
-		i {
-			width: 20px;
-			height: 20px;
-			font-size: 1.25rem;
-			line-height: 1;
-		}
-	}
-}
 
 

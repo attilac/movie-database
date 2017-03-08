@@ -5988,6 +5988,90 @@ a.text-gray-dark:focus, a.text-gray-dark:hover {
   .hidden-print {
     display: none !important; } }
 
+.app-filter-bar .card-block {
+  padding: 0; }
+
+.app-filter-bar .dropdown-toggle {
+  color: #292b2c;
+  background-color: #e6e6e6;
+  border-color: #c9c9c9; }
+  .app-filter-bar .dropdown-toggle.collapsed {
+    color: #292b2c;
+    background-color: #fff;
+    border-color: #e8e8e8; }
+
+.app-filter-bar label {
+  font-weight: 300; }
+
+.sort-controllers .form-control,
+.sort-controllers label {
+  font-size: 85%;
+  width: auto; }
+
+.movie-item:hover .movie-update {
+  z-index: 22;
+  opacity: 1; }
+
+.movie-item-header {
+  position: relative; }
+
+.responsive-poster {
+  display: block;
+  width: 100%;
+  position: relative;
+  height: 0;
+  padding-bottom: 153.3742%; }
+
+.responsive-poster-item:after {
+  position: absolute;
+  left: 0;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  height: 100%;
+  width: 100%;
+  background: rgba(255, 255, 255, 0.6);
+  z-index: 20;
+  content: '\A';
+  opacity: 0;
+  transition: all 0.35s; }
+
+.responsive-poster-item {
+  position: absolute;
+  left: 0;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  height: 100%;
+  width: 100%;
+  overflow: hidden; }
+
+.movie-update {
+  position: absolute;
+  top: 0;
+  right: 0;
+  margin-bottom: 0;
+  margin-right: -2rem;
+  opacity: 0;
+  transition: all 0.35s ease; }
+  .movie-update .dropdown-toggle::after {
+    display: none; }
+  .movie-update .btn-options {
+    color: #333;
+    background-image: none;
+    background-color: transparent;
+    padding: 0.5rem 0.5rem;
+    font-size: 1.25rem;
+    line-height: 1; }
+    .movie-update .btn-options:hover {
+      color: #333;
+      cursor: pointer; }
+    .movie-update .btn-options i {
+      width: 20px;
+      height: 20px;
+      font-size: 1.25rem;
+      line-height: 1; }
+
 .rating-slider .handle {
   background-color: #2472a4;
   width: 10px;
@@ -5996,14 +6080,15 @@ a.text-gray-dark:focus, a.text-gray-dark:hover {
   border-radius: 0.25rem; }
 
 .rating-slider.progress {
-  height: 1rem;
+  height: 0;
   overflow: hidden;
-  display: none;
-  transition: all 1s ease;
-  box-shadow: inset 0 0.1rem 0.1rem rgba(0, 0, 0, 0.1); }
+  opacity: 0;
+  transition: opacity 0.6s ease;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2); }
 
 .active .rating-slider.progress {
-  display: block; }
+  height: 1rem;
+  opacity: 1; }
 
 .rating-slider .progress-bar {
   position: absolute;
@@ -6013,13 +6098,24 @@ a.text-gray-dark:focus, a.text-gray-dark:hover {
   margin-left: -100%; }
 
 .average-slider.progress {
-  opacity: 1;
-  display: block;
-  transition: all 0.35s ease; }
+  height: 1rem;
+  opacity: 1; }
 
 .active .average-slider.progress {
-  opacity: 0;
+  height: 0;
+  opacity: 0; }
+
+.rating-container {
+  position: relative; }
+
+.rating-toolbar {
+  position: absolute;
+  width: 100%;
+  height: 2rem;
   display: none; }
+
+.rating-toolbar.active {
+  display: block; }
 
 .bg-white {
   background-color: #fff; }
@@ -6043,94 +6139,8 @@ small {
   font-weight: 300;
   font-size: 2.5rem; }
 
-.app-filter-bar .card-block {
-  padding: 0; }
-
-.app-filter-bar .dropdown-toggle {
-  color: #292b2c;
-  background-color: #e6e6e6;
-  border-color: #c9c9c9; }
-  .app-filter-bar .dropdown-toggle.collapsed {
-    color: #292b2c;
-    background-color: #fff;
-    border-color: #e8e8e8; }
-
-.app-filter-bar label {
-  font-weight: 300; }
-
-.sort-controllers .form-control,
-.sort-controllers label {
-  font-size: 85%;
-  width: auto; }
-
-.responsive-poster {
-  display: block;
-  width: 100%;
-  position: relative;
-  height: 0;
-  padding-bottom: 153.3742%; }
-  .responsive-poster:hover .movie-update {
-    z-index: 22;
-    opacity: 1; }
-  .responsive-poster:hover .responsive-poster-item:after {
-    opacity: 1; }
-
-.responsive-poster-item:after {
-  position: absolute;
-  left: 0;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  height: 100%;
-  width: 100%;
-  background: rgba(255, 255, 255, 0.7);
-  z-index: 20;
-  content: '\A';
-  opacity: 0;
-  transition: all 0.35s; }
-
-.responsive-poster-item {
-  position: absolute;
-  left: 0;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  height: 100%;
-  width: 100%;
-  overflow: hidden; }
-
 .form-check-inline + .form-check-inline {
   margin-left: 0; }
 
 .form-check-inline {
   margin-right: 0.75rem; }
-
-.movie-update {
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  margin-left: -19px;
-  margin-top: -19px;
-  margin-bottom: 0;
-  opacity: 0;
-  transition: all 0.35s ease; }
-  .movie-update .dropdown-toggle::after {
-    display: none; }
-  .movie-update .btn-options {
-    color: #fff;
-    background-image: none;
-    background-color: rgba(36, 114, 164, 0.9);
-    border-color: #f2f2f2;
-    padding: 0.5rem 0.5rem;
-    font-size: 1.25rem;
-    line-height: 1;
-    border-radius: 50rem; }
-    .movie-update .btn-options:hover {
-      color: #fff;
-      border-color: #fff;
-      transform: scale(1.1); }
-    .movie-update .btn-options i {
-      width: 20px;
-      height: 20px;
-      font-size: 1.25rem;
-      line-height: 1; }

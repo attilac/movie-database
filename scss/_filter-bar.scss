@@ -1,0 +1,24 @@
+.app-filter-bar {
+	.card-block {
+		padding: 0;
+	}
+	.dropdown-toggle{
+	    color: #292b2c;
+	    background-color: #e6e6e6;
+	    border-color: #c9c9c9;
+		&.collapsed{
+			color: $btn-secondary-color;          
+			background-color: $btn-secondary-bg;            
+			border-color: $btn-secondary-border;         
+		}
+	}
+	label{
+		font-weight: 300;
+	}
+}
+
+.sort-controllers .form-control,
+.sort-controllers label {
+	font-size: 85%;
+	width: auto;
+}

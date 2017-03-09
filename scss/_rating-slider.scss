@@ -16,7 +16,7 @@
 	box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
 }
 
-.active .rating-slider.progress {
+.rating-hover .rating-slider.progress {
 	height:1rem;
 	opacity: 1;	
 	//display: block;
@@ -38,7 +38,7 @@
 	//box-shadow: $progress-box-shadow;
 }
 
-.active .average-slider.progress {
+.rating-hover .average-slider.progress {
 	height:0;
 	opacity: 0;	
 	//display: none;

@@ -17,29 +17,41 @@ var movies = [
   }
 ]; 
 
-var showAllMovies = function(){
-
-            var result = '';
-            var result1 = '';
-            for(var i = 0; i < movies.length; i++){
-                
-
-                       result += `<p>${movies[i].title}</p>
-                                  <p>${movies[i].year}</p>
-                                  <p><img src="${movies[i].cover}"></p>
-                                  <p>${movies[i].genres}</p>
-                                  <p>${movies[i].ratings}</p>
-                                  <p>${movies[i].average}</p>
-                                  
-                                  `;
-                                    
-                    movies[i].actors.forEach(function(actor){
-                        result += `<p>${actor.name}</p>`;
-                    });
-                    
-
-            }
-            console.log(result);
+var showAllMoviesForEach = function(){
+  var result ='';
+  movies.forEach(function(movie) {             
+    result += `<p>${movie.title}</p>
+              <p>${movie.year}</p>
+              <p><img src="${movie.cover}"></p>
+              <p>${movie.genres}</p>
+              <p>${movie.ratings}</p>
+              <p>${movie.average}</p>  
+              `;
+                          
+    movie.actors.forEach(function(actor){
+      result += `<p>${actor.name}</p>`;
+    });
+            
+  });
+  return result;
 };
 
-showAllMovies();
+var showAllMoviesMap = function(){
+  return movies
+  .map(function(movie) {             
+    return  `<p>${movie.title}</p>
+              <p>${movie.year}</p>
+              <p><img src="${movie.cover}"></p>
+              <p>${movie.genres}</p>
+              <p>${movie.ratings}</p>
+              <p>${movie.average}</p>  ` +
+
+              movie.actors
+              .map(function(actor){
+                return `<p>${actor.name}</p>`;       
+              });                          
+  });
+};
+
+console.log(showAllMoviesForEach());
+console.log(showAllMoviesMap()[0]);

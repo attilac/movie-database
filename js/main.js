@@ -72,6 +72,7 @@ var onJSONCallback = function(movieDatabase){
 	appendMovies(utils.sortObjectsByKey(movieDatabase.getMovies(), movieDatabase.getSortBy(), movieDatabase.getSortOrder()), 'movieContainer');
 	getGenreFilters(movieDatabase.getMovies());
 	appendSortControllers('sort-controllers');
+	//getAllTitleYears();
 };
 
 
@@ -169,6 +170,7 @@ var appendMovies = function(movies, target){
 	console.log('Movies from year 2017');
 	console.log(movieDatabase.getMoviesByKey('year', 2016));
 	*/
+	
 };
 
 /*-----------------------------------------------
@@ -594,6 +596,16 @@ var genreBtnsOnAppChange = function(){
 };
 
 /**
+ * Gets all years from database
+ */
+var getAllTitleYears = function() {
+	// Get genres from database 
+	let titleYears = movieDatabase.getMoviesPropertyList('year');
+	let years = utils.sortArray(utils.getUniqueArray(utils.getConcatArray(titleYears)));
+	console.log(years);
+};
+
+/**
  * --------------------------------------------
  *  Sort-selects dropdown-menu
  * --------------------------------------------
@@ -809,7 +821,7 @@ var getGenresForCurrentMovie = function(genres){
  * Get the genres for all movies
  *
  */
-var getGenresForMovies = function(){
+var getGenresFromDatabase = function(){
 	// Get genres from database 
 	var moviePropertyGenres = movieDatabase.getMoviesPropertyList('genres');
 	var genres = utils.sortArray(utils.getUniqueArray(utils.getConcatArray(moviePropertyGenres)));
@@ -894,7 +906,7 @@ var submitUpdateForm = function(event) {
 var initUpdateForm = function(){
  	$('.group-movie-add').hide();
  	$('.modal-title').html('Update Genres for ' + movieDatabase.getCurrentMovie().title);
- 	getGenresForMovies();
+ 	getGenresFromDatabase();
  	checkSelectedGenres(movieDatabase.getCurrentMovie().getGenres());
 	var submitBtn = document.getElementById('movieFormSubmit');
 	submitBtn.innerHTML = submitBtn.value = 'Update Movie Genres';
@@ -907,7 +919,7 @@ var initUpdateForm = function(){
 var initAddNewForm = function(){
 	$('.modal-title').html('Add new Movie');
 	$('.group-movie-add').show();
-	getGenresForMovies();
+	getGenresFromDatabase();
 	var submitBtn = document.getElementById('movieFormSubmit');
 	submitBtn.innerHTML = submitBtn.value = 'Add new Movie';
 	submitBtn.addEventListener('click', submitAddNewForm, false);

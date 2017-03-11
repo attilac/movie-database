@@ -173,6 +173,22 @@ var appendMovies = function(movies, target){
 	
 };
 
+/**
+ * 
+ * 
+ */
+var appendFilteredMovies = function(){
+	// Check if year is selected
+	var movies = movieDatabase.getTitleYear() === 0 ? movieDatabase.getMovies() : movieDatabase.getMoviesByKey('year', movieDatabase.getTitleYear());
+	//console.log(movies.length);
+	// Check if genre is selected	
+    if(movieDatabase.currentGenres.length > 0){
+    	appendMovies(utils.sortObjectsByKey(movieDatabase.getMoviesByGenres(movieDatabase.currentGenres, movies), movieDatabase.getSortBy(), movieDatabase.getSortOrder()), 'movieContainer');
+    } else {
+ 		appendMovies(utils.sortObjectsByKey(movies, movieDatabase.getSortBy(), movieDatabase.getSortOrder()), 'movieContainer');   	
+    }
+};
+
 /*-----------------------------------------------
 					Rating Slider
 ------------------------------------------------*/
@@ -448,7 +464,7 @@ var genreLinkOnClick = function(event){
 	movieDatabase.currentGenres = [this.children[0].innerHTML];
 	//console.log(movieDatabase.currentGenres);
 	genreBtnsOnAppChange();
-	appendMovies(utils.sortObjectsByKey(movieDatabase.getMoviesByGenres(movieDatabase.currentGenres), movieDatabase.getSortBy(), movieDatabase.getSortOrder()), 'movieContainer');
+	appendFilteredMovies();
 };
 
 /**
@@ -548,11 +564,7 @@ var filterBtnOnClick = function(event){
     }); 
 
     //console.log(movieDatabase.currentGenres);
-    if(movieDatabase.currentGenres.length > 0){
-    	appendMovies(utils.sortObjectsByKey(movieDatabase.getMoviesByGenres(movieDatabase.currentGenres), movieDatabase.getSortBy(), movieDatabase.getSortOrder()), 'movieContainer');
-    } else {
- 		appendMovies(utils.sortObjectsByKey(movieDatabase.getMovies(), movieDatabase.getSortBy(), movieDatabase.getSortOrder()), 'movieContainer');   	
-    }
+    appendFilteredMovies();
 
 	document.getElementsByClassName('current-genres')[0].innerHTML =  movieDatabase.currentGenres.length > 0 ?  ' in ' + movieDatabase.currentGenres: '' ;   
 	    
@@ -603,57 +615,56 @@ var getAllTitleYears = function() {
 	let titleYears = movieDatabase.getMoviesPropertyList('year');
 	let years = utils.sortArray(utils.getUniqueArray(utils.getConcatArray(titleYears)));
 	//console.log(years);
-	appendTitleYearSelect(years, 'title-year');
+	appendTitleYearButtons(years, 'year-links');
 };
 
 /**
- * Appends select dropdown with years
+ * Appends Buttons with years
  * @param {Array} titleYears - array of years
  * @param {String} target - the element to append to 
  */
-var appendTitleYearSelect = function(titleYears, target){
-	var targetDiv = document.getElementsByClassName(target)[0];	
-
-	let titleYearSelect = `<select id="titleYearSelect" class="form-control d-inline sort-order-group sort-select">
-							<option selected>Year</option>`;			
-	titleYears
-	.forEach(function(titleYear) {
-		let selected = movieDatabase.getTitleYear() === titleYear ? 'selected': '';
-    	titleYearSelect += `<option ${selected} class="title-year-item" value="${titleYear}">${titleYear}</option>`;
-	});
-	titleYearSelect +=	'</select>'; // end sort order
-	targetDiv.innerHTML = titleYearSelect;
-	addTitleYearDropdownHandlers();
+var appendTitleYearButtons = function(titleYears, target){
+    //console.log(Array.isArray(titleYears));
+    let buttonGroup = `<div class="year-filter-button-group" role="group" aria-label="filter-by-year">`;
+    titleYears
+    .forEach(function(item) {
+        buttonGroup += `<button type="button" value="${item}" class="btn btn-link mb-3 mr-3 year-filter">${item}</button>`;
+    });
+    buttonGroup += `</div>`;
+    //console.log(buttonGroup);
+    document.getElementsByClassName(target)[0].innerHTML = buttonGroup;
+    addFilterButtonEventListeners(`year-filter`, titleYearButtonOnClick);
 };
 
 /**
- * Add eventhandlers for title year select
+ * Add eventhandlers for title year button
  */
-var addTitleYearDropdownHandlers = function(){
-	document.getElementById('titleYearSelect').addEventListener('change', titleYearDropdownOnChange, false);
+var addTitleYearButtonHandlers = function(className, callback){
+	document.getElementsByClassName(className).addEventListener('click', callback, false);
 };
 
 /**
- * Change handler for title year select
+ * Change handler for title year button
  */
-var titleYearDropdownOnChange = function(){
-	let allYears = this.options[this.selectedIndex].value === 'Year' ? true : false;
-	//console.log(allYears);
-	if(!allYears){
-		movieDatabase.setTitleYear(Number(this.options[this.selectedIndex].value));
-		//console.log(movieDatabase.getTitleYear());
-	}
+var titleYearButtonOnClick = function(){
+    event.preventDefault();
+    movieDatabase.setTitleYear(0);
+    if(this.classList.contains('active')){
+        this.classList.remove('active');
+        //console.log('not active');
+    } else {
+	    Array.prototype.slice.call(document.getElementsByClassName('year-filter-button-group')[0]
+	    .getElementsByClassName('active'))
+	    .forEach(function(item) {
+	    	item.classList.remove('active'); 
+	    }); 	  
+        this.classList.add('active'); 
+        //console.log('active');
+        movieDatabase.setTitleYear(Number(this.value));
+    }
 
     // Call appendMovies    
-	if(!allYears){
-		appendMovies(utils.sortObjectsByKey(movieDatabase.getMoviesByKey('year', movieDatabase.getTitleYear()), movieDatabase.getSortBy(), movieDatabase.getSortOrder()), 'movieContainer');   	
-	} else {
-	    if(movieDatabase.currentGenres.length > 0){
-	    	appendMovies(utils.sortObjectsByKey(movieDatabase.getMoviesByGenres(movieDatabase.currentGenres), movieDatabase.getSortBy(), movieDatabase.getSortOrder()), 'movieContainer');		
-		}else{
-			appendMovies(utils.sortObjectsByKey(movieDatabase.getMovies(), movieDatabase.getSortBy(), movieDatabase.getSortOrder()), 'movieContainer');   	
-		}
-    }
+    appendFilteredMovies();
 
 };
 
@@ -733,12 +744,7 @@ var sortDropdownOnChange = function(){
     }
 
     // Call appendMovies
-    if(movieDatabase.currentGenres.length > 0){
-    	appendMovies(utils.sortObjectsByKey(movieDatabase.getMoviesByGenres(movieDatabase.currentGenres), movieDatabase.getSortBy(), movieDatabase.getSortOrder()), 'movieContainer');
-    } else {
- 		appendMovies(utils.sortObjectsByKey(movieDatabase.getMovies(), movieDatabase.getSortBy(), movieDatabase.getSortOrder()), 'movieContainer');   	
-    }
-
+    appendFilteredMovies();
 };
 
 /**

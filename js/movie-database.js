@@ -19,7 +19,7 @@ var movieDatabase = (function(movies) {
     var _currentMovie = 0;
     // track selected genres
     var currentGenres = [];
-    var _currentYear;
+    var _currentYear = 0;
     var _sortOrder = 'DESC';
     var _sortBy = 'averageRating';
 
@@ -153,8 +153,8 @@ var movieDatabase = (function(movies) {
 	 * @param {Array} genres - the genres to filter by
 	 * @return {Array} _movies - an array of movie objects 
 	 */
-	var getMoviesByGenres = function(genres) {
-	    return _movies
+	var getMoviesByGenres = function(genres, movies = _movies) {
+	    return movies
 	    // executed for each movie
 	    .filter(function(movie) { 
 	    	// iterate over genre

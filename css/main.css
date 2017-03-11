@@ -6011,6 +6011,9 @@ a.text-gray-dark:focus, a.text-gray-dark:hover {
 .title-year .form-control {
   width: auto; }
 
+.btn-link.active {
+  background-color: #eee; }
+
 .movie-item:hover .movie-update {
   z-index: 22;
   opacity: 1; }

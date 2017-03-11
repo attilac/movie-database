@@ -253,7 +253,11 @@ var movieDatabase = (function(movies) {
 	 * @return {Object} - a Movie object
 	 */	
     var getLeastRatedMovie = function() {
-    	return _getObjectByPropertyMin('averageRating', _movies);
+		let movies = _movies
+    	.filter(function(movie) {
+    		return movie.ratings.length > 0;
+    	});
+    	return _getObjectByPropertyMin('averageRating', movies);
     };
 
 	/**

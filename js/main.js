@@ -809,7 +809,7 @@ var getGenresForCurrentMovie = function(genres){
  * Get the genres for all movies
  *
  */
-var getGenresForMovies = function(){
+var getGenresFromDatabase = function(){
 	// Get genres from database 
 	var moviePropertyGenres = movieDatabase.getMoviesPropertyList('genres');
 	var genres = utils.sortArray(utils.getUniqueArray(utils.getConcatArray(moviePropertyGenres)));
@@ -894,7 +894,7 @@ var submitUpdateForm = function(event) {
 var initUpdateForm = function(){
  	$('.group-movie-add').hide();
  	$('.modal-title').html('Update Genres for ' + movieDatabase.getCurrentMovie().title);
- 	getGenresForMovies();
+ 	getGenresFromDatabase();
  	checkSelectedGenres(movieDatabase.getCurrentMovie().getGenres());
 	var submitBtn = document.getElementById('movieFormSubmit');
 	submitBtn.innerHTML = submitBtn.value = 'Update Movie Genres';
@@ -907,7 +907,7 @@ var initUpdateForm = function(){
 var initAddNewForm = function(){
 	$('.modal-title').html('Add new Movie');
 	$('.group-movie-add').show();
-	getGenresForMovies();
+	getGenresFromDatabase();
 	var submitBtn = document.getElementById('movieFormSubmit');
 	submitBtn.innerHTML = submitBtn.value = 'Add new Movie';
 	submitBtn.addEventListener('click', submitAddNewForm, false);

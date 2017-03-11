@@ -19,6 +19,7 @@ var movieDatabase = (function(movies) {
     var _currentMovie = 0;
     // track selected genres
     var currentGenres = [];
+    var _currentYear;
     var _sortOrder = 'DESC';
     var _sortBy = 'averageRating';
 
@@ -130,6 +131,22 @@ var movieDatabase = (function(movies) {
     var setCurrentMovie = function(id) {
     	_currentMovie = id;
     };    
+
+	/**
+	 * 
+	 * 
+	 */
+    var getTitleYear = function() {
+    	return _currentYear;
+    };
+
+	/**
+	 * 
+	 * 
+	 */
+    var setTitleYear = function(year) {
+    	_currentYear = year;
+    };   
 
 	/**
 	 * Returns an array of movies filtered by genre
@@ -289,6 +306,8 @@ var movieDatabase = (function(movies) {
         rateMovie: rateMovie,
         getCurrentMovie: getCurrentMovie,
         setCurrentMovie: setCurrentMovie,
+        getTitleYear: getTitleYear,
+        setTitleYear: setTitleYear,
         getTopRatedMovie: getTopRatedMovie,
         getLeastRatedMovie: getLeastRatedMovie,
         getMoviesByKey: getMoviesByKey,

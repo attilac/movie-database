@@ -6008,6 +6008,9 @@ a.text-gray-dark:focus, a.text-gray-dark:hover {
   font-size: 85%;
   width: auto; }
 
+.title-year .form-control {
+  width: auto; }
+
 .movie-item:hover .movie-update {
   z-index: 22;
   opacity: 1; }

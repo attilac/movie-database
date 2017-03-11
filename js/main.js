@@ -70,9 +70,9 @@ var onJSONCallback = function(movieDatabase){
 	movieDatabase.setSortOrder('DESC');
 	movieDatabase.setSortBy('averageRating');
 	appendMovies(utils.sortObjectsByKey(movieDatabase.getMovies(), movieDatabase.getSortBy(), movieDatabase.getSortOrder()), 'movieContainer');
-	getGenreFilters(movieDatabase.getMovies());
+	getGenreFilters();
 	appendSortControllers('sort-controllers');
-	//getAllTitleYears();
+	getAllTitleYears();
 };
 
 
@@ -602,7 +602,59 @@ var getAllTitleYears = function() {
 	// Get genres from database 
 	let titleYears = movieDatabase.getMoviesPropertyList('year');
 	let years = utils.sortArray(utils.getUniqueArray(utils.getConcatArray(titleYears)));
-	console.log(years);
+	//console.log(years);
+	appendTitleYearSelect(years, 'title-year');
+};
+
+/**
+ * Appends select dropdown with years
+ * @param {Array} titleYears - array of years
+ * @param {String} target - the element to append to 
+ */
+var appendTitleYearSelect = function(titleYears, target){
+	var targetDiv = document.getElementsByClassName(target)[0];	
+
+	let titleYearSelect = `<select id="titleYearSelect" class="form-control d-inline sort-order-group sort-select">
+							<option selected>Year</option>`;			
+	titleYears
+	.forEach(function(titleYear) {
+		let selected = movieDatabase.getTitleYear() === titleYear ? 'selected': '';
+    	titleYearSelect += `<option ${selected} class="title-year-item" value="${titleYear}">${titleYear}</option>`;
+	});
+	titleYearSelect +=	'</select>'; // end sort order
+	targetDiv.innerHTML = titleYearSelect;
+	addTitleYearDropdownHandlers();
+};
+
+/**
+ * Add eventhandlers for title year select
+ */
+var addTitleYearDropdownHandlers = function(){
+	document.getElementById('titleYearSelect').addEventListener('change', titleYearDropdownOnChange, false);
+};
+
+/**
+ * Change handler for title year select
+ */
+var titleYearDropdownOnChange = function(){
+	let allYears = this.options[this.selectedIndex].value === 'Year' ? true : false;
+	//console.log(allYears);
+	if(!allYears){
+		movieDatabase.setTitleYear(Number(this.options[this.selectedIndex].value));
+		//console.log(movieDatabase.getTitleYear());
+	}
+
+    // Call appendMovies    
+	if(!allYears){
+		appendMovies(utils.sortObjectsByKey(movieDatabase.getMoviesByKey('year', movieDatabase.getTitleYear()), movieDatabase.getSortBy(), movieDatabase.getSortOrder()), 'movieContainer');   	
+	} else {
+	    if(movieDatabase.currentGenres.length > 0){
+	    	appendMovies(utils.sortObjectsByKey(movieDatabase.getMoviesByGenres(movieDatabase.currentGenres), movieDatabase.getSortBy(), movieDatabase.getSortOrder()), 'movieContainer');		
+		}else{
+			appendMovies(utils.sortObjectsByKey(movieDatabase.getMovies(), movieDatabase.getSortBy(), movieDatabase.getSortOrder()), 'movieContainer');   	
+		}
+    }
+
 };
 
 /**

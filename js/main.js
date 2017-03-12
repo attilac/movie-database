@@ -1067,6 +1067,7 @@ getMoviesFromJSON('https://attilac.github.io/movie-database/js/json/top-rated-mo
 //getMoviesFromJSON('https://attilac.github.io/movie-database/js/json/top-rated-indian-movies-02.json');
 //getMoviesFromJSON('https://attilac.github.io/movie-database/js/json/movies-coming-soon.json');
 //getMoviesFromJSON('https://attilac.github.io/movie-database/js/json/movies-in-theaters.json');
+//getMoviesFromJSON('https://movie-db-fend16.herokuapp.com/movies/');
 
 var addMovieBtn = document.getElementById('addMovie');
 addMovieBtn.addEventListener('click', launchCreateMovieModal, false);

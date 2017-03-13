@@ -1,5 +1,6 @@
 /*jshint esversion: 6 */
-console.log('---Movie Database');
+console.log('Model');
+console.log('---Movie Database---');
 console.log( '-----Revealing Module Pattern-----');
 /**
  * ------------------------------------------------------------------------

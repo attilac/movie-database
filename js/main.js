@@ -1,5 +1,5 @@
 /*jshint esversion: 6 */
-console.log('---View---');
+console.log('View');
 
 /**
  * Controller and View for MovieDatabase
@@ -82,12 +82,19 @@ var MovieView = (function() {
 	 * Call the append function and populate genre filters with values from database
 	 */
 	var onJSONCallback = function(){
-		//testFunctions(movieDatabase);
+		//testFunctions();
 		movieDatabase.setSortOrder('DESC');
 		movieDatabase.setSortBy('averageRating');
-		getGenreFilters();
-		appendSortControllers('sort-controllers');
-		getAllTitleYears();
+		
+		document.getElementsByClassName('genre-buttons')[0].innerHTML = appendGenreFilterButtons(getGenreFilters(), 'genre');
+	 	addFilterButtonEventListeners(`genre-filter`, filterBtnOnClick);
+
+		document.getElementsByClassName('sort-controllers')[0].innerHTML = appendSortControllers();
+		addSortDropdownHandlers();
+
+	    document.getElementsByClassName('year-links')[0].innerHTML = appendTitleYearButtons(getAllTitleYears());
+	    addFilterButtonEventListeners(`year-filter`, titleYearButtonOnClick);
+
 		appendFilteredMovies();
 	};
 
@@ -170,8 +177,7 @@ var MovieView = (function() {
 		});
 
 		movieList += '</div>';
-		return movieList;
-		
+		return movieList;		
 	};
 
 	/**
@@ -182,18 +188,16 @@ var MovieView = (function() {
 		var targetDiv = document.getElementById('movieContainer');
 		// Check if year is selected
 		var movies = movieDatabase.getTitleYear() === 0 ? movieDatabase.getMovies() : movieDatabase.getMoviesByKey('year', movieDatabase.getTitleYear());
-		//console.log(movies.length);
 		// Check if genre is selected	
-	    if(movieDatabase.currentGenres.length > 0){
-	    	targetDiv.innerHTML = appendMovies(utils.sortObjectsByKey(movieDatabase.getMoviesByGenres(movieDatabase.currentGenres, movies), movieDatabase.getSortBy(), movieDatabase.getSortOrder()), 'movieContainer');
-	    } else {
-	 		targetDiv.innerHTML = appendMovies(utils.sortObjectsByKey(movies, movieDatabase.getSortBy(), movieDatabase.getSortOrder()), 'movieContainer');   	
-	    }
-
-		addGenreEditBtnHandlers();
+		targetDiv.innerHTML = movieDatabase.currentGenres.length > 0 ? 
+			appendMovies(utils.sortObjectsByKey(movieDatabase.getMoviesByGenres(movieDatabase.currentGenres, movies), movieDatabase.getSortBy(), movieDatabase.getSortOrder())) : 
+			appendMovies(utils.sortObjectsByKey(movies, movieDatabase.getSortBy(), movieDatabase.getSortOrder()));
+	
+		// add event handlers
+		addMovieBtnHandlers();
 		addGenreLinkHandlers();
-		addRatingHandlers();
 
+		// make columns the same height
 		utils.columnConform('.movie-item-header');
 		utils.columnConform('.movie-title');	
 
@@ -206,25 +210,220 @@ var MovieView = (function() {
 		*/
 	};
 
-	/*-----------------------------------------------
-						Rating Slider
-	------------------------------------------------*/
+	/*-------------------------------------------------------------------------
+						Eventhandlers	
+	--------------------------------------------------------------------------*/
 
 	/**
-	 * Event handlers for rating-slider container and submit btn
+	 * Event handlers for Movie ui buttons
 	 */
-	var addRatingHandlers = function(){
+	var addMovieBtnHandlers = function(){
+		// Event handlers for rating-slider container
 		Array.prototype.slice.call(document.getElementsByClassName('rating-container'))
 		.forEach(function(ratingContainer){
 			ratingContainer.addEventListener('mouseenter', ratingContainerOnMouseEnter, false);
 			ratingContainer.addEventListener('mouseleave', ratingContainerOnMouseLeave, false);
 		});
-
+		// submit btn
 		Array.prototype.slice.call(document.getElementsByClassName('submit-rating'))
 		.forEach(function(btn){
 			btn.addEventListener('click', submitRatingOnClick, false);
 		});
+
+		// genre dropdown links
+	    Array.prototype.slice.call(document.getElementsByClassName('btn-edit-genres'))
+	    .forEach(function(item) {
+			item.addEventListener('click', genreDropdownItemOnClick, false);
+	    }); 		
 	};
+
+	/**
+	 * Add eventhandlers for genrelist buttons
+	 */
+	var addGenreLinkHandlers = function(){
+	    Array.prototype.slice.call(document.getElementsByClassName('genre-link'))
+	    .forEach(function(item){
+	    	item.addEventListener('click', genreLinkOnClick, false);
+	    });
+	};
+
+	/*-------------------------------------------------------------------------
+			Internal database functions				
+	--------------------------------------------------------------------------*/
+
+	/**
+	 * Gets genres from database and populates buttons and checkboxes
+	 */
+	var getGenreFilters = function() {
+		// Get genres from database 
+		var moviePropertyGenres = movieDatabase.getMoviesPropertyList('genres');
+		return utils.sortArray(utils.getUniqueArray(utils.getConcatArray(moviePropertyGenres)));
+	};
+
+	/**
+	 * Gets all years from database
+	 */
+	var getAllTitleYears = function() {
+		// Get genres from database 
+		let titleYears = movieDatabase.getMoviesPropertyList('year');
+		return utils.sortArray(utils.getUniqueArray(utils.getConcatArray(titleYears)));
+	};
+
+	/**
+	 * Gets a movie instance in the DOM-tree by data-attribute
+	 * @param {String} id - the data-attribute to filter by
+	 * @return {Object} Nodelist
+	 */
+	var getMovieInstance = function(id){
+		//console.log(typeof(document.querySelectorAll(`[data-id="${id}"]`)));
+		return document.querySelector(`[data-id="${id}"]`);
+	};
+
+	/**
+	 * Check if movie instance is in one of the active genres
+	 * @return {Boolean} hasGenre
+	 */
+	var isMovieInActiveGenre = function(){
+		var hasGenre = false;
+		// executed for each active genre
+	    movieDatabase.currentGenres
+	    .forEach(function(currentGenre) { 
+	    	//console.log(currentGenre);
+	    	// iterate over the current movies genres
+	    	movieDatabase.getCurrentMovie().genres
+	    	.forEach(function(movieGenre) {
+	    		//console.log(currentGenre.indexOf(movieGenre) >= 0);	
+	            if (currentGenre.indexOf(movieGenre) >= 0) {
+	                //console.log('in genre list'); // if this movie has this genre
+	                hasGenre = true;
+	            }
+	    	});
+	    	//console.log(hasGenre);
+	    }); 
+		return hasGenre;
+	};	
+
+
+	/**
+	 * ------------------------------------------------------
+	 * Update functions on app change
+	 * ------------------------------------------------------
+	*/
+
+	/**
+	 * Update rating in the view of the current Movie
+	 */
+	var updateMovieInstanceRatings = function(){
+		// Update title text
+		let titleText = `Users rated this ${movieDatabase.getCurrentMovie().averageRating}/10 (${movieDatabase.getCurrentMovie().ratings.length} votes) - click slider to rate`;
+		getMovieInstance(movieDatabase.getCurrentMovie().id)
+		.querySelector('.user-rating').title = titleText;
+		// Update slider valuenow
+		getMovieInstance(movieDatabase.getCurrentMovie().id)
+		.querySelector('.average-slider .progress-bar')
+		.setAttribute('aria-valuenow', movieDatabase.getCurrentMovie().averageRating * 10);
+		getMovieInstance(movieDatabase.getCurrentMovie().id)
+		.querySelector('.average-slider .progress-bar')
+		.setAttribute('style', `width:${movieDatabase.getCurrentMovie().averageRating * 10}%;"`);
+	};
+
+	/**
+	 * Update the genrelinks in the view of the current Movie
+	 */
+	var updateMovieInstanceGenres = function(){
+		//console.log(isMovieInActiveGenre());
+		if(isMovieInActiveGenre() || movieDatabase.currentGenres.length === 0){
+			//console.log('Movie in current genre or no genre selected. Update the DOM');	
+
+			//find the movie in DOM - jQuery version
+			//$(getMovieInstance(movieDatabase.getCurrentMovie().id))
+			//.find('.movie-genre-list')
+			//.replaceWith(appendGenreLinkList(movieDatabase.getCurrentMovie().genres));
+
+			//find the movie in DOM  - vanilla JS
+			getMovieInstance(movieDatabase.getCurrentMovie().id)
+			.querySelector('.movie-genre-list')
+			.outerHTML = appendGenreLinkList(movieDatabase.getCurrentMovie().genres); // replace movie genre-list with updated for movieDatabase
+
+			// add eventhandlers for genre-links
+			addGenreLinkHandlers();
+		}else{
+			//console.log('Movie not in current genre. Remove from DOM');
+			var currentMovie = getMovieInstance(movieDatabase.getCurrentMovie().id);
+			currentMovie.parentNode.removeChild(currentMovie);
+		}
+	};
+
+	/**
+	 * Reset selected genre buttons and the .current-genres text
+	 * 
+	 */
+	var resetFilterBtns = function(){
+		movieDatabase.currentGenres = [];
+		Array.prototype.slice.call(document.getElementsByClassName('genre-filter'))
+		.forEach(function(btn){
+			btn.classList.remove('active');
+			//console.log(btn.classList);
+		});
+		document.getElementsByClassName('current-genres')[0].innerHTML = '';
+	};
+
+	/**
+	 * Update filter buttons
+	 */
+	var genreBtnsOnAppChange = function(){
+	    Array.prototype.slice.call(document.getElementsByClassName('genre-filter'))
+	    .forEach(function(item) {
+	    	item.classList.remove('active');
+	    	if(movieDatabase.currentGenres[0] === item.value){
+	    		//console.log(item.value);
+			    if(! item.classList.contains('active')){
+			        item.classList.toggle('active');
+			    }
+	    	}
+	    }); 
+	    document.getElementsByClassName('current-genres')[0].innerHTML = movieDatabase.currentGenres.length > 0 ? ' in ' + movieDatabase.currentGenres : '';	
+	};
+
+	/**
+	 * ---------------------------------------------------------
+	 * Init sort selects on app change
+	 * ---------------------------------------------------------
+	*/
+
+	/**
+	 * Init app genre filters and sort selects
+	 */
+	var updateSortControllers = function(){
+	 	sortSelectOnAppChange();
+	};
+
+	/**
+	 * Update sort dropdown selects
+	 */
+	var sortSelectOnAppChange = function(){
+	    Array.prototype.slice.call(document.getElementsByClassName('sort-key-group'))
+	    .forEach(function(item) {
+	    	Array.prototype.slice.call(item.options)
+	    	.forEach(function(option) {
+	    		//console.log(option.value);
+	    		option.selected = option.value === movieDatabase.getSortBy() ? true : false;
+	    	});	    		
+	    });
+
+	    Array.prototype.slice.call(document.getElementsByClassName('sort-order-group'))
+	    .forEach(function(item) {
+	    	Array.prototype.slice.call(item.options)
+	    	.forEach(function(option) {
+	    		//console.log(option.selected);
+	    		option.selected = option.value === movieDatabase.getSortOrder() ? true : false;
+	    	});	    		
+	    });
+	};
+
+	/*-----------------------------------------------
+					UI Rating Slider
+	------------------------------------------------*/
 
 	/**
 	 * Handler on mouseenter for ratingContainer
@@ -349,112 +548,6 @@ var MovieView = (function() {
 	};
 
 	/**
-	 * Update rating in the view of the current Movie
-	 */
-	var updateMovieInstanceRatings = function(){
-		// Update title text
-		let titleText = `Users rated this ${movieDatabase.getCurrentMovie().averageRating}/10 (${movieDatabase.getCurrentMovie().ratings.length} votes) - click slider to rate`;
-		getMovieInstance(movieDatabase.getCurrentMovie().id)
-		.querySelector('.user-rating').title = titleText;
-		// Update slider valuenow
-		getMovieInstance(movieDatabase.getCurrentMovie().id)
-		.querySelector('.average-slider .progress-bar')
-		.setAttribute('aria-valuenow', movieDatabase.getCurrentMovie().averageRating * 10);
-		getMovieInstance(movieDatabase.getCurrentMovie().id)
-		.querySelector('.average-slider .progress-bar')
-		.setAttribute('style', `width:${movieDatabase.getCurrentMovie().averageRating * 10}%;"`);
-	};
-
-	/**
-	 * Update the genrelinks in the view of the current Movie
-	 */
-	var updateMovieInstanceGenres = function(){
-		//console.log(isMovieInActiveGenre());
-		if(isMovieInActiveGenre() || movieDatabase.currentGenres.length === 0){
-			//console.log('Movie in current genre or no genre selected. Update the DOM');	
-
-			//find the movie in DOM - jQuery version
-			//$(getMovieInstance(movieDatabase.getCurrentMovie().id))
-			//.find('.movie-genre-list')
-			//.replaceWith(appendGenreLinkList(movieDatabase.getCurrentMovie().genres));
-
-			//find the movie in DOM  - vanilla JS
-			getMovieInstance(movieDatabase.getCurrentMovie().id)
-			.querySelector('.movie-genre-list')
-			.outerHTML = appendGenreLinkList(movieDatabase.getCurrentMovie().genres); // replace movie genre-list with updated for movieDatabase
-
-			// add eventhandlers for genre-links
-			addGenreLinkHandlers();
-		}else{
-			//console.log('Movie not in current genre. Remove from DOM');
-			var currentMovie = getMovieInstance(movieDatabase.getCurrentMovie().id);
-			currentMovie.parentNode.removeChild(currentMovie);
-		}
-	};
-
-	/**
-	 * Gets a movie instance in the DOM-tree by data-attribute
-	 * @param {String} id - the data-attribute to filter by
-	 * @return {Object} Nodelist
-	 */
-	var getMovieInstance = function(id){
-		//console.log(typeof(document.querySelectorAll(`[data-id="${id}"]`)));
-		return document.querySelector(`[data-id="${id}"]`);
-	};
-
-	/**
-	 * Check if movie instance is in one of the active genres
-	 * @return {Boolean} hasGenre
-	 */
-	var isMovieInActiveGenre = function(){
-		var hasGenre = false;
-		// executed for each active genre
-	    movieDatabase.currentGenres
-	    .forEach(function(currentGenre) { 
-	    	//console.log(currentGenre);
-	    	// iterate over the current movies genres
-	    	movieDatabase.getCurrentMovie().genres
-	    	.forEach(function(movieGenre) {
-	    		//console.log(currentGenre.indexOf(movieGenre) >= 0);	
-	            if (currentGenre.indexOf(movieGenre) >= 0) {
-	                //console.log('in genre list'); // if this movie has this genre
-	                hasGenre = true;
-	            }
-	    	});
-	    	//console.log(hasGenre);
-	    }); 
-		return hasGenre;
-	};
-
-
-	/**
-	 * ------------------------------------------------------------------------
-	 * Event handling for Movie instance buttons
-	 * ------------------------------------------------------------------------
-	*/
-
-	/**
-	 * Add eventhandlers for genre dropdown links on Movie instance
-	 */
-	var addGenreEditBtnHandlers = function(){
-	    Array.prototype.slice.call(document.getElementsByClassName('btn-edit-genres'))
-	    .forEach(function(item) {
-			item.addEventListener('click', genreDropdownItemOnClick, false);
-	    }); 
-
-	};
-
-	/**
-	 * Add eventhandlers for genrelist buttons
-	 */
-	var addGenreLinkHandlers = function(){
-	    Array.prototype.slice.call(document.getElementsByClassName('genre-link'))
-	    .forEach(function(item){
-	    	item.addEventListener('click', genreLinkOnClick, false);
-	    });
-	};
-
-	/**
 	 * -------------------------------------------------
 	 * Genre Edit and link-buttons for Movie instances. 
 	 * -------------------------------------------------
@@ -497,24 +590,11 @@ var MovieView = (function() {
 	*/
 
 	/**
-	 * Gets genres from database and populates buttons and checkboxes
-	 */
-	var getGenreFilters = function() {
-		// Get genres from database 
-		var moviePropertyGenres = movieDatabase.getMoviesPropertyList('genres');
-		var genres = utils.sortArray(utils.getUniqueArray(utils.getConcatArray(moviePropertyGenres)));
-
-		// Populate buttons with genres
-		appendGenreFilterButtons(genres, 'genre-buttons', 'genre');
-	};
-
-	/**
 	 * Appends a group of filter buttons to the DOM
 	 * @param {Array} array - an array
-	 * @param {String} target - the element to append to
 	 * @param {String} key - name of the filter property
 	 */
-	var appendGenreFilterButtons = function(array, target, key){
+	var appendGenreFilterButtons = function(array, key){
 	    //console.log(Array.isArray(array));
 	    var buttonGroup = `<div class="filter-button-group" role="group" aria-label="filter-by-genre">`;
 	    array
@@ -523,8 +603,7 @@ var MovieView = (function() {
 	    });
 	    buttonGroup += `</div>`;
 	    //console.log(buttonGroup);
-	    document.getElementsByClassName(target)[0].innerHTML = buttonGroup;
-	    addFilterButtonEventListeners(`${key}-filter`, filterBtnOnClick);
+	    return buttonGroup;
 	};
 
 	/**
@@ -588,59 +667,10 @@ var MovieView = (function() {
 	};
 
 	/**
-	 * ------------------------------------------------------
-	 * Update genre filters on app change
-	 * ------------------------------------------------------
-	*/
-
-	/**
-	 * Reset selected genre buttons and the .current-genres text
-	 * 
-	 */
-	var resetFilterBtns = function(){
-		movieDatabase.currentGenres = [];
-		Array.prototype.slice.call(document.getElementsByClassName('genre-filter'))
-		.forEach(function(btn){
-			btn.classList.remove('active');
-			//console.log(btn.classList);
-		});
-		document.getElementsByClassName('current-genres')[0].innerHTML = '';
-	};
-
-	/**
-	 * Update filter buttons
-	 */
-	var genreBtnsOnAppChange = function(){
-	    Array.prototype.slice.call(document.getElementsByClassName('genre-filter'))
-	    .forEach(function(item) {
-	    	item.classList.remove('active');
-	    	if(movieDatabase.currentGenres[0] === item.value){
-	    		//console.log(item.value);
-			    if(! item.classList.contains('active')){
-			        item.classList.toggle('active');
-			    }
-	    	}
-	    }); 
-	    document.getElementsByClassName('current-genres')[0].innerHTML = movieDatabase.currentGenres.length > 0 ? ' in ' + movieDatabase.currentGenres : '';	
-	};
-
-	/**
-	 * Gets all years from database
-	 */
-	var getAllTitleYears = function() {
-		// Get genres from database 
-		let titleYears = movieDatabase.getMoviesPropertyList('year');
-		let years = utils.sortArray(utils.getUniqueArray(utils.getConcatArray(titleYears)));
-		//console.log(years);
-		appendTitleYearButtons(years, 'year-links');
-	};
-
-	/**
 	 * Appends Buttons with years
 	 * @param {Array} titleYears - array of years
-	 * @param {String} target - the element to append to 
 	 */
-	var appendTitleYearButtons = function(titleYears, target){
+	var appendTitleYearButtons = function(titleYears){
 	    //console.log(Array.isArray(titleYears));
 	    let buttonGroup = `<div class="year-filter-button-group" role="group" aria-label="filter-by-year">`;
 	    titleYears
@@ -649,8 +679,7 @@ var MovieView = (function() {
 	    });
 	    buttonGroup += `</div>`;
 	    //console.log(buttonGroup);
-	    document.getElementsByClassName(target)[0].innerHTML = buttonGroup;
-	    addFilterButtonEventListeners(`year-filter`, titleYearButtonOnClick);
+	    return buttonGroup;
 	};
 
 	/**
@@ -695,8 +724,7 @@ var MovieView = (function() {
 	 * Appends selects for sorting
 	 * @param {String} target - the element to append to 
 	 */
-	var appendSortControllers = function(target){
-		var targetDiv = document.getElementsByClassName(target)[0];	
+	var appendSortControllers = function(){
 		// Sort by 
 		sortControllers = `<label class="mr-2 text-muted" for="sortBySelect">Sort By</label>
 							<select id="sortBySelect" class="form-control d-inline mr-3 sort-key-group sort-select">
@@ -723,8 +751,7 @@ var MovieView = (function() {
 		});
 		sortControllers +=	'</select>'; // end sort order
 		//console.log(sortControllers);
-		targetDiv.innerHTML = sortControllers;
-		addSortDropdownHandlers();
+		return sortControllers;
 	};
 
 	/**
@@ -763,43 +790,6 @@ var MovieView = (function() {
 	    // Call appendMovies
 	    appendFilteredMovies();
 	};
-
-	/**
-	 * ---------------------------------------------------------
-	 * Init sort selects on app change
-	 * ---------------------------------------------------------
-	*/
-
-	/**
-	 * Init app genre filters and sort selects
-	 */
-	var updateSortControllers = function(){
-	 	sortSelectOnAppChange();
-	};
-
-	/**
-	 * Update sort dropdown selects
-	 */
-	var sortSelectOnAppChange = function(){
-	    Array.prototype.slice.call(document.getElementsByClassName('sort-key-group'))
-	    .forEach(function(item) {
-	    	Array.prototype.slice.call(item.options)
-	    	.forEach(function(option) {
-	    		//console.log(option.value);
-	    		option.selected = option.value === movieDatabase.getSortBy() ? true : false;
-	    	});	    		
-	    });
-
-	    Array.prototype.slice.call(document.getElementsByClassName('sort-order-group'))
-	    .forEach(function(item) {
-	    	Array.prototype.slice.call(item.options)
-	    	.forEach(function(option) {
-	    		//console.log(option.selected);
-	    		option.selected = option.value === movieDatabase.getSortOrder() ? true : false;
-	    	});	    		
-	    });
-	};
-
 
 	/**
 	 * ------------------------------------------------------------------------
@@ -955,7 +945,7 @@ var MovieView = (function() {
 		//resetFilterBtns();
 		genreBtnsOnAppChange();
 
-		appendMovies(utils.sortObjectsByKey(movieDatabase.getMovies(), movieDatabase.getSortBy(), movieDatabase.getSortOrder()), 'movieContainer');
+		appendFilteredMovies();
 		hideModal();
 	};
 
@@ -1042,16 +1032,13 @@ var MovieView = (function() {
 		clearFormInputs();
 	});
 
+
 	/**
 	 * ------------------------------------------------------------------------
 	 * Some junk test functions
 	 * ------------------------------------------------------------------------
 	*/
-
-	/**
-	 *
-	 */
-	var testFunctions = function(movieDatabase){
+	var testFunctions = function(){
 		console.log('Movies in genre Crime');
 		var moviesByGenres = movieDatabase.getMoviesByGenres(['Crime']);
 		console.log(moviesByGenres);
@@ -1082,12 +1069,3 @@ var MovieView = (function() {
 })();
 
 MovieView.init();
-
-
-
-
-
-
-
-
-

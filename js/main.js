@@ -4,7 +4,7 @@ console.log('View');
 /**
  * Controller and View for MovieDatabase
  * Functions dealing with fetching data from the database, appending to the DOM
- * and delegate user actions to change/add and update data.
+ * and delegate user actions to change, add and update data.
  * 
 */
 var MovieView = (function() {
@@ -13,13 +13,13 @@ var MovieView = (function() {
 	 * Init
 	 */
 	var init = function(){
-		//getMoviesFromJSON('https://attilac.github.io/movie-database/js/json/top-rated-movies-01.json');
+		getMoviesFromJSON('https://attilac.github.io/movie-database/js/json/top-rated-movies-01.json');
 		//getMoviesFromJSON('https://attilac.github.io/movie-database/js/json/top-rated-movies-02.json');
 		//getMoviesFromJSON('https://attilac.github.io/movie-database/js/json/top-rated-indian-movies-01.json');
 		//getMoviesFromJSON('https://attilac.github.io/movie-database/js/json/top-rated-indian-movies-02.json');
 		//getMoviesFromJSON('https://attilac.github.io/movie-database/js/json/movies-coming-soon.json');
 		//getMoviesFromJSON('https://attilac.github.io/movie-database/js/json/movies-in-theaters.json');
-		getMoviesFromJSON('https://movie-db-fend16.herokuapp.com/movies/');
+		//getMoviesFromJSON('https://movie-db-fend16.herokuapp.com/movies/');
 
 		var addMovieBtn = document.getElementById('addMovie');
 		addMovieBtn.addEventListener('click', launchCreateMovieModal, false);
@@ -195,6 +195,8 @@ var MovieView = (function() {
 		addMovieBtnHandlers();
 		addGenreLinkHandlers();
 
+		document.getElementsByClassName('current-genres')[0].innerHTML = movieDatabase.currentGenres.length > 0 ? ' in ' + movieDatabase.currentGenres: '' ;
+
 		// make columns the same height
 		utils.columnConform('.movie-item-header');
 		utils.columnConform('.movie-title');	
@@ -354,7 +356,7 @@ var MovieView = (function() {
 	 * Reset selected genre buttons and the .current-genres text
 	 * 
 	 */
-	var resetFilterBtns = function(){
+	var initFilterBtns = function(){
 		movieDatabase.currentGenres = [];
 		Array.prototype.slice.call(document.getElementsByClassName('genre-filter'))
 		.forEach(function(btn){
@@ -367,7 +369,7 @@ var MovieView = (function() {
 	/**
 	 * Update filter buttons
 	 */
-	var genreBtnsOnAppChange = function(){
+	var genreBtnsOnUpdate = function(){
 	    Array.prototype.slice.call(document.getElementsByClassName('genre-filter'))
 	    .forEach(function(item) {
 	    	item.classList.remove('active');
@@ -377,21 +379,20 @@ var MovieView = (function() {
 			        item.classList.toggle('active');
 			    }
 	    	}
-	    }); 
-	    document.getElementsByClassName('current-genres')[0].innerHTML = movieDatabase.currentGenres.length > 0 ? ' in ' + movieDatabase.currentGenres : '';	
+	    }); 	
 	};
 
 	/**
 	 * Init app genre filters and sort selects
 	 */
 	var updateSortControllers = function(){
-	 	sortSelectOnAppChange();
+	 	sortSelectOnUpdate();
 	};
 
 	/**
 	 * Update sort dropdown selects
 	 */
-	var sortSelectOnAppChange = function(){
+	var sortSelectOnUpdate = function(){
 	    Array.prototype.slice.call(document.getElementsByClassName('sort-key-group'))
 	    .forEach(function(item) {
 	    	Array.prototype.slice.call(item.options)
@@ -582,7 +583,7 @@ var MovieView = (function() {
 		//console.log(this.children[0].innerHTML);
 		movieDatabase.currentGenres = [this.children[0].innerHTML];
 		//console.log(movieDatabase.currentGenres);
-		genreBtnsOnAppChange();
+		genreBtnsOnUpdate();
 		appendFilteredMovies();
 	};
 
@@ -657,10 +658,7 @@ var MovieView = (function() {
 	    }); 
 
 	    //console.log(movieDatabase.currentGenres);
-	    appendFilteredMovies();
-
-		document.getElementsByClassName('current-genres')[0].innerHTML =  movieDatabase.currentGenres.length > 0 ?  ' in ' + movieDatabase.currentGenres: '' ;   
-		    
+	    appendFilteredMovies();		    
 	};
 
 	/**
@@ -939,8 +937,8 @@ var MovieView = (function() {
 
 		movieDatabase.currentGenres = [];
 		updateSortControllers();
-		//resetFilterBtns();
-		genreBtnsOnAppChange();
+		//initFilterBtns();
+		genreBtnsOnUpdate();
 
 		appendFilteredMovies();
 		hideModal();

@@ -86,13 +86,13 @@ var MovieView = (function() {
 		movieDatabase.setSortOrder('DESC');
 		movieDatabase.setSortBy('averageRating');
 		
-		document.getElementsByClassName('genre-buttons')[0].innerHTML = appendGenreFilterButtons(getGenreFilters(), 'genre');
+		document.getElementsByClassName('genre-buttons')[0].innerHTML = getGenreFilterButtons(getGenres(), 'genre');
 	 	addFilterButtonEventListeners(`genre-filter`, filterBtnOnClick);
 
-		document.getElementsByClassName('sort-controllers')[0].innerHTML = appendSortControllers();
+		document.getElementsByClassName('sort-controllers')[0].innerHTML = getSortSelects();
 		addSortDropdownHandlers();
 
-	    document.getElementsByClassName('year-links')[0].innerHTML = appendTitleYearButtons(getAllTitleYears());
+	    document.getElementsByClassName('year-links')[0].innerHTML = getYearFilterButtons(getTitleYears());
 	    addFilterButtonEventListeners(`year-filter`, titleYearButtonOnClick);
 
 		appendFilteredMovies();
@@ -131,7 +131,7 @@ var MovieView = (function() {
 
 								<div class="movie-item-header mb-3 mr-3">
 									<h6 class="movie-title mb-1">${movie.title} <small>(${movie.year})</small></h6>
-									${appendGenreLinkList(movie.genres)}
+									${getGenreLinkList(movie.genres)}
 
 									<div class="movie-update btn-group dropup">
 									  <button type="button" class="btn btn-options" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -196,6 +196,7 @@ var MovieView = (function() {
 		addGenreLinkHandlers();
 
 		document.getElementsByClassName('current-genres')[0].innerHTML = movieDatabase.currentGenres.length > 0 ? ' in ' + movieDatabase.currentGenres: '' ;
+		document.getElementsByClassName('current-year')[0].innerHTML = movieDatabase.getTitleYear() || '' ?  ' Year: ' + movieDatabase.getTitleYear() : '' ;
 
 		// make columns the same height
 		utils.columnConform('.movie-item-header');
@@ -255,7 +256,7 @@ var MovieView = (function() {
 	 * Get all genres from database
 	 * @return {Array} Array of genre names
 	 */
-	var getGenreFilters = function() {
+	var getGenres = function() {
 		return utils.sortArray(utils.getUniqueArray(utils.getConcatArray(movieDatabase.getMoviesPropertyList('genres'))));
 	};
 
@@ -263,7 +264,7 @@ var MovieView = (function() {
 	 * Get all years from database
 	 * @return {Array} Array of years
 	 */
-	var getAllTitleYears = function() {
+	var getTitleYears = function() {
 		return utils.sortArray(utils.getUniqueArray(utils.getConcatArray(movieDatabase.getMoviesPropertyList('year'))));
 	};
 
@@ -336,12 +337,12 @@ var MovieView = (function() {
 			//find the movie in DOM - jQuery version
 			//$(getMovieInstance(movieDatabase.getCurrentMovie().id))
 			//.find('.movie-genre-list')
-			//.replaceWith(appendGenreLinkList(movieDatabase.getCurrentMovie().genres));
+			//.replaceWith(getGenreLinkList(movieDatabase.getCurrentMovie().genres));
 
 			//find the movie in DOM  - vanilla JS
 			getMovieInstance(movieDatabase.getCurrentMovie().id)
 			.querySelector('.movie-genre-list')
-			.outerHTML = appendGenreLinkList(movieDatabase.getCurrentMovie().genres); // replace movie genre-list with updated for movieDatabase
+			.outerHTML = getGenreLinkList(movieDatabase.getCurrentMovie().genres); // replace movie genre-list with updated for movieDatabase
 
 			// add eventhandlers for genre-links
 			addGenreLinkHandlers();
@@ -421,7 +422,7 @@ var MovieView = (function() {
 	 * @param {Array} genres - array of genres
 	 * @return {String} genreList - HTML list of genre links
 	 */
-	var appendGenreLinkList = function(genres){
+	var getGenreLinkList = function(genres){
 		genreList = '<ul class="list-inline movie-genre-list">';
 		genres
 		.forEach(function(genre){
@@ -451,7 +452,7 @@ var MovieView = (function() {
 		if(!this.parentNode.classList.contains('rating-hover')){
 			movieDatabase.setCurrentMovie(this.parentNode.parentNode.dataset.id);
 			showRatingSlider(this.parentNode);
-			appendRatingSlider(this.parentNode);
+			createRatingSlider(this.parentNode);
 
 			if(this.parentNode.querySelector('.rating-hover').textContent !== '0'){
 				this.querySelector('.rating-toolbar').classList.add('active');
@@ -510,7 +511,7 @@ var MovieView = (function() {
 	 * Toggle visibilty for average bar and rating slider. Create Dragslider
 	 * @param {String} target - the target wrapper element
 	 */
-	var appendRatingSlider = function(target){
+	var createRatingSlider = function(target){
 		//console.log(target);
 
 		var rateSlider = new Dragdealer(target.querySelector('.rating-slider').id, {
@@ -605,7 +606,7 @@ var MovieView = (function() {
 	 * @param {String} key - name of the filter property
 	 * @return {String} buttonGroup - HTML with buttons
 	 */
-	var appendGenreFilterButtons = function(array, key){
+	var getGenreFilterButtons = function(array, key){
 	    //console.log(Array.isArray(array));
 	    var buttonGroup = `<div class="filter-button-group" role="group" aria-label="filter-by-genre">`;
 	    array
@@ -665,7 +666,7 @@ var MovieView = (function() {
 	 * Appends Buttons with years
 	 * @param {Array} titleYears - array of years
 	 */
-	var appendTitleYearButtons = function(titleYears){
+	var getYearFilterButtons = function(titleYears){
 	    //console.log(Array.isArray(titleYears));
 	    let buttonGroup = `<div class="year-filter-button-group" role="group" aria-label="filter-by-year">`;
 	    titleYears
@@ -716,10 +717,10 @@ var MovieView = (function() {
 	*/
 
 	/**
-	 * Appends selects for sorting
+	 * Return selects for sorting
 	 * @param {String} target - the element to append to 
 	 */
-	var appendSortControllers = function(){
+	var getSortSelects = function(){
 		// Sort by 
 		sortControllers = `<label class="mr-2 text-muted" for="sortBySelect">Sort By</label>
 							<select id="sortBySelect" class="form-control d-inline mr-3 sort-key-group sort-select">

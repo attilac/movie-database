@@ -13,13 +13,13 @@ var MovieView = (function() {
 	 * Init
 	 */
 	var init = function(){
-		getMoviesFromJSON('https://attilac.github.io/movie-database/js/json/top-rated-movies-01.json');
+		//getMoviesFromJSON('https://attilac.github.io/movie-database/js/json/top-rated-movies-01.json');
 		//getMoviesFromJSON('https://attilac.github.io/movie-database/js/json/top-rated-movies-02.json');
 		//getMoviesFromJSON('https://attilac.github.io/movie-database/js/json/top-rated-indian-movies-01.json');
 		//getMoviesFromJSON('https://attilac.github.io/movie-database/js/json/top-rated-indian-movies-02.json');
 		//getMoviesFromJSON('https://attilac.github.io/movie-database/js/json/movies-coming-soon.json');
 		//getMoviesFromJSON('https://attilac.github.io/movie-database/js/json/movies-in-theaters.json');
-		//getMoviesFromJSON('https://movie-db-fend16.herokuapp.com/movies/');
+		getMoviesFromJSON('https://movie-db-fend16.herokuapp.com/movies/');
 
 		var addMovieBtn = document.getElementById('addMovie');
 		addMovieBtn.addEventListener('click', launchCreateMovieModal, false);
@@ -105,9 +105,9 @@ var MovieView = (function() {
 	/**
 	 * Append movies to DOM
 	 * @param {Array} movies
-	 * @param {String} target - the ID of the element to append to
+	 * @return {String} movieList - HTML with movies
 	 */
-	var appendMovies = function(movies, target){	
+	var appendMovies = function(movies){	
 		let total = movieDatabase.getMovies().length;
 		let currentTotal = movies.length;
 		//console.log(typeof(targetDiv));
@@ -172,8 +172,6 @@ var MovieView = (function() {
 									</div>							
 								</div>
 							</div>`;
-					
-
 		});
 
 		movieList += '</div>';
@@ -211,11 +209,11 @@ var MovieView = (function() {
 	};
 
 	/*-------------------------------------------------------------------------
-						Eventhandlers	
+						Assign Eventhandlers	
 	--------------------------------------------------------------------------*/
 
 	/**
-	 * Event handlers for Movie ui buttons
+	 * Add Event handlers for Movie ui
 	 */
 	var addMovieBtnHandlers = function(){
 		// Event handlers for rating-slider container
@@ -238,7 +236,7 @@ var MovieView = (function() {
 	};
 
 	/**
-	 * Add eventhandlers for genrelist buttons
+	 * Add eventhandlers for genrelist link-buttons
 	 */
 	var addGenreLinkHandlers = function(){
 	    Array.prototype.slice.call(document.getElementsByClassName('genre-link'))
@@ -252,21 +250,19 @@ var MovieView = (function() {
 	--------------------------------------------------------------------------*/
 
 	/**
-	 * Gets genres from database and populates buttons and checkboxes
+	 * Get all genres from database
+	 * @return {Array} Array of genre names
 	 */
 	var getGenreFilters = function() {
-		// Get genres from database 
-		var moviePropertyGenres = movieDatabase.getMoviesPropertyList('genres');
-		return utils.sortArray(utils.getUniqueArray(utils.getConcatArray(moviePropertyGenres)));
+		return utils.sortArray(utils.getUniqueArray(utils.getConcatArray(movieDatabase.getMoviesPropertyList('genres'))));
 	};
 
 	/**
-	 * Gets all years from database
+	 * Get all years from database
+	 * @return {Array} Array of years
 	 */
 	var getAllTitleYears = function() {
-		// Get genres from database 
-		let titleYears = movieDatabase.getMoviesPropertyList('year');
-		return utils.sortArray(utils.getUniqueArray(utils.getConcatArray(titleYears)));
+		return utils.sortArray(utils.getUniqueArray(utils.getConcatArray(movieDatabase.getMoviesPropertyList('year'))));
 	};
 
 	/**
@@ -306,7 +302,7 @@ var MovieView = (function() {
 
 	/**
 	 * ------------------------------------------------------
-	 * Update functions on app change
+	 * Update UI on app change
 	 * ------------------------------------------------------
 	*/
 
@@ -328,7 +324,7 @@ var MovieView = (function() {
 	};
 
 	/**
-	 * Update the genrelinks in the view of the current Movie
+	 * Update genre list in the view of the current Movie
 	 */
 	var updateMovieInstanceGenres = function(){
 		//console.log(isMovieInActiveGenre());
@@ -386,12 +382,6 @@ var MovieView = (function() {
 	};
 
 	/**
-	 * ---------------------------------------------------------
-	 * Init sort selects on app change
-	 * ---------------------------------------------------------
-	*/
-
-	/**
 	 * Init app genre filters and sort selects
 	 */
 	var updateSortControllers = function(){
@@ -422,9 +412,26 @@ var MovieView = (function() {
 	};
 
 	/*-----------------------------------------------
-					UI Rating Slider
+		UI - Movie instance buttons
 	------------------------------------------------*/
 
+	/**
+	 * Get genre links for Movie instance
+	 * @param {Array} genres - array of genres
+	 * @return {String} genreList - HTML list of genre links
+	 */
+	var appendGenreLinkList = function(genres){
+		genreList = '<ul class="list-inline movie-genre-list">';
+		genres
+		.forEach(function(genre){
+			genreList += `<li class="list-inline-item movie-genre-item"><a class="genre-link" href="#"><small>${genre}</small></a></li>`;
+		});
+		return genreList + '</ul>';
+	};
+
+	/*-----------------------------------------------
+      	Rating Slider
+	------------------------------------------------*/
 	/**
 	 * Handler on mouseenter for ratingContainer
 	 */
@@ -549,12 +556,13 @@ var MovieView = (function() {
 
 	/**
 	 * -------------------------------------------------
-	 * Genre Edit and link-buttons for Movie instances. 
+	 * Event handlers for Movie instance UI.  Genre edit and genre link-buttons 
 	 * -------------------------------------------------
 	*/
 
 	/**
 	 * Event handler for genre dropdown links
+	 * @param {Event}
 	 */
 	var genreDropdownItemOnClick = function(event){
 		event.preventDefault();	
@@ -567,6 +575,7 @@ var MovieView = (function() {
 
 	/**
 	 * Event handler for genre filter button on single movies
+	 * @param {Event}
 	 */
 	var genreLinkOnClick = function(event){
 		event.preventDefault();
@@ -579,7 +588,7 @@ var MovieView = (function() {
 
 	/**
 	 * ------------------------------------------------------------------------
-	 * Filter section. Select genres and sort controls
+	 * Filter section UI. Select genres and sort controls
 	 * ------------------------------------------------------------------------
 	*/
 
@@ -593,6 +602,7 @@ var MovieView = (function() {
 	 * Appends a group of filter buttons to the DOM
 	 * @param {Array} array - an array
 	 * @param {String} key - name of the filter property
+	 * @return {String} buttonGroup - HTML with buttons
 	 */
 	var appendGenreFilterButtons = function(array, key){
 	    //console.log(Array.isArray(array));
@@ -604,19 +614,6 @@ var MovieView = (function() {
 	    buttonGroup += `</div>`;
 	    //console.log(buttonGroup);
 	    return buttonGroup;
-	};
-
-	/**
-	 * Get genre links for Movie instance
-	 * @param {Array} genres - array of genres
-	 */
-	var appendGenreLinkList = function(genres){
-		genreList = '<ul class="list-inline movie-genre-list">';
-		genres
-		.forEach(function(genre){
-			genreList += `<li class="list-inline-item movie-genre-item"><a class="genre-link" href="#"><small>${genre}</small></a></li>`;
-		});
-		return genreList + '</ul>';
 	};
 
 	/**

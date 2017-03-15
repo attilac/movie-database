@@ -212,8 +212,8 @@ var MovieView = (function() {
 	 */
 	var appOnModelChange = function(){
 		// Update UI
-		sortSelectOnModelChange();
-		genreBtnsOnModelChange();
+		//sortSelectOnModelChange();
+		//genreBtnsOnModelChange();
 		document.getElementsByClassName('current-genres')[0].innerHTML = movieDatabase.currentGenres.length > 0 ? ' in ' + movieDatabase.currentGenres: '' ;
 		document.getElementsByClassName('current-year')[0].innerHTML = movieDatabase.getTitleYear() || '' ?  ' Year: ' + movieDatabase.getTitleYear() : '' ;
 
@@ -576,7 +576,7 @@ var MovieView = (function() {
 		//console.log(this.children[0].innerHTML);
 		movieDatabase.currentGenres = [this.children[0].innerHTML];
 		//console.log(movieDatabase.currentGenres);
-		//genreBtnsOnModelChange();
+		genreBtnsOnModelChange();
 		appendFilteredMovies();
 	};
 
@@ -764,6 +764,12 @@ var MovieView = (function() {
 	 */
 	var appendFilterCloseButtons = function(){
 		console.log('Add closebuttons');
+	    Array.prototype.slice.call(document.getElementsByClassName('genre-filter'))
+	    .forEach(function(item) {
+	    	if(movieDatabase.currentGenres[0] === item.value){
+	    		console.log(item.value);		
+	    	}
+	    }); 		
 	};
 
 	/**
@@ -918,8 +924,8 @@ var MovieView = (function() {
 		movieDatabase.addMovie(postData);
 
 		movieDatabase.currentGenres = [];
-		//sortSelectOnModelChange();
-		//genreBtnsOnModelChange();
+		sortSelectOnModelChange();
+		genreBtnsOnModelChange();
 
 		appendFilteredMovies();
 		hideModal();

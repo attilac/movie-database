@@ -374,7 +374,6 @@ var MovieView = (function() {
 	    .forEach(function(item) {
 	    	item.classList.remove('active');
 	    	if(movieDatabase.currentGenres[0] === item.value){
-	    		//console.log(item.value);
 			    if(! item.classList.contains('active')){
 			        item.classList.toggle('active');
 			    }
@@ -698,10 +697,10 @@ var MovieView = (function() {
 	    movieDatabase.currentGenres = [];
 	    if(this.classList.contains('active')){
 	        this.classList.toggle('active');
-	        console.log(this.value + ' closed');
+	        //console.log(this.value + ' closed');
 	    } else {
 	        this.classList.toggle('active'); 
-	        console.log(this.value + ' active');
+	        //console.log(this.value + ' active');
 	    }
 
 	    Array.prototype.slice.call(document.getElementsByClassName('filter-button-group')[0]

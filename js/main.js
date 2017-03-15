@@ -183,6 +183,8 @@ var MovieView = (function() {
 	 * 
 	 */
 	var appendFilteredMovies = function(){
+		UIonModelChange();	
+
 		var targetDiv = document.getElementById('movieContainer');
 		// Check if year is selected
 		var movies = movieDatabase.getTitleYear() === 0 ? movieDatabase.getMovies() : movieDatabase.getMoviesByKey('year', movieDatabase.getTitleYear());
@@ -194,8 +196,10 @@ var MovieView = (function() {
 		// Add event handlers
 		addMovieBtnHandlers();
 		addGenreLinkHandlers();
-
-		appOnModelChange();		
+	
+		// make columns the same height
+		utils.columnConform('.movie-item-header');
+		utils.columnConform('.movie-title');	
 
 		// Some test junk. Remove Me
 		/*
@@ -210,7 +214,7 @@ var MovieView = (function() {
 	 * Update/refresh UI on Model change. TODO refactor as Observer pattern
 	 * 
 	 */
-	var appOnModelChange = function(){
+	var UIonModelChange = function(){
 		// Update UI
 		sortSelectOnModelChange();
 		genreBtnsOnModelChange();
@@ -219,10 +223,6 @@ var MovieView = (function() {
 		document.getElementsByClassName('current-year')[0].innerHTML = movieDatabase.getTitleYear() || '' ?  ' Year: ' + movieDatabase.getTitleYear() : '' ;
 
 		//appendFilterCloseButtons();
-
-		// make columns the same height
-		utils.columnConform('.movie-item-header');
-		utils.columnConform('.movie-title');	
 	};
 
 	/*-------------------------------------------------------------------------

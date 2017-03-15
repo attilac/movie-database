@@ -95,37 +95,42 @@
     </div>
   </div>
 
-    <section class="app-filter-bar">
-      <div class="container-fluid">
-        <div class="card mb-3">
-          <div class="card-header bg-white">
-            <div class="row">
-              <div class="col-6">
-                <label class="mr-2 text-muted" >Filter By</label>
-                <a class="btn btn-secondary dropdown-toggle collapsed mr-2" data-toggle="collapse" href="#collapseGenres" aria-expanded="false" aria-controls="collapseGenres">
-                  Genres
-                </a>    
-                <a class="btn btn-secondary dropdown-toggle collapsed mr-2" data-toggle="collapse" href="#collapseYears" aria-expanded="false" aria-controls="collapseYears">
-                  Year
-                </a>                          
-              </div> 
-              <div class="col-6">
-                <div class="sort-controllers text-right">
-                </div>            
-              </div>
-            </div>
-          </div>
-          <div class="card-block">
-            <div class="collapse" id="collapseGenres">
-              <div class="genre-buttons p-3"></div>
-            </div>
-            <div class="collapse" id="collapseYears">
-                <div class="year-links p-3"></div>   
+  <section class="app-filter-bar">
+    <div class="container-fluid">
+      <div class="card mb-3">
+        <div class="card-header bg-white">
+          <div class="row">
+            <div class="col-6">
+              <label class="mr-2 text-muted" >Filter By</label>
+              <a class="btn btn-secondary dropdown-toggle collapsed mr-2" data-toggle="collapse" href="#collapseGenres" aria-expanded="false" aria-controls="collapseGenres">
+                Genres
+              </a>    
+              <a class="btn btn-secondary dropdown-toggle collapsed mr-2" data-toggle="collapse" href="#collapseYears" aria-expanded="false" aria-controls="collapseYears">
+                Year
+              </a>                          
+            </div> 
+            <div class="col-6">
+              <div class="sort-controllers text-right">
+              </div>            
             </div>
           </div>
         </div>
+        <div class="card-block">
+          <div class="collapse" id="collapseGenres">
+            <div class="genre-buttons p-3"></div>
+          </div>
+          <div class="collapse" id="collapseYears">
+              <div class="year-links p-3"></div>   
+          </div>
+        </div>
       </div>
-    </section>
+    </div>
+  </section>
+
+  <section class="app-filter-remove-bar">
+  <div class="container-fluid close-filter-buttons">
+    </div>
+  </section>
 
   <section class="app-content">
     <div class="container-fluid">
@@ -147,6 +152,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js" integrity="sha384-DztdAPBWPRXSA/3eYEEUWrWCy7G5KFbe8fFjk5JAIxUYHKkDx6Qin1DkWx51bBrb" crossorigin="anonymous"></script>
     <script src="js/vendor/bootstrap.js"></script>
     <!-- <script src="js/design-patterns-boilerplate.js"></script> -->
+    <script src="js/fetch.js"></script>
     <script src="js/vendor/dragdealer/dragdealer.js"></script>
     <script src="js/utilities.js"></script>
     <script src="js/movie.js"></script>

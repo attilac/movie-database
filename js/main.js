@@ -216,9 +216,9 @@ var MovieView = (function() {
 	 */
 	var UIonModelChange = function(){
 		// Update UI
-		sortSelectOnModelChange();
 		genreBtnsOnModelChange();
 		yearBtnsOnModelChange();
+		sortSelectOnModelChange();
 		document.getElementsByClassName('current-genres')[0].innerHTML = movieDatabase.currentGenres.length > 0 ? ' in ' + movieDatabase.currentGenres: '' ;
 		document.getElementsByClassName('current-year')[0].innerHTML = movieDatabase.getTitleYear() || '' ?  ' Year: ' + movieDatabase.getTitleYear() : '' ;
 
@@ -372,17 +372,24 @@ var MovieView = (function() {
 	 */
 	var genreBtnsOnModelChange = function(){
 		//console.log(movieDatabase.currentGenres);
-
-	    Array.prototype.slice.call(document.getElementsByClassName('genre-filter'))
-	    .forEach(function(button) {
-	    	//console.log(button);
-            if (movieDatabase.currentGenres.indexOf(button.value) === -1) {
-            	//console.log(genre);
-               button.classList.remove('active');
-            } else {
-            	button.classList.add('active');
-            }
-        });
+		if(movieDatabase.currentGenres.length === 0){
+			//console.log('0');
+		    Array.prototype.slice.call(document.getElementsByClassName('genre-filter'))
+		    .forEach(function(button) {
+		    	button.classList.remove('active');
+		    });
+		}else{
+		    Array.prototype.slice.call(document.getElementsByClassName('genre-filter'))
+		    .forEach(function(button) {
+		    	//console.log(movieDatabase.currentGenres.indexOf(button.value));
+	            if (movieDatabase.currentGenres.indexOf(button.value) > -1) {
+	        		//console.log(button.value);
+           			button.classList.add('active');
+	            } else {
+	            	button.classList.remove('active');
+	            }
+	        });
+		}
 	};
 
 	/**

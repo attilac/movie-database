@@ -56,7 +56,7 @@ var MovieView = (function() {
 	 * @param {array} arr - the array to parse
 	 */
 	var parseJSON = function(arr){
-	    for(let i = 0; i < arr.length; i++) {
+	    for(let i = 0; i < 50; i++) {
 			var movie = new Movie(arr[i].title,
 					arr[i].year,
 					arr[i].genres,
@@ -743,7 +743,7 @@ var MovieView = (function() {
     		movieDatabase.setTitleYear(Number(this.value));		
 	    }  
 
-	    // Call appendMovies    
+	    // Call appendMovies   
 	    appendFilteredMovies();
 	};	
 

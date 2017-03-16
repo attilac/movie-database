@@ -108,6 +108,7 @@ var MovieView = (function() {
 	 * @return {String} movieList - HTML with movies
 	 */
 	var appendMovies = function(movies){	
+		//console.log('append movies');
 		let total = movieDatabase.getMovies().length;
 		let currentTotal = movies.length;
 		//console.log(typeof(targetDiv));
@@ -215,6 +216,7 @@ var MovieView = (function() {
 	 * 
 	 */
 	var UIonModelChange = function(){
+		//console.log('update UI');
 		// Update UI
 		genreBtnsOnModelChange();
 		yearBtnsOnModelChange();

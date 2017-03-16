@@ -188,7 +188,7 @@ var MovieView = (function() {
 	 * @param 
 	 * @return 
 	 */
-	var movieListTemplate = ({ movies }) => {
+	var movieListTemplate = (movies) => {
 	  return `
 	  <div class="info-strip mb-3">
 			<small class="text-muted">Displaying ${movies.length} of ${movieDatabase.getMovies().length} movies</small>
@@ -254,7 +254,7 @@ var MovieView = (function() {
 	 * @param 
 	 * @return 
 	 */
-	var movieGenreEditBtnTemplate = ({id}) => {
+	var movieGenreEditBtnTemplate = (id) => {
 	  return `
 			<div class="movie-update btn-group dropup">
 			  <button type="button" class="btn btn-options" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -318,8 +318,8 @@ var MovieView = (function() {
 		targetDiv.innerHTML = movieDatabase.currentGenres.length > 0 ? 
 			//appendMovies(utils.sortObjectsByKey(movieDatabase.getMoviesByGenres(movieDatabase.currentGenres, movies), movieDatabase.getSortBy(), movieDatabase.getSortOrder())) : 
 			//appendMovies(utils.sortObjectsByKey(movies, movieDatabase.getSortBy(), movieDatabase.getSortOrder()));
-			movieListTemplate({ movies: utils.sortObjectsByKey(movieDatabase.getMoviesByGenres(movieDatabase.currentGenres, movies), movieDatabase.getSortBy(), movieDatabase.getSortOrder()) }) : 
-			movieListTemplate({ movies: utils.sortObjectsByKey(movies, movieDatabase.getSortBy(), movieDatabase.getSortOrder() ) });			
+			movieListTemplate(utils.sortObjectsByKey(movieDatabase.getMoviesByGenres(movieDatabase.currentGenres, movies), movieDatabase.getSortBy(), movieDatabase.getSortOrder()) ) : 
+			movieListTemplate(utils.sortObjectsByKey(movies, movieDatabase.getSortBy(), movieDatabase.getSortOrder() ) );			
 		// Add event handlers
 		addMovieBtnHandlers();
 		addGenreLinkHandlers();

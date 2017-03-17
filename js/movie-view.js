@@ -524,7 +524,7 @@ var movieView = (function() {
 		}
 		// Update view
 		updatRatingsForCurrentMovie();
-	    document.getElementsByClassName('rating-links')[0].innerHTML = getFilterButtons(getComputedAverageRatings());
+	    document.getElementsByClassName('rating-links')[0].innerHTML = getFilterButtons(getComputedAverageRatings(), 'average', 'btn-link');
 	    addFilterButtonEventListeners('click', 'average-filter', averageRatingButtonOnClick);
 		// Hide rating slider
 		hideRatingSlider(this.parentNode.parentNode.parentNode);

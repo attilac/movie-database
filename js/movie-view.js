@@ -116,7 +116,6 @@ var MovieView = (function() {
 		// Check if year is selected
 		var movies = movieDatabase.getTitleYear() === 0 ? movieDatabase.getMovies() : movieDatabase.getMoviesByKey('year', movieDatabase.getTitleYear());
 		if(movieDatabase.getCurrentAverage() !== 0) {
-			//console.log(movieDatabase.getCurrentAverage());
 			movies = movieDatabase.getMoviesByKey('averageRating', movieDatabase.getCurrentAverage(), movies);	
 		}
 		// Check if genre is selected	

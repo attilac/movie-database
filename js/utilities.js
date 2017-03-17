@@ -66,19 +66,28 @@ var utils = (function(movies) {
 	 * @param {Array} array - the array to sort
 	 * @return {Array} array - the sorted array
 	 */
-	var sortArray = function(array){
+	var sortArray = function(array, sortOrder='ASC'){
 		return array
 		.sort(function (a, b) {
 			if(_isNumber(a)){
-				return b - a;
+				return sortOrder && sortOrder === 'DESC' ? b - a : a - b;
 			}else{
 				var keyA = a.toUpperCase(); // ignore upper and lowercase
 				var keyB = b.toUpperCase(); // ignore upper and lowercase
-				if (keyA < keyB) {
-					return -1;
-				}
-				if (keyA > keyB) {
-					return 1;
+				if(sortOrder && sortOrder === 'DESC'){
+					if (keyA < keyB) {
+						return -1;
+					}
+					if (keyA > keyB) {
+						return 1;
+					}
+				}else{
+					if (keyA < keyB) {
+						return -1;
+					}
+					if (keyA > keyB) {
+						return 1;
+					}	
 				}
 		  		// names must be equal
 		  		return 0;		

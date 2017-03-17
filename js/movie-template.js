@@ -73,7 +73,7 @@ var movieTemplate = (function() {
 		return `
 		<div class="movie-item-header mb-3 mr-3">
 			<h6 class="movie-title mb-1">${title} <small>(${year})</small></h6>
-			${MovieView.getGenreLinkList(genres)}
+			${movieView.getGenreLinkList(genres)}
 			${movieGenreEditBtn(id)}
 		</div>
 	`;
@@ -179,7 +179,7 @@ var movieTemplate = (function() {
 
 								<div class="movie-item-header mb-3 mr-3">
 									<h6 class="movie-title mb-1">${movie.title} <small>(${movie.year})</small></h6>
-									${MovieView.getGenreLinkList(movie.genres)}
+									${movieView.getGenreLinkList(movie.genres)}
 
 									<div class="movie-update btn-group dropup">
 									  <button type="button" class="btn btn-options" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">

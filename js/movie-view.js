@@ -671,7 +671,7 @@ var MovieView = (function() {
 	 */
 	var titleYearButtonOnClick = function(){
 	    event.preventDefault();
-	    //console.log(movieDatabase.getTitleYear() !== Number(this.value));
+	    console.log(movieDatabase.getTitleYear() !== Number(this.value));
 
 	    if(movieDatabase.getTitleYear() !== Number(this.value)){
 	    	removeFilterCloseButton(movieDatabase.getTitleYear());

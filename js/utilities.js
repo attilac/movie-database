@@ -70,7 +70,7 @@ var utils = (function(movies) {
 		return array
 		.sort(function (a, b) {
 			if(_isNumber(a)){
-				return a - b;
+				return b - a;
 			}else{
 				var keyA = a.toUpperCase(); // ignore upper and lowercase
 				var keyB = b.toUpperCase(); // ignore upper and lowercase

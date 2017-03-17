@@ -21,6 +21,7 @@ var movieDatabase = (function(movies) {
     // track selected genres
     var currentGenres = [];
     var _currentYear = 0;
+    var _currentAverage = 0;
     var _sortOrder = 'DESC';
     var _sortBy = 'averageRating';
 
@@ -150,6 +151,22 @@ var movieDatabase = (function(movies) {
     };   
 
 	/**
+	 * 
+	 * 
+	 */
+    var getCurrentAverage = function() {
+    	return _currentAverage;
+    };
+
+	/**
+	 * 
+	 * 
+	 */
+    var setCurrentAverage = function(average) {
+    	_currentAverage = average;
+    };     
+
+	/**
 	 * Returns an array of movies filtered by genre
 	 * @param {Array} genres - the genres to filter by
 	 * @return {Array} _movies - an array of movie objects 
@@ -232,8 +249,8 @@ var movieDatabase = (function(movies) {
 	 * @param {String} value - the value of the key
 	 * @return {Array} _movies - an array of movie objects
 	 */	
-    var getMoviesByKey = function(key, value) {
-    	return _movies
+    var getMoviesByKey = function(key, value, movies = _movies) {
+    	return movies
     	.filter(function(movie) {
     		return movie[key] === value;
     	});
@@ -320,7 +337,9 @@ var movieDatabase = (function(movies) {
         getSortOrder: getSortOrder,
         getSortBy: getSortBy,
         getSortByList: getSortByList,
-        getSortOrderList: getSortOrderList
+        getSortOrderList: getSortOrderList,
+        getCurrentAverage: getCurrentAverage,
+        setCurrentAverage: setCurrentAverage
     };
  
 })(movies=[]);

@@ -95,6 +95,9 @@ var MovieView = (function() {
 	    document.getElementsByClassName('year-links')[0].innerHTML = getYearFilterButtons(getTitleYears());
 	    addFilterButtonEventListeners('click', 'year-filter', titleYearButtonOnClick);
 
+	    document.getElementsByClassName('rating-links')[0].innerHTML = getAverageRatingButtons(getComputedAverageRatings());
+	    addFilterButtonEventListeners('click', 'average-filter', averageRatingButtonOnClick);
+
 		appendFilteredMovies();
 	};
 
@@ -112,6 +115,10 @@ var MovieView = (function() {
 		var targetDiv = document.getElementById('movieContainer');
 		// Check if year is selected
 		var movies = movieDatabase.getTitleYear() === 0 ? movieDatabase.getMovies() : movieDatabase.getMoviesByKey('year', movieDatabase.getTitleYear());
+		if(movieDatabase.getCurrentAverage() !== 0) {
+			//console.log(movieDatabase.getCurrentAverage());
+			movies = movieDatabase.getMoviesByKey('averageRating', movieDatabase.getCurrentAverage(), movies);	
+		}
 		// Check if genre is selected	
 		targetDiv.innerHTML = movieDatabase.currentGenres.length > 0 ? 
 			//movieTemplate.appendMovies(utils.sortObjectsByKey(movieDatabase.getMoviesByGenres(movieDatabase.currentGenres, movies), movieDatabase.getSortBy(), movieDatabase.getSortOrder())) : 
@@ -144,6 +151,7 @@ var MovieView = (function() {
 		// Update UI
 		genreBtnsOnModelChange();
 		yearBtnsOnModelChange();
+		averageBtnsOnModelChange();
 		sortSelectOnModelChange();
 		document.getElementsByClassName('current-genres')[0].innerHTML = movieDatabase.currentGenres.length > 0 ? ' in ' + movieDatabase.currentGenres: '' ;
 		document.getElementsByClassName('current-year')[0].innerHTML = movieDatabase.getTitleYear() || '' ?  ' Year: ' + movieDatabase.getTitleYear() : '' ;
@@ -194,14 +202,6 @@ var MovieView = (function() {
 	 * Get all genres from database
 	 * @return {Array} Array of genre names
 	 */
-	var getGenres = function() {
-		return utils.sortArray(utils.getUniqueArray(utils.getConcatArray(movieDatabase.getMoviesPropertyList('genres'))));
-	};
-
-	/**
-	 * Get the genres for all movies
-	 *
-	 */
 	var getGenresFromDatabase = function(){
 		// Get genres from database 
 		return utils.sortArray(utils.getUniqueArray(utils.getConcatArray(movieDatabase.getMoviesPropertyList('genres'))));
@@ -214,6 +214,14 @@ var MovieView = (function() {
 	var getTitleYears = function() {
 		return utils.sortArray(utils.getUniqueArray(utils.getConcatArray(movieDatabase.getMoviesPropertyList('year'))));
 	};
+
+	/**
+	 * Get all computed average ratings from database
+	 * @return {Array} Array of average rating
+	 */
+	var getComputedAverageRatings = function() {
+		return utils.sortArray(utils.getUniqueArray(utils.getConcatArray(movieDatabase.getMoviesPropertyList('averageRating'))));
+	};	
 
 	/**
 	 * Gets a movie instance in the DOM-tree by data-attribute
@@ -339,6 +347,21 @@ var MovieView = (function() {
 	    	}
 	    }); 
 	};	
+
+	/**
+	 * Update averageratings buttons .active class
+	 */
+	var averageBtnsOnModelChange = function(){
+	    Array.prototype.slice.call(document.getElementsByClassName('average-filter'))
+	    .forEach(function(item) {
+	    	//console.log(item.value);
+	    	if(movieDatabase.getCurrentAverage() === Number(item.value)){
+	    		item.classList.add('active'); 
+	    	}else{
+	    		item.classList.remove('active'); 
+	    	}
+	    }); 
+	};		
 
 	/**
 	 * Update sort dropdown selects
@@ -502,6 +525,8 @@ var MovieView = (function() {
 		}
 		// Update view
 		updatRatingsForCurrentMovie();
+	    document.getElementsByClassName('rating-links')[0].innerHTML = getAverageRatingButtons(getComputedAverageRatings());
+	    addFilterButtonEventListeners('click', 'average-filter', averageRatingButtonOnClick);
 		// Hide rating slider
 		hideRatingSlider(this.parentNode.parentNode.parentNode);
 	};
@@ -575,7 +600,23 @@ var MovieView = (function() {
 	    buttonGroup += `</div>`;
 	    //console.log(buttonGroup);
 	    return buttonGroup;
-	};	
+	};
+
+	/**
+	 * Appends Buttons with years
+	 * @param {Array} titleYears - array of years
+	 */
+	var getAverageRatingButtons = function(ratings){
+	    //console.log(Array.isArray(ratings));
+	    let buttonGroup = `<div class="ratings-button-group" role="group" aria-label="filter-by-year">`;
+	    ratings
+	    .forEach(function(item) {
+	        buttonGroup += `<button type="button" value="${item}" class="btn btn-link mb-3 mr-3 average-filter">${item}</button>`;
+	    });
+	    buttonGroup += `</div>`;
+	    //console.log(buttonGroup);
+	    return buttonGroup;
+	};		
 
 	/**
 	 * Return selects for sorting
@@ -671,7 +712,7 @@ var MovieView = (function() {
 	 */
 	var titleYearButtonOnClick = function(){
 	    event.preventDefault();
-	    console.log(movieDatabase.getTitleYear() !== Number(this.value));
+	    //console.log(movieDatabase.getTitleYear() !== Number(this.value));
 
 	    if(movieDatabase.getTitleYear() !== Number(this.value)){
 	    	removeFilterCloseButton(movieDatabase.getTitleYear());
@@ -685,6 +726,26 @@ var MovieView = (function() {
 	    // Call appendMovies   
 	    appendFilteredMovies();
 	};	
+
+	/**
+	 * Change handler for average rating button
+	 */
+	var averageRatingButtonOnClick = function(){
+	    event.preventDefault();
+	    //console.log(this.value);
+	   	//console.log(typeof(movieDatabase.getCurrentAverage())); 
+	    if(movieDatabase.getCurrentAverage() !== Number(this.value)){
+	    	removeFilterCloseButton(movieDatabase.getCurrentAverage());
+    		movieDatabase.setCurrentAverage(Number(this.value));		
+    		appendFilterCloseButton(Number(this.value));
+	    }else{
+			removeFilterCloseButton(movieDatabase.getCurrentAverage());	 
+			movieDatabase.setCurrentAverage(0);   	
+	    }
+
+	    // Call appendMovies   
+	    appendFilteredMovies();
+	};		
 
 	/**
 	 * Change handler for sort dropdown selects
@@ -746,6 +807,11 @@ var MovieView = (function() {
 			.querySelector(`button[value="${this.value}"]`)
 			.click();
 		}
+		else if(document.querySelector('.ratings-button-group').querySelector(`button[value="${this.value}"]`) !== null){
+			document.querySelector('.ratings-button-group')
+			.querySelector(`button[value="${this.value}"]`)
+			.click();
+		}		
 	};
 
 	/**

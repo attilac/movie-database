@@ -556,8 +556,15 @@ var movieView = (function() {
 	var genreLinkOnClick = function(event){
 		event.preventDefault();
 		//console.log(this.children[0].innerHTML);
+
+		if(movieDatabase.currentGenres.length > 0){
+			movieDatabase.currentGenres.forEach(function(item){
+				removeFilterCloseButton(item);
+			});
+		}
 		movieDatabase.currentGenres = [this.children[0].innerHTML];
-		//console.log(movieDatabase.currentGenres);
+		appendFilterCloseButton(movieDatabase.currentGenres[0]);	
+
 		appendFilteredMovies();
 	};
 

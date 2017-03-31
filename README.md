@@ -33,7 +33,7 @@ Det var framförallt DOM-funktionerna som var utmanade. I början var tendensen 
 
 Det var även svårt att få till editering av filmer, dels att komma fram till att man behöver skapa eventhandlare *efter* filmerna appendas för att med hjälp av `this` läsa av filmens id från dataattribut. Detta utvecklades till att sätta variabler i databas-modulen för att hålla reda på vilken film som editeras, istället för att söka i domen och skicka vidare värdet till andra funktioner. Det förenklade mycket. 
 
-En videarutveckling som inte hanns med var att implementera ett Observer Pattern. Då hade man kunnat skapa events som vid uppdatering och hålla reda på states på t.ex. filter enklare tror jag.
+En videarutveckling som inte hanns med var att implementera ett Observer Pattern. Då hade man kunnat skapa events och lyssnare som håller reda på states på t.ex. filter.
 
 #### TODO
 * Få till Observer Pattern med att trigga events och skapa lyssnare som svarar på dem.

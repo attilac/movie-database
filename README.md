@@ -17,14 +17,14 @@ Appen är en 'databas' med filmer
 * Lägga till/ta bort genres från filer
 * Lägga till nya filmer
 * Filtrera på
- * genres
- * år
- * rating
+	* genres
+ 	* år
+ 	* rating
 * Sortera
- * Stigande/Fallande
+ 	* Stigande/Fallande
 
 ### Arbetsprocess
-Jag använde flera moduler och designpatterns till uppgiften. Olika moduler fick oilka arbetsområden. Movie-modulen använder Revealing Prototype Pattern och har hand om skapa nya film-objekt med filmdata och funktioner som att hämta och räkna ut average-rating. Movie-database använder Revealing Module Pattern och dess syfte är att sortera och filtrera Movie-objekt. 
+Jag använde flera moduler och designpatterns till uppgiften. Olika moduler fick olika arbetsområden. Movie-modulen använder Revealing Prototype Pattern och har hand om skapa nya film-objekt med filmdata och funktioner som att hämta och räkna ut average-rating. Movie-database använder Revealing Module Pattern och dess syfte är att sortera och filtrera Movie-objekt. 
 
 Revealing Module-strukturen valdes för att den har en clean struktur med funktionsdefinitioner och en return med publika funktioner längst ner. Funktioner och variabler kan hållas privata. Första iterationen hade alla DOM-funktioner i en fil blandat med HTML som appendades. De funktionerna blev långa och svårlästa och därav flyttades mycket av HTML-en till en egen template-modul. Det ledde till att koden blev mer logisk och lättare att hantera.
 

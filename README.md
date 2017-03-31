@@ -33,7 +33,7 @@ Det var framförallt DOM-funktionerna som var utmanade. I början var tendensen 
 
 Det var även svårt att få till editering av filmer, dels att komma fram till att man behöverskapa eventhandlare efter filmerna appendas för att skicka med id. Det utvecklades till att lägga in variabler i databasen som håller reda på vilken film som editeras, istället för att läsa av i html-en vilken knapp som tryckts på. Det förenklade mycket.
 
-####TODO
+#### TODO
 * Få till Observer Pattern med att trigga events och skapa lyssnare som svarar på dem.
 
 
